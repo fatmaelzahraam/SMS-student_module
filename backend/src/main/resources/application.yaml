@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/orcl
+    username: c##web_user
+    password: password123
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  application:
+    name: sms
+jwt:
+  secret: yNcWGArQWpoh4lHACl/cbhnWdgCv9ML92Rq+SMnl3zc=
+  expiry: 8640000
