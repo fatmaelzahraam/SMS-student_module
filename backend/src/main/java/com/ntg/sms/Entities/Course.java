@@ -3,8 +3,7 @@ package com.ntg.sms.Entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -12,6 +11,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "COURSE")
 public class Course {
     @Id
@@ -46,7 +48,7 @@ public class Course {
     @Column(name = "STUDY_PLAN", length = 100)
     private String studyPlan;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "COURSE_HAVE_ASSIGNMENTS",
             joinColumns = @JoinColumn(name = "COURSE_ID"),

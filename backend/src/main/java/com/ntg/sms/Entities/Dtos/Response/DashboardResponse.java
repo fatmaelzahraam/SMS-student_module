@@ -5,16 +5,16 @@ import lombok.NoArgsConstructor;
 import lombok.Data;
 import lombok.Builder;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 
 public class DashboardResponse {
-    private long totalStudents;
-    private long totalClasses;
-    private Double todayAttendance;
-    private long totalViolations;
-    private long LeaveRequests;
-    private long totalComplaints;
+    private int   performanceScore;
+    private String  performanceLabel;
+    private AttendaceResponse attendance;
+    private AssignmentResponse   assignments;
 }

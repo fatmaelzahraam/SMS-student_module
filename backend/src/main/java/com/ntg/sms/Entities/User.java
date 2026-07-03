@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Table(name = "USERS")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID", nullable = false)
     private Long id;
 
@@ -85,7 +85,7 @@ public class User {
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "ROLE_ID", nullable = false)
     private Role role;
 

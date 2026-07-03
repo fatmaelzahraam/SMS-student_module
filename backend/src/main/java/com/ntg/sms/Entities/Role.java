@@ -14,7 +14,7 @@ import lombok.*;
 @Table(name = "ROLES")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ROLE_ID", nullable = false)
     private Long id;
 

@@ -17,12 +17,13 @@ import java.util.Set;
 @Table(name = "TEAM")
 public class Team {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "TEAM_ID", nullable = false)
     private Long id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "PROJECT_ID", nullable = false)
     private Project project;
 

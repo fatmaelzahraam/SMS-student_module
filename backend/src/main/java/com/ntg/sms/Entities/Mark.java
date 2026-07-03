@@ -21,7 +21,7 @@ public class Mark {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "COURSE_ID", nullable = false)
     private Course course;
 
@@ -50,5 +50,12 @@ public class Mark {
     @Column(name = "IS_APPROVED")
     private Boolean isApproved;
 
+    @NotNull
+    @Column(name = "SCORE")
+    private Long score;
+
+    @NotNull
+    @Column(name = "MAX_SCORE")
+    private Long maxScore;
 
 }

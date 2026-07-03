@@ -11,9 +11,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(name = "STUDENT")
 public class Student {
     @Id
@@ -22,7 +22,7 @@ public class Student {
     private Long id;
 
     @NotNull
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "USER_ID", nullable = false, unique = true)
     private User user;
 
@@ -37,6 +37,20 @@ public class Student {
     @Column(name = "PLACE_OF_BIRTH", length = 90)
     private String placeOfBirth;
 
+
+    @ManyToOne
+    @JoinColumn(name = "CLASS_ID")
+    private Class studentClass;
+
+    public enum MartialParentsStatus{
+        MARRIED,
+        DIVORCED
+    }
+
+    @Column(name = "MARTIAL_PARENT_STATUS", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MartialParentsStatus martialParentsStatus;
+
     @ManyToMany
     @JoinTable(
             name = "STUDENT_IN_A_TEAM",
@@ -44,6 +58,7 @@ public class Student {
             inverseJoinColumns = @JoinColumn(name = "TEAM_ID")
     )
     private Set<Team> teams = new LinkedHashSet<>();
+
 
 
 }
