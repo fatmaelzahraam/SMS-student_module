@@ -1,0 +1,52 @@
+aside
+{
+    background-color: #620000;
+    height: 100%;
+    position: fixed; 
+    padding-left: 10px;
+    width: 250px;
+}
+.ntglogo
+{
+    margin-top: 20px;
+    width: 240px;
+    height: 90px;
+    background-color: #EEEEEE;
+    border-top-left-radius: 100px;
+    border-bottom-left-radius: 100px;
+    position: relative;
+    margin-bottom: 10px;
+}
+.ntglogo img
+{
+    position: absolute;
+    width: 160px;
+    height: 90px;
+    left: 50px;
+    border-top-left-radius: 100px;
+    border-bottom-left-radius: 100px;
+}
+li{
+    list-style: none;
+    margin-right: 10px;
+    padding: 7px;
+}
+
+li a 
+{
+    text-decoration:none;
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+li:hover
+{
+    border: rgba(255, 255, 255, 0.801) 1px solid;
+    border-radius: 10px;
+}
+i{
+    color: white;
+    width: auto;
+    height: auto;
+}
