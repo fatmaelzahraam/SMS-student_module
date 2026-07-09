@@ -1,37 +1,40 @@
-export interface PerformanceDTO {
-  score: number;
-  label: string;
+export interface DashboardAttendanceOverview {
+  presentPercentage: number;
+  absenceCount: number;
+  LateCount: number;
 }
 
-export interface AttendanceDTO {
-  percent: number;
-  period: string;
-  absentCount: number;
-  lateCount: number;
-}
-
-export interface AssignmentsDTO {
-  completed: number;
-  total: number;
-  delta: number;
-  completionPercent: number;
-}
-
-export interface AcademicRankDTO {
+export interface DashboardResponse {
+  performanceScore: number;
+  performanceLabel: string;
   rank: number;
   totalStudents: number;
-  rankChange: number;
+  attendance: DashboardAttendanceOverview;
 }
 
-export interface PerformancePointDTO {
-  date: string;
+export interface AssignmentResponse {
+  id: number;
+  name: string;
+  description: string;
+  assignDate: string;
+  deadline: string;
+  fileLink: string;
+  studentSubmission: string;
+  courseName?: string;
+}
+
+export interface MarkResponse {
+  id: number;
+  courseId: number;
+  courseName: string;
+  studentId: number;
+  studentName: string;
+  typeId: number;
+  typeName: string;
+  feedbackDate: string;
+  feedback: string;
+  notes: string;
+  isApproved: boolean;
   score: number;
-}
-
-export interface DashboardInterface {
-  performance: PerformanceDTO;
-  attendance: AttendanceDTO;
-  assignments: AssignmentsDTO;
-  academicRank: AcademicRankDTO;
-  performanceOverTime: PerformancePointDTO[];
+  maxScore: number;
 }

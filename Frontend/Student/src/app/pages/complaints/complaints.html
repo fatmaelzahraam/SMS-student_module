@@ -1,0 +1,335 @@
+<div class="support-page">
+
+    <!-- ================= Header ================= -->
+
+    <div class="page-header">
+
+        <div class="title-section">
+
+            <div class="support-icon">
+                🤝
+            </div>
+
+            <div>
+                <h1>Support</h1>
+            </div>
+
+        </div>
+
+        <button
+            class="new-complaint-btn"
+            (click)="openNewComplaint()">
+
+            + New Complaint
+
+        </button>
+
+    </div>
+
+    <!-- ================= Tabs ================= -->
+
+    <div class="tabs">
+
+        <button class="tab active">
+            Complaints
+        </button>
+
+        <button
+    class="tab"
+    routerLink="/violations">
+
+    Violations
+
+</button>
+
+    </div>
+
+    <!-- ================= Statistics ================= -->
+
+    <div class="statistics">
+
+        <div class="stat-card">
+
+            <div class="stat-icon total">
+                💬
+            </div>
+
+            <div>
+
+                <h3>Total Complaints</h3>
+
+                <span>{{statistics?.total || 0}}</span>
+
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-icon replied">
+                ✅
+            </div>
+
+            <div>
+
+                <h3>Replied</h3>
+
+                <span>{{statistics?.replied || 0}}</span>
+
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-icon pending">
+                ⏳
+            </div>
+
+            <div>
+
+                <h3>Pending</h3>
+
+                <span>{{statistics?.pending || 0}}</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= Complaints ================= -->
+
+    <div class="section">
+
+        <div class="section-header">
+
+            <div class="header-line"></div>
+
+            <h2>My Complaints</h2>
+
+        </div>
+
+        <div
+            class="complaint-item"
+            *ngFor="let complaint of complaints"
+            (click)="selectComplaint(complaint.complaintId)"
+            [class.active]="selectedComplaint?.complaintId === complaint.complaintId">
+
+            <div class="left">
+
+                <h3>{{complaint.title}}</h3>
+
+                <small>
+
+                    Complaint #{{complaint.complaintId}}
+
+                </small>
+
+            </div>
+
+            <div class="right">
+
+                <span
+                    class="status replied"
+                    *ngIf="complaint.status=='REPLIED'">
+
+                    Replied
+
+                </span>
+
+                <span
+                    class="status pending"
+                    *ngIf="complaint.status!='REPLIED'">
+
+                    Pending
+
+                </span>
+
+                <div class="date">
+
+                    {{complaint.submittedAt}}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= Complaint Details ================= -->
+
+    <div class="section">
+
+        <div class="section-header">
+
+            <div class="header-line"></div>
+
+            <h2>Complaint Details</h2>
+
+        </div>
+
+        <div
+            class="details"
+            *ngIf="selectedComplaint; else emptyState">
+
+            <div class="row">
+
+                <div class="label">
+
+                    Title
+
+                </div>
+
+                <div class="value">
+
+                    {{selectedComplaint.title}}
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="label">
+
+                    Description
+
+                </div>
+
+                <div class="value">
+
+                    {{selectedComplaint.description}}
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="label">
+
+                    Submitted On
+
+                </div>
+
+                <div class="value">
+
+                    {{selectedComplaint.submittedAt}}
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="label">
+
+                    Complaint Reply
+
+                </div>
+
+                <div class="value">
+
+                    <div class="reply-box">
+
+                        {{selectedComplaint.response || 'No reply yet'}}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <ng-template #emptyState>
+
+            <div class="empty-state">
+
+                No Complaint Selected
+
+            </div>
+
+        </ng-template>
+
+    </div>
+
+</div>
+
+<!-- ================= New Complaint Modal ================= -->
+
+<div
+    class="modal-backdrop"
+    *ngIf="showNewComplaint"
+    (click)="closeNewComplaint()">
+
+    <div
+        class="modal"
+        (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+
+            <h2>New Complaint</h2>
+
+            <button
+                class="close-btn"
+                (click)="closeNewComplaint()">
+
+                ✕
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <label>
+
+                Title
+
+            </label>
+
+            <input
+                type="text"
+                [(ngModel)]="newComplaint.title"
+                placeholder="Enter your complaint title">
+
+            <label>
+
+                Description
+
+            </label>
+
+            <textarea
+                rows="7"
+                [(ngModel)]="newComplaint.description"
+                placeholder="Enter your complaint description"></textarea>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                class="cancel-btn"
+                (click)="closeNewComplaint()">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="send-btn"
+                (click)="submitComplaint()"
+                [disabled]="loading">
+
+                {{loading ? 'Sending...' : 'Send'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

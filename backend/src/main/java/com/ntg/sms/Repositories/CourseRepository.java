@@ -12,6 +12,9 @@ import java.util.Optional;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
+    @Query("SELECT DISTINCT c FROM Course c LEFT JOIN FETCH c.assignments LEFT JOIN FETCH c.teacher t LEFT JOIN FETCH t.user LEFT JOIN FETCH c.term")
+    List<Course> findAllWithDetails();
+
     List<Course> findByTeacherId(Long teacherId);
 
     List<Course> findByTermId(Long termId);

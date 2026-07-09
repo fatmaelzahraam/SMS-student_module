@@ -10,25 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/projects")
+@RequestMapping("/api/v1/projects")
 @RequiredArgsConstructor
 public class ProjectController {
 
     private final ProjectService projectService;
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProjectResponse createProject(@RequestBody ProjectRequest request){
-        return projectService.createProject(request);
-    }
-
-    @PutMapping("/{id}")
-    public ProjectResponse updateProject(
-            @PathVariable Long id,
-            @RequestBody ProjectRequest request){
-
-        return projectService.updateProject(id, request);
-    }
 
     @GetMapping("/{id}")
     public ProjectResponse getProjectById(@PathVariable Long id){
@@ -45,12 +31,6 @@ public class ProjectController {
             @PathVariable Long courseId){
 
         return projectService.getProjectsByCourse(courseId);
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteProject(@PathVariable Long id){
-        projectService.deleteProject(id);
     }
 
 }

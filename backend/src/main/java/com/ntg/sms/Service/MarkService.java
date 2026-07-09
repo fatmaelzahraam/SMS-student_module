@@ -1,25 +1,14 @@
 package com.ntg.sms.Service;
 
-
-
-import com.ntg.sms.Entities.Course;
+import com.ntg.sms.Entities.Dtos.Response.*;
 import com.ntg.sms.Entities.Mark;
-import com.ntg.sms.Entities.Dtos.Response.MarkResponse;
-import com.ntg.sms.Entities.Dtos.Request.MarkRequest;
-import com.ntg.sms.Entities.MarksType;
-import com.ntg.sms.Entities.User;
-import com.ntg.sms.Exceptions.ResourceNotFoundException;
 import com.ntg.sms.Mapper.MarkMapper;
-import com.ntg.sms.Repositories.CourseRepository;
 import com.ntg.sms.Repositories.MarkRepository;
-import com.ntg.sms.Repositories.MarksTypeRepository;
-import com.ntg.sms.Repositories.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,112 +16,119 @@ import java.util.stream.Collectors;
 public class MarkService {
 
     private final MarkRepository markRepository;
-    private final CourseRepository courseRepository;
-    private final UserRepository userRepository;
-    private final MarksTypeRepository marksTypeRepository;
     private final MarkMapper markMapper;
 
-    // ─── READ ─────────────────────────────────────────────────────────────────
-
     @Transactional(readOnly = true)
-    public List<MarkResponse> getAllMarks() {
-        return markRepository.findAll()
+    public List<MarkResponse> getMarksByStudent(Long studentId) {
+
+        return markRepository.findByStudentId(studentId)
                 .stream()
                 .map(markMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public MarkResponse getMarkById(Long id) {
-        return markMapper.toResponse(findMarkOrThrow(id));
-    }
+    public List<MarkResponse> getMarksByStudentAndCourse(Long studentId,
+                                                         Long courseId) {
 
-    @Transactional(readOnly = true)
-    public List<MarkResponse> getMarksByUser(Long userId) {
-        assertUserExists(userId);
-        return markRepository.findByUserId(userId)
+        return markRepository.findByStudentIdAndCourseId(studentId, courseId)
                 .stream()
                 .map(markMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
+
+
+     // Dashboard API
 
     @Transactional(readOnly = true)
-    public List<MarkResponse> getMarksByCourse(Long courseId) {
-        assertCourseExists(courseId);
-        return markRepository.findByCourseId(courseId)
-                .stream()
-                .map(markMapper::toResponse)
-                .collect(Collectors.toList());
+    public StudentMarksDashboardResponse getDashboard(Long studentId) {
+
+        Double average = Optional.ofNullable(
+                        markRepository.calculatePerformance(studentId))
+                .orElse(0.0);
+
+        Double highest = Optional.ofNullable(
+                        markRepository.highestPercentage(studentId))
+                .orElse(0.0);
+
+        Double lowest = Optional.ofNullable(
+                        markRepository.lowestPercentage(studentId))
+                .orElse(0.0);
+
+        Integer totalSubjects = Optional.ofNullable(
+                        markRepository.totalSubjects(studentId))
+                .orElse(0);
+
+        Integer rank = Optional.ofNullable(
+                        markRepository.getStudentRank(studentId))
+                .orElse(0);
+
+        List<SubjectAverageResponse> chart =
+                markRepository.getSubjectAverages(studentId);
+
+        List<Mark> marks = markRepository.findByStudentId(studentId);
+
+        List<MonthlyMarksResponse> monthlyMarks =
+                buildMonthlyTable(marks);
+
+        return StudentMarksDashboardResponse.builder()
+                .averagePercentage(round(average))
+                .highestMark(round(highest))
+                .lowestMark(round(lowest))
+                .totalSubjects(totalSubjects)
+                .academicRank(rank)
+                .subjectAverages(chart)
+                .monthlyMarks(monthlyMarks)
+                .build();
     }
 
-    @Transactional(readOnly = true)
-    public List<MarkResponse> getMarksByUserAndCourse(Long userId, Long courseId) {
-        assertUserExists(userId);
-        assertCourseExists(courseId);
-        return markRepository.findByUserIdAndCourseId(userId, courseId)
-                .stream()
-                .map(markMapper::toResponse)
-                .collect(Collectors.toList());
-    }
+    //Creates the Monthly Exam Marks table.
 
-    @Transactional(readOnly = true)
-    public List<MarkResponse> getApprovedMarksByUser(Long userId) {
-        assertUserExists(userId);
-        return markRepository.findApprovedMarksByUser(userId)
-                .stream()
-                .map(markMapper::toResponse)
-                .collect(Collectors.toList());
-    }
+    private List<MonthlyMarksResponse> buildMonthlyTable(List<Mark> marks) {
 
-    @Transactional(readOnly = true)
-    public Long getTotalApprovedScore(Long userId, Long courseId) {
-        assertUserExists(userId);
-        assertCourseExists(courseId);
-        return markRepository.sumApprovedScoreByUserAndCourse(userId, courseId);
-    }
+        Map<String, List<Mark>> groupedByMonth =
+                marks.stream()
+                        .collect(Collectors.groupingBy(
+                                mark -> mark.getType().getTypeName(),
+                                LinkedHashMap::new,
+                                Collectors.toList()));
 
-    // ─── HELPERS ─────────────────────────────────────────────────────────────
+        List<MonthlyMarksResponse> response = new ArrayList<>();
 
-    private Mark findMarkOrThrow(Long id) {
-        return markRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Mark not found with id: " + id));
-    }
+        for (Map.Entry<String, List<Mark>> entry : groupedByMonth.entrySet()) {
 
-    private Course findCourseOrThrow(Long courseId) {
-        return courseRepository.findById(courseId)
-                .orElseThrow(() -> new EntityNotFoundException("Course not found with id: " + courseId));
-    }
+            List<SubjectMarkResponse> subjects = new ArrayList<>();
 
-    private User findUserOrThrow(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
-    }
+            for (Mark mark : entry.getValue()) {
 
-    private MarksType findTypeOrThrow(Long typeId) {
-        return marksTypeRepository.findById(typeId)
-                .orElseThrow(() -> new EntityNotFoundException("MarksType not found with id: " + typeId));
-    }
+                double percentage =
+                        (mark.getScore() * 100.0) / mark.getMaxScore();
 
-    private void assertUserExists(Long userId) {
-        if (!userRepository.existsById(userId))
-            throw new EntityNotFoundException("User not found with id: " + userId);
-    }
+                subjects.add(
+                        SubjectMarkResponse.builder()
+                                .subject(mark.getCourse().getCourseName())
+                                .percentage(round(percentage))
+                                .build()
+                );
+            }
 
-    private void assertCourseExists(Long courseId) {
-        if (!courseRepository.existsById(courseId))
-            throw new EntityNotFoundException("Course not found with id: " + courseId);
-    }
-
-    private void validateScoreRange(Long score, Long maxScore) {
-        if (score > maxScore) {
-            throw new IllegalArgumentException(
-                    "Score (" + score + ") cannot exceed max score (" + maxScore + ").");
+            response.add(
+                    MonthlyMarksResponse.builder()
+                            .month(entry.getKey())
+                            .subjects(subjects)
+                            .build()
+            );
         }
+
+        return response;
     }
 
-    @Transactional(readOnly = true)
-    public MarkResponse getStudentPerformance(Long studentId) {
+    //Round to 2 decimal places.
 
-        return markRepository.getStudentPerformance(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));}
+    private Double round(Double value) {
+
+        return Math.round(value * 100.0) / 100.0;
+
+    }
+
 }

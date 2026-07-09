@@ -1,59 +1,57 @@
 package com.ntg.sms.Controllers;
 
-import com.ntg.sms.Entities.Dtos.Request.SessionRequest;
+import com.ntg.sms.Entities.Class;
 import com.ntg.sms.Entities.Dtos.Response.SessionResponse;
 import com.ntg.sms.Service.SessionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/sessions")
+@RequestMapping("/api/v1/schedule")
 @RequiredArgsConstructor
 public class SessionController {
 
-    private final SessionService sessionService;
+    private final SessionService sessions;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public SessionResponse createSession(@RequestBody SessionRequest request) {
-        return sessionService.createSession(request);
+    // ── Class schedule for a student ─────────────────────────────────────────
+    @GetMapping("/student/{studentId}")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('ADMIN')")
+    public ResponseEntity<List<SessionResponse>> getClassSchedule(
+            @PathVariable Long studentId) {
+        return ResponseEntity.ok(sessions.getClassSessionsByStudent(studentId));
     }
 
-    @PutMapping("/{id}")
-    public SessionResponse updateSession(
-            @PathVariable Long id,
-            @RequestBody SessionRequest request) {
-
-        return sessionService.updateSession(id, request);
+    // ── Month exam schedule for a student ────────────────────────────────────
+    @GetMapping("/student/{studentId}/exams/month")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('ADMIN')")
+    public ResponseEntity<List<SessionResponse>> getMonthExams(
+            @PathVariable Long studentId) {
+        return ResponseEntity.ok(sessions.getMonthExamsByStudent(studentId));
     }
 
-    @GetMapping("/{id}")
-    public SessionResponse getSessionById(@PathVariable Long id) {
-        return sessionService.getSessionById(id);
+    // ── Final exam schedule for a student ────────────────────────────────────
+    @GetMapping("/student/{studentId}/exams/final")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('ADMIN')")
+    public ResponseEntity<List<SessionResponse>> getFinalExams(
+            @PathVariable Long studentId) {
+        return ResponseEntity.ok(sessions.getFinalExamsByStudent(studentId));
     }
 
-    @GetMapping
-    public List<SessionResponse> getAllSessions() {
-        return sessionService.getAllSessions();
-    }
-
-    @GetMapping("/course/{courseId}")
-    public List<SessionResponse> getSessionsByCourse(@PathVariable Long courseId) {
-        return sessionService.getSessionsByCourse(courseId);
-    }
-
+    // ── Legacy: all sessions by classId ──────────────────────────────────────
     @GetMapping("/class/{classId}")
-    public List<SessionResponse> getSessionsByClass(@PathVariable Long classId) {
-        return sessionService.getSessionsByClass(classId);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<SessionResponse>> getAllByClass(
+            @PathVariable Long classId) {
+        return ResponseEntity.ok(sessions.allSessions(classId));
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteSession(@PathVariable Long id) {
-        sessionService.deleteSession(id);
+    @GetMapping("/classes")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Class>> getAllClasses() {
+        return ResponseEntity.ok(sessions.getAllClasses());
     }
-
 }

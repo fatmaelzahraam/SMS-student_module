@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -37,15 +38,24 @@ public class Session {
 
     @NotNull
     @Column(name = "START_AT", nullable = false)
-    private LocalDate startAt;
+    private LocalTime startAt;
 
     @NotNull
     @Column(name = "END_AT", nullable = false)
-    private LocalDate endAt;
+    private LocalTime endAt;
 
     @NotNull
     @Column(name = "UPDATED_AT", nullable = false)
     private LocalDate updatedAt;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "SESSION_TYPE", nullable = false, length = 20)
+    private SessionType sessionType = SessionType.CLASS; // new field
+
+    public enum SessionType {
+        CLASS, MONTH_EXAM, FINAL_EXAM
+    }
 
 
 }

@@ -1,0 +1,418 @@
+/* ── Variables ─────────────────────────────────────── */
+:host {
+  --crimson:    #620000;
+  --navy:       #05172F;
+  --gray-bg:    #EEEEEE;
+  --white:      #FFFFFF;
+  --steel:      #87A7C8;
+  --green:      #1B7A4A;
+  --purple:     #470555;
+  --success:    #2ecc71;
+  --warning:    #f39c12;
+  --danger:     #e74c3c;
+  --gold:       #FFD700;
+  --text-muted: #9ca3af;
+  --radius:     10px;
+  --gap:        16px;
+}
+
+/* ── Loading ───────────────────────────────────────── */
+.loading-wrapper,
+.error-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 14px;
+  color: var(--navy);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--gray-bg);
+  border-top-color: var(--crimson);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.btn-retry {
+  padding: 8px 18px;
+  background: var(--crimson);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ── Layout ────────────────────────────────────────── */
+.dashboard-container {
+  padding: 28px 32px;
+  min-height: 100vh;
+  margin-top: 20px;
+}
+
+/* ── Welcome ───────────────────────────────────────── */
+.welcome-header {
+  margin-bottom: 24px;
+}
+
+.welcome-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Cards Grid ────────────────────────────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+/* ── Base Card ─────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(5, 23, 47, 0.07);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+/* ── Card Icon ─────────────────────────────────────── */
+.card__icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon--dark   { background: var(--navy); }
+.icon--green  { background: var(--green); }
+.icon--purple { background: var(--purple); }
+.icon--gold   { background: #04397E; }
+
+/* ── Card Body ─────────────────────────────────────── */
+.card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: var(--white);
+}
+
+.card__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.card__value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1;
+  margin: 0;
+}
+
+.card__value--light  { color: var(--white); }
+.card__value-total   { font-size: 1rem; font-weight: 500; color: var(--text-muted); }
+
+.card__sub           { font-size: 0.75rem; color: var(--text-muted); margin: 0; }
+.card__sub--light    { color: rgba(255, 255, 255, 0.6); }
+
+/* ── Progress Bar ──────────────────────────────────── */
+.perf-bar {
+  width: 100%;
+  height: 5px;
+  background: var(--gray-bg);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.perf-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--crimson), var(--steel));
+  border-radius: 99px;
+  transition: width 1s ease;
+}
+
+.perf-bar__fill--purple {
+  background: linear-gradient(90deg, var(--purple), var(--steel));
+}
+.card--performance .card__label{
+  color:var(--navy);
+}
+
+/* ── Attendance Card ───────────────────────────────── */
+.card--att {
+  background: var(--white);
+}
+
+.card--att .card__label { color:#177930; }
+
+.ring-wrap {
+  position: absolute;
+  right: 12px;
+  top: 40%;
+  transform: translateY(-50%);
+}
+
+.att-badges {
+  display: flex;
+  gap: 6px;
+  height: 25px;
+  width: 120px;
+  /* flex-wrap: wrap; */
+}
+
+
+ /* assignment card */
+.card--assignments .card__label
+{
+  color:var(--purple);
+}
+
+/* ── Rank Card ─────────────────────────────────────── */
+/* .card--rank {
+  background: var(--white);
+} */
+
+.card--rank .card__label { color: #0E4894; }
+
+.rank-star {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 1.4rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.15); }
+}
+
+/* ── Assign Footer ─────────────────────────────────── */
+.assign-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pct-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--purple);
+}
+
+/* ── Badges ────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 99px;
+}
+
+.badge--perf      { background: rgba(46, 204, 113, 0.12); color: #1a9e5a; }
+.badge--rank      { background: rgba(255, 215, 0, 0.15);  color: #8a6800; }
+.badge--remaining { background: rgba(74, 48, 128, 0.1);   color: var(--purple); }
+.badge--absent    { background: rgba(231, 76, 60, 0.15);  color: #c0392b; }
+.badge--late      { background: rgba(243, 156, 18, 0.15); color: #9a7010; }
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.info-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(5, 23, 47, 0.1);
+  font-size: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  font-style: normal;
+}
+
+/* ── Charts Grid ───────────────────────────────────── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--gap);
+}
+
+.chart-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(5, 23, 47, 0.07);
+}
+
+.chart-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.chart-card__title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 2px;
+}
+
+.chart-card__sub {
+  font-size: 0.73rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.chart-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: var(--gray-bg);
+  color: var(--navy);
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+
+/* ── Line Chart ────────────────────────────────────── */
+.chart-canvas-wrap {
+  position: relative;
+  height: 180px;
+}
+
+.chart-canvas-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ── Donut Chart ───────────────────────────────────── */
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.donut-canvas-wrap {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+}
+
+.donut-canvas-wrap canvas {
+  width: 150px !important;
+  height: 150px !important;
+}
+
+.donut-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.donut-center__pct {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0;
+  line-height: 1;
+}
+
+.donut-center__lbl {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.donut-legend {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-dot--completed { background-color: #620000; }
+.legend-dot--remaining { background-color: #e0e0e0; }
+
+.legend-label {
+  font-size: 0.73rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.legend-value {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0;
+}
+
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 900px) {
+  .charts-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .dashboard-container { padding: 16px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .card__value { font-size: 1.7rem; }
+  .ring-wrap { display: none; }
+}

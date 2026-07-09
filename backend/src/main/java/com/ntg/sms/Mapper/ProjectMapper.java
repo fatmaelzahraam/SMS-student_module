@@ -8,7 +8,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ProjectMapper {
 
-    @Mapping(source = "course.id", target = "courseId")
+    @Mapping(source = "course.id",         target = "courseId")
+    @Mapping(source = "course.courseName", target = "courseName")
     ProjectResponse toResponse(Project project);
 
 }

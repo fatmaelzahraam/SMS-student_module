@@ -17,10 +17,14 @@ public class StudentService {
     private final StudentRepository studentRepository;
         private final StudentMapper studentMapper;
 
-        public StudentResponse getMyProfile(String email) {
-            Student student = studentRepository.findByUser_Email(email)
-                    .orElseThrow(() -> new EntityNotFoundException("Student not found"));
-            return studentMapper.toDto(student);
-        }
+    public StudentResponse getMyProfile(String email) {
+        Student student = studentRepository.findByUser_Email(email)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        return studentMapper.toDto(student);
+    }
+
+    public Long countStudents(){
+        return studentRepository.count();
+    }
     }
 

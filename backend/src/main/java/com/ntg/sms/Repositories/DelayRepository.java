@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DelayRepository extends JpaRepository<Delay,Long> {
+    Long countAllByStudent_Id(Long Student_Id);
 }

@@ -10,6 +10,7 @@ public interface AttendanceMapper {
 
     @Mapping(source = "student.id", target = "studentId")
     @Mapping(source = "session.id", target = "sessionId")
+    @Mapping(source = "attendance.id", target = "id")
     AttendaceResponse toResponse(Attendance attendance);
 
 }

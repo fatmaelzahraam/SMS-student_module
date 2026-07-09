@@ -1,0 +1,73 @@
+<app-attendance-nav></app-attendance-nav>
+
+<div class="attendance-container">
+   <div class="date-header">
+
+        <button class="nav-btn">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <div class="date-box">
+            {{ monthlyAttendance?.month}}
+        </div>
+
+        <button class="nav-btn">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+    </div>
+
+  <div class="overview-card">
+
+    <h2>Monthly Overview</h2>
+
+    <p>
+      {{ monthlyAttendance?.month }}/{{ monthlyAttendance?.year }}
+    </p>
+
+    <div class="stats">
+
+      <div class="stat-card attendance">
+        <h3>Attendance</h3>
+        <h1>{{ monthlyAttendance?.attendancePercentage | number:'1.0-0' }}%</h1>
+      </div>
+
+      <div class="stat-card present">
+        <h3>Present</h3>
+        <h1>{{ monthlyAttendance?.present ?? 0 }}</h1>
+      </div>
+
+      <div class="stat-card absent">
+        <h3>Absent</h3>
+        <h1>{{ monthlyAttendance?.absent ?? 0 }}</h1>
+      </div>
+
+      <div class="stat-card late">
+        <h3>Late</h3>
+        <h1>{{ monthlyAttendance?.late ?? 0 }}</h1>
+      </div>
+
+      <div class="stat-card permission">
+        <h3>Permission</h3>
+        <h1>{{ monthlyAttendance?.permission ?? 0 }}</h1>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="cont">
+   <div class="charts">
+
+  <div class="chart-card">
+    <h5>Attendance Percentage</h5>
+
+    <apx-chart
+      [series]="radialChartOptions.series"
+      [chart]="radialChartOptions.chart"
+      [plotOptions]="radialChartOptions.plotOptions"
+      [labels]="radialChartOptions.labels">
+    </apx-chart>
+
+  </div>
+  </div>
+</div>

@@ -1,0 +1,212 @@
+:host{
+    display: block;
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+/* ================= Main Container ================= */
+
+.attendance-container{
+    position: relative;
+    max-width: 1200px;
+    margin: 40px 30px 40px auto;
+}
+
+/* ================= Date Header ================= */
+
+.date-header{
+    position: absolute;
+    top: -22px;
+    left: 0;
+    width: 100%;
+    height: 55px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+
+    background: #b8bec8;
+    border-radius: 12px;
+    padding: 0 15px;
+}
+
+.nav-btn{
+    width:38px;
+    height:38px;
+    border:none;
+    border-radius:8px;
+    background:#fff;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.nav-btn:hover{
+    background:#7b1113;
+    color:#fff;
+}
+
+.date-box{
+    background:#fff;
+    padding:10px 22px;
+    border-radius:8px;
+    font-weight:600;
+    color:#333;
+    min-width:170px;
+    text-align:center;
+}
+
+/* ================= Overview Card ================= */
+
+.overview-card{
+    background:#fff;
+    border-radius:18px;
+    padding:45px 30px 30px;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+    border:1px solid #eceff4;
+}
+
+.overview-card h2{
+    font-size:28px;
+    color:#16253b;
+    margin-bottom:5px;
+}
+
+.overview-card p{
+    color:#8d97a5;
+    margin-bottom:30px;
+    font-size:15px;
+}
+
+/* ================= Statistics ================= */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:20px;
+}
+
+.stat-card{
+    border-radius:16px;
+    padding:20px;
+    text-align:center;
+    transition:.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+
+.stat-card h3{
+    font-size:14px;
+    font-weight:500;
+    margin-bottom:15px;
+}
+
+.stat-card h1{
+    font-size:32px;
+    font-weight:700;
+}
+
+/* Colors */
+
+.total{
+    background:#e9f2ff;
+}
+
+.total h3,
+.total h1{
+    color:#244f82;
+}
+
+.present{
+    background:#e9f9ef;
+}
+
+.present h3,
+.present h1{
+    color:#1d8c48;
+}
+
+.absent{
+    background:#fde9e9;
+}
+
+.absent h3,
+.absent h1{
+    color:#cf3f3f;
+}
+
+.late{
+    background:#fff6d8;
+}
+
+.late h3,
+.late h1{
+    color:#d89a00;
+}
+
+.attendance{
+    background:#efe7ff;
+}
+
+.attendance h3,
+.attendance h1{
+    color:#7142d4;
+}
+
+/* ================= Chart Card ================= */
+
+.cont{
+    width:100%;
+    margin-top:30px;
+}
+
+.chart-card{
+    background:#fff;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+    border:1px solid #eceff4;
+}
+
+/* ================= Responsive ================= */
+
+@media (max-width:1200px){
+
+    .attendance-container{
+        width: calc(100vw - 250px);
+    }
+
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+
+@media (max-width:992px){
+
+    .attendance-container{
+        width:95%;
+        margin:40px auto;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media (max-width:600px){
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .date-header{
+        position:static;
+        margin-bottom:20px;
+    }
+
+    .overview-card{
+        padding-top:25px;
+    }
+}

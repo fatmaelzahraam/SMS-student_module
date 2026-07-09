@@ -1,0 +1,148 @@
+<div class="schedule-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-part">
+      <div class="icon-wrapper">
+        <img src="../assets/images/date.png" alt="">
+      </div>
+      <div>
+        <h2>Schedule</h2>
+        <p>View your class schedule and exam schedules</p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button [class.active]="activeTab() === 'class'"  (click)="setTab('class')">Class schedule</button>
+      <button [class.active]="activeTab() === 'month'"  (click)="setTab('month')">Month exam schedule</button>
+      <button [class.active]="activeTab() === 'final'"  (click)="setTab('final')">Final exam schedule</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (isLoading()) {
+    <div class="state-box">Loading...</div>
+  }
+<!-- <pre style="background:#f5f5f5; padding:12px; font-size:11px; overflow:auto">
+  isLoading: {{ isLoading() }}
+  error: {{ error() }}
+  classSchedule: {{ classSchedule() | json }}
+</pre> -->
+  <!-- Error -->
+  @if (error()) {
+    <div class="error-banner">
+      {{ error() }}
+      <button (click)="clearError()">✕</button>
+    </div>
+  }
+
+  <!-- ── CLASS SCHEDULE ─────────────────────────────────────── -->
+  @if (activeTab() === 'class' && !isLoading()) {
+
+    @if (classSchedule()) {
+      <div class="grid-wrapper">
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th class="day-col">Day</th>
+              @for (slot of timeSlots; track slot) {
+                <th [class.break-col]="isBreak(slot)">
+                  {{ slot }}
+                  @if (isBreak(slot)) {
+                    <span class="break-label">Break</span>
+                  }
+                </th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of classSchedule()!.weeklySchedule; track row.day) {
+              <tr>
+                <td class="day-name">{{ row.day }}</td>
+                @for (slot of row.slots; track $index) {
+                  <td [class.break-col]="isBreak(timeSlots[$index])">
+                    @if (slot.session) {
+                      <div class="class-card">
+                        <span class="subject">{{ slot.session.subject }}</span>
+                        <span class="teacher">{{ slot.session.teacher }}</span>
+                      </div>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+    } @else {
+      <div class="state-box">No class schedule available.</div>
+    }
+  }
+
+  <!-- ── MONTH EXAM SCHEDULE ────────────────────────────────── -->
+  @if (activeTab() === 'month' && !isLoading()) {
+
+    @if (monthExams() && monthExams()!.exams.length > 0) {
+      <div class="exam-wrapper">
+        <table class="exam-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Teacher</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (exam of monthExams()!.exams; track exam.id) {
+              <tr>
+                <td>{{ exam.subject }}</td>
+                <td>{{ exam.teacher }}</td>
+                <td>{{ exam.startTime }}</td>
+                <td>{{ exam.endTime }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+    } @else {
+      <div class="state-box">No month exam schedule available.</div>
+    }
+  }
+
+  <!-- ── FINAL EXAM SCHEDULE ────────────────────────────────── -->
+  @if (activeTab() === 'final' && !isLoading()) {
+
+    @if (finalExams() && finalExams()!.exams.length > 0) {
+      <div class="exam-wrapper">
+        <table class="exam-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Teacher</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (exam of finalExams()!.exams; track exam.id) {
+              <tr>
+                <td>{{ exam.subject }}</td>
+                <td>{{ exam.teacher }}</td>
+                <td>{{ exam.startTime }}</td>
+                <td>{{ exam.endTime }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+    } @else {
+      <div class="state-box">No final exam schedule available.</div>
+    }
+  }
+
+</div>

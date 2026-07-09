@@ -24,54 +24,6 @@ public class AssignmentService {
     private final AssignmentRepository assignmentRepository;
     private final CourseRepository courseRepository;
     private final AssignmentMapper assignmentMapper;
-
-    public AssignmentResponse createAssignment(AssignmentRequest request){
-
-        Set<Course> courses = new HashSet<>();
-
-        if(request.getCourseIds() != null){
-            courses.addAll(courseRepository.findAllById(request.getCourseIds()));
-        }
-
-        Assignment assignment = Assignment.builder()
-                .name(request.getName())
-                .deadline(request.getDeadline())
-                .assignDate(request.getAssignDate())
-                .description(request.getDescription())
-                .fileLink(request.getFileLink())
-                .studentSubmission(request.getStudentSubmission())
-                .courses(courses)
-                .build();
-
-        return assignmentMapper.toResponse(
-                assignmentRepository.save(assignment)
-        );
-    }
-
-    public AssignmentResponse updateAssignment(Long id, AssignmentRequest request){
-
-        Assignment assignment = assignmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Assignment not found"));
-
-        Set<Course> courses = new HashSet<>();
-
-        if(request.getCourseIds() != null){
-            courses.addAll(courseRepository.findAllById(request.getCourseIds()));
-        }
-
-        assignment.setName(request.getName());
-        assignment.setDeadline(request.getDeadline());
-        assignment.setAssignDate(request.getAssignDate());
-        assignment.setDescription(request.getDescription());
-        assignment.setFileLink(request.getFileLink());
-        assignment.setStudentSubmission(request.getStudentSubmission());
-        assignment.setCourses(courses);
-
-        return assignmentMapper.toResponse(
-                assignmentRepository.save(assignment)
-        );
-    }
-
     public AssignmentResponse getAssignmentById(Long id){
 
         Assignment assignment = assignmentRepository.findById(id)
@@ -95,5 +47,4 @@ public class AssignmentService {
                 .map(assignmentMapper::toResponse)
                 .toList();
     }
-
 }

@@ -27,8 +27,8 @@ public class Mark {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private User user;
+    @JoinColumn(name = "STUDENT_ID", nullable = false)
+    private Student student;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

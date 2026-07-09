@@ -12,24 +12,24 @@ public interface AssignmentRepository extends JpaRepository <Assignment,Long>{
 
     List<Assignment> findByCoursesId(Long courseId);
 
-    @Query("""
-SELECT new com.sms.dto.AssignmentSummary(
-
-COUNT(sa),
-
-SUM(
-CASE
-WHEN sa.status='COMPLETED'
-THEN 1
-ELSE 0
-END
-)
-
-)
-
-FROM StudentAssignment sa
-
-WHERE sa.student.id=:studentId
-""")
-    CourseResponse.AssignmentSummary getAssignmentSummary(Long studentId);
+//    @Query("""
+//SELECT new com.ntg.sms.Entities.Dtos.Response.CourseResponse.AssignmentSummary(
+//
+//COUNT(sa),
+//
+//SUM(
+//CASE
+//WHEN sa.status='COMPLETED'
+//THEN 1
+//ELSE 0
+//END
+//)
+//
+//)
+//
+//FROM Assignment sa
+//
+//WHERE sa.student.id=:studentId
+//""")
+//    CourseResponse.AssignmentSummary getAssignmentSummary(Long studentId);
 }

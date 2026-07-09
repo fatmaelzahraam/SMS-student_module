@@ -1,107 +1,74 @@
 package com.ntg.sms.Service;
 
+
 import com.ntg.sms.Entities.Class;
-import com.ntg.sms.Entities.Course;
-import com.ntg.sms.Entities.Dtos.Request.SessionRequest;
 import com.ntg.sms.Entities.Dtos.Response.SessionResponse;
-import com.ntg.sms.Entities.Session;
-import com.ntg.sms.Mapper.SessionMapper;
+import com.ntg.sms.Entities.Grade;
 import com.ntg.sms.Repositories.ClassRepository;
-import com.ntg.sms.Repositories.CourseRepository;
+import com.ntg.sms.Repositories.GradeRepository;
 import com.ntg.sms.Repositories.SessionRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class SessionService {
 
-    private final SessionRepository sessionRepository;
-    private final ClassRepository classRepository;
-    private final CourseRepository courseRepository;
-    private final SessionMapper sessionMapper;
+    @Autowired
+    private SessionRepository repo;
 
-    public SessionResponse createSession(SessionRequest request) {
+    @Autowired
+    private GradeRepository gradeRepo;
+    @Autowired
+    private ClassRepository classRepo;
 
-        Class classField = classRepository.findById(request.getClassId())
-                .orElseThrow(() -> new RuntimeException("Class not found"));
+    // ========================= GET ALL SESSIONS =========================
 
-        Course course = courseRepository.findById(request.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+    public List<SessionResponse> allSessions(@Param("classId") Long classId) {
 
-        Session session = new Session();
+        List<SessionResponse> sessions = repo.findAllSessionsByClassId(classId);
 
-        session.setClassField(classField);
-        session.setCourse(course);
-        session.setDayOfWeek(request.getDayOfWeek());
-        session.setStartAt(request.getStartAt());
-        session.setEndAt(request.getEndAt());
-        session.setUpdatedAt(request.getUpdatedAt());
+        if (sessions == null || sessions.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-        return sessionMapper.toResponse(sessionRepository.save(session));
+        return sessions;
     }
 
-    public SessionResponse updateSession(Long id, SessionRequest request) {
+    // ========================= STUDENT SCHEDULE =========================
 
-        Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
-
-        Class classField = classRepository.findById(request.getClassId())
-                .orElseThrow(() -> new RuntimeException("Class not found"));
-
-        Course course = courseRepository.findById(request.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
-
-        session.setClassField(classField);
-        session.setCourse(course);
-        session.setDayOfWeek(request.getDayOfWeek());
-        session.setStartAt(request.getStartAt());
-        session.setEndAt(request.getEndAt());
-        session.setUpdatedAt(request.getUpdatedAt());
-
-        return sessionMapper.toResponse(sessionRepository.save(session));
+    public List<SessionResponse> getClassSessionsByStudent(Long studentId) {
+        return repo.findClassSessionsByStudentId(studentId);
     }
 
-    public SessionResponse getSessionById(Long id) {
-
-        Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
-
-        return sessionMapper.toResponse(session);
+    public List<SessionResponse> getMonthExamsByStudent(Long studentId) {
+        return repo.findMonthExamsByStudentId(studentId);
     }
 
-    public List<SessionResponse> getAllSessions() {
-
-        return sessionRepository.findAll()
-                .stream()
-                .map(sessionMapper::toResponse)
-                .toList();
+    public List<SessionResponse> getFinalExamsByStudent(Long studentId) {
+        return repo.findFinalExamsByStudentId(studentId);
     }
 
-    public List<SessionResponse> getSessionsByCourse(Long courseId) {
 
-        return sessionRepository.findByCourseId(courseId)
-                .stream()
-                .map(sessionMapper::toResponse)
-                .toList();
+
+
+//    ===============================grade====================
+
+
+    public List<Grade> getAllGrades (){
+        return gradeRepo.findAll();
     }
 
-    public List<SessionResponse> getSessionsByClass(Long classId) {
 
-        return sessionRepository.findByClassFieldId(classId)
-                .stream()
-                .map(sessionMapper::toResponse)
-                .toList();
+//    =====================class====================
+
+
+    public List<Class> getAllClasses (){
+        return classRepo.findAll();
     }
 
-    public void deleteSession(Long id) {
-
-        Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
-
-        sessionRepository.delete(session);
-    }
 
 }

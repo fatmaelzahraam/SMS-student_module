@@ -8,9 +8,12 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface SessionMapper {
 
-    @Mapping(source = "classField.id", target = "classId")
     @Mapping(source = "classField.name", target = "className")
-    @Mapping(source = "course.id", target = "courseId")
+    @Mapping(source = "course.courseName", target = "courseName")
+    @Mapping(
+            target = "teacherName",
+            expression = "java(session.getCourse().getTeacher().getUser().getFirstName() + \" \" + session.getCourse().getTeacher().getUser().getLastName())"
+    )
     SessionResponse toResponse(Session session);
 
 }

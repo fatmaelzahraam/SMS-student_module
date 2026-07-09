@@ -1,22 +1,25 @@
 package com.ntg.sms.Entities.Dtos.Response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SessionResponse {
 
     private Long id;
-    private Long classId;
     private String className;
-    private Long courseId;
     private String courseName;
+    private String teacherName;
     private Long dayOfWeek;
-    private LocalDate startAt;
-    private LocalDate endAt;
-    private LocalDate updatedAt;
+    private LocalTime startAt;
+    private LocalTime endAt;      // ← LocalTime
 
 }

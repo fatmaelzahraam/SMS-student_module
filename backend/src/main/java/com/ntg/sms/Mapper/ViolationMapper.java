@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ViolationMapper {
 
-    @Mapping(source = "student.id", target = "studentId")
+    @Mapping(source = "id", target = "violationId")
     ViolationResponse toResponse(Violation violation);
 
 }

@@ -1,0 +1,303 @@
+<div class="support-page">
+
+  <!-- ================= Header ================= -->
+
+  <div class="page-header">
+
+    <div class="title-section">
+
+      <div class="support-icon">
+        ⚠️
+      </div>
+
+      <div>
+
+        <h1>Support</h1>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ================= Tabs ================= -->
+
+ <button
+    class="tab"
+    routerLink="/complaints">
+
+    Complaints
+
+</button>
+
+<button class="tab active">
+
+    Violations
+
+</button>
+
+  <!-- ================= Statistics ================= -->
+
+  <div class="statistics">
+
+    <div class="stat-card">
+
+      <div class="stat-icon total">
+        📋
+      </div>
+
+      <div>
+
+        <h3>Total Violations</h3>
+
+        <span>{{ statistics?.total || 0 }}</span>
+
+      </div>
+
+    </div>
+
+    <div class="stat-card">
+
+      <div class="stat-icon replied">
+        👨‍👩‍👦
+      </div>
+
+      <div>
+
+        <h3>Meeting Required</h3>
+
+        <span>{{ statistics?.meetings || 0 }}</span>
+
+      </div>
+
+    </div>
+
+    <div class="stat-card">
+
+      <div class="stat-icon pending">
+        ✔️
+      </div>
+
+      <div>
+
+        <h3>No Meeting</h3>
+
+        <span>{{ statistics?.noMeetings || 0 }}</span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ================= My Violations ================= -->
+
+  <div class="section">
+
+    <div class="section-header">
+
+      <div class="header-line"></div>
+
+      <h2>My Violations</h2>
+
+    </div>
+
+    <div
+      class="complaint-item"
+      *ngFor="let violation of violations"
+      (click)="selectViolation(violation.violationId)"
+      [class.active]="selectedViolation?.violationId === violation.violationId">
+
+      <div class="left">
+
+        <h3>
+
+          {{ violation.violation }}
+
+        </h3>
+
+        <small>
+
+          Violation #{{ violation.violationId }}
+
+        </small>
+
+      </div>
+
+      <div class="right">
+
+        <span
+          class="status replied"
+          *ngIf="violation.isMeeting">
+
+          Meeting
+
+        </span>
+
+        <span
+          class="status pending"
+          *ngIf="!violation.isMeeting">
+
+          No Meeting
+
+        </span>
+
+        <p class="date">
+
+          {{ violation.date }}
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ================= Details ================= -->
+
+  <div class="section">
+
+    <div class="section-header">
+
+      <div class="header-line"></div>
+
+      <h2>
+
+        Violation Details
+
+      </h2>
+
+    </div>
+
+    <div
+      class="details"
+      *ngIf="selectedViolation; else emptyState">
+
+      <div class="row">
+
+        <div class="label">
+
+          Violation
+
+        </div>
+
+        <div class="value">
+
+          {{ selectedViolation.violation }}
+
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="label">
+
+          Name of Violator
+
+        </div>
+
+        <div class="value">
+
+          {{ selectedViolation.nameOfViolator }}
+
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="label">
+
+          Applicable Procedure
+
+        </div>
+
+        <div class="value">
+
+          {{ selectedViolation.applicableProcedure }}
+
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="label">
+
+          Referring Authority
+
+        </div>
+
+        <div class="value">
+
+          {{ selectedViolation.referringAuthority }}
+
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="label">
+
+          Meeting Required
+
+        </div>
+
+        <div class="value">
+
+          {{ selectedViolation.isMeeting ? 'Yes' : 'No' }}
+
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="label">
+
+          Notes
+
+        </div>
+
+        <div class="value">
+
+          {{ selectedViolation.notes || '-' }}
+
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="label">
+
+          Date
+
+        </div>
+
+        <div class="value">
+
+          {{ selectedViolation.date }}
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <ng-template #emptyState>
+
+      <div class="empty-state">
+
+        No Violation Selected
+
+      </div>
+
+    </ng-template>
+
+  </div>
+
+</div>

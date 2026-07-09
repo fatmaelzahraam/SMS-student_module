@@ -6,8 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
@@ -15,8 +14,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "NOTIFICATION")
 public class Notification {
+
     @Id
     @Column(name = "NOTIFICATION_ID", nullable = false)
     private Long id;
@@ -28,7 +31,7 @@ public class Notification {
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "\"TYPE\"", nullable = false)
+    @Column(name = "TYPE", nullable = false)
     private String type;
 
     @Size(max = 255)
@@ -42,8 +45,6 @@ public class Notification {
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "\"BODY\"", nullable = false)
+    @Column(name = "BODY", nullable = false)
     private String body;
-
-
 }

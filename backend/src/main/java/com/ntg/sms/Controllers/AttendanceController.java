@@ -2,35 +2,25 @@ package com.ntg.sms.Controllers;
 
 import com.ntg.sms.Entities.Dtos.Request.AttendanceRequest;
 import com.ntg.sms.Entities.Dtos.Response.AttendaceResponse;
+import com.ntg.sms.Entities.Dtos.Response.AttendanceDailyResponse;
+import com.ntg.sms.Entities.Dtos.Response.AttendanceMonthlyResponse;
+import com.ntg.sms.Entities.Dtos.Response.AttendanceOverviewResponse;
 import com.ntg.sms.Service.AttendanceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/attendance")
+@RequestMapping("/api/v1/attendance")
 @RequiredArgsConstructor
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
-
-    // Create Attendance
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public AttendaceResponse createAttendance(@RequestBody AttendanceRequest request) {
-        return attendanceService.createAttendance(request);
-    }
-
-    // Update Attendance
-    @PutMapping("/{id}")
-    public AttendaceResponse updateAttendance(
-            @PathVariable Long id,
-            @RequestBody AttendanceRequest request) {
-
-        return attendanceService.updateAttendance(id, request);
-    }
 
     // Get Attendance by ID
     @GetMapping("/{id}")
@@ -60,12 +50,6 @@ public class AttendanceController {
         return attendanceService.getAttendanceBySession(sessionId);
     }
 
-    // Delete Attendance
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAttendance(@PathVariable Long id) {
-        attendanceService.deleteAttendance(id);
-    }
 
     // Get Today's Attendance Count
     @GetMapping("/today/count")
@@ -87,5 +71,40 @@ public class AttendanceController {
             @RequestParam(defaultValue = "7") int weeks) {
 
         return attendanceService.getWeeklyLabels(weeks);
+    }
+
+
+    @GetMapping("/overview")
+    public ResponseEntity<AttendanceOverviewResponse> getOverview(
+            @RequestParam Long studentId) {
+
+        return ResponseEntity.ok(
+                attendanceService.getOverview(studentId));
+    }
+
+    @GetMapping("/daily")
+    public ResponseEntity<AttendanceDailyResponse> getDailyAttendance(
+
+            @RequestParam Long studentId,
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate date) {
+
+        return ResponseEntity.ok(
+                attendanceService.getDailyAttendance(studentId, date));
+    }
+
+    @GetMapping("/monthly")
+    public ResponseEntity<AttendanceMonthlyResponse> getMonthlyAttendance(
+
+            @RequestParam Long studentId,
+
+            @RequestParam int month,
+
+            @RequestParam int year) {
+
+        return ResponseEntity.ok(
+                attendanceService.getMonthlyAttendance(studentId, month, year));
     }
 }

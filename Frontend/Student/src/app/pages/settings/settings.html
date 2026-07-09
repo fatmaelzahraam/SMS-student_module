@@ -1,0 +1,87 @@
+<div class="container">
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Header -->
+    <div class="title">
+      <h2>
+        <i class="fa-solid fa-gear"></i>
+        {{ title }}
+      </h2>
+      <p>{{ subtitle }}</p>
+    </div>
+
+    <!-- Settings List -->
+    <div class="content">
+
+      <!-- Language -->
+      <div class="setting-item" (click)="toggleLanguage()">
+        <div class="left">
+          <i class="fa-solid fa-globe"></i>
+          <span>{{ languageLabel }}</span>
+        </div>
+        <div class="right">
+          <span>{{ langText }}</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+      </div>
+
+      <!-- Appearance -->
+      <div class="setting-item" (click)="toggleTheme()">
+        <div class="left">
+          <i class="fa-regular fa-sun"></i>
+          <span>{{ appearanceLabel }}</span>
+        </div>
+        <div class="right">
+          <span>{{ themeText }}</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+      </div>
+
+      <!-- Support -->
+      <div class="setting-item" (click)="support()">
+        <div class="left">
+          <i class="fa-regular fa-life-ring"></i>
+          <span>{{ supportLabel }}</span>
+        </div>
+        <div class="right">
+          <span>{{ supportText }}</span>
+        </div>
+      </div>
+
+      <!-- Change Password -->
+      <div class="setting-item" (click)="goToChangePassword()">
+        <div class="left">
+          <i class="fa-solid fa-lock"></i>
+          <span>{{ passwordLabel }}</span>
+        </div>
+        <div class="right">
+          <i class="fa-solid fa-chevron-right"></i>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="setting-item" (click)="about()">
+        <div class="left">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>{{ aboutLabel }}</span>
+        </div>
+        <div class="right">
+          <i class="fa-solid fa-chevron-right"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Log Out -->
+    <div class="logout-wrapper">
+      <button class="logout-btn" (click)="logout()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        Log Out
+      </button>
+    </div>
+
+  </div>
+
+</div>

@@ -3,6 +3,9 @@ package com.ntg.sms.Controllers;
 import com.ntg.sms.Security.AuthenticationService;
 import com.ntg.sms.Entities.Dtos.Request.AuthenticationRequest;
 import com.ntg.sms.Entities.Dtos.Response.AuthenticationResponse;
+import com.ntg.sms.Entities.Student;
+import com.ntg.sms.Repositories.StudentRepository;
+import com.ntg.sms.Repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +18,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth/")
 public class AuthenticationController {
+
     private final AuthenticationService authenticationService;
+    private final StudentRepository studentRepository;   // ← add
+    private final UserRepository userRepository;         // ← add
 
     @Value("${jwt.expiry}")
     private Long expiresAt;
@@ -33,11 +39,19 @@ public class AuthenticationController {
                 .map(GrantedAuthority::getAuthority)
                 .orElse(null);
 
+        // ← fetch studentId from DB using the email
+        Long studentId = userRepository.findByEmail(request.getEmail())
+                .flatMap(u -> studentRepository.findByUserId(u.getId()))
+                .map(Student::getId)
+                .orElse(null);
+
         return ResponseEntity.ok(
                 AuthenticationResponse.builder()
                         .token(token)
                         .role(role)
                         .expiresAt(expiresAt)
-                        .build());
+                        .studentId(studentId)  // ← now set
+                        .build()
+        );
     }
 }

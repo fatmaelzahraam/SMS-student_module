@@ -15,6 +15,7 @@ import java.util.List;
 public class DashboardResponse {
     private int   performanceScore;
     private String  performanceLabel;
-    private AttendaceResponse attendance;
-    private AssignmentResponse   assignments;
+    private Integer rank;
+    private Long totalStudents;
+    private DashboardAttendanceOverView attendance;
 }

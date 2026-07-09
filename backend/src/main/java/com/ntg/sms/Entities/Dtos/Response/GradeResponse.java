@@ -13,9 +13,7 @@ import java.util.Set;
 public class GradeResponse {
 
     private Long id;
-    private String name;
-
-    // Summary of linked terms (id + name only)
+    private String gradename;
     private Set<TermSummary> terms;
 
     @Data

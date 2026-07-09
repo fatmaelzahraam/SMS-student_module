@@ -1,8 +1,5 @@
 package com.ntg.sms.Service;
 
-
-
-
 import com.ntg.sms.Entities.Course;
 import com.ntg.sms.Entities.Dtos.Response.CourseResponse;
 import com.ntg.sms.Mapper.CourseMapper;
@@ -28,7 +25,7 @@ public class CourseService {
 
     @Transactional(readOnly = true)
     public List<CourseResponse> getAllCourses() {
-        return courseRepository.findAll()
+        return courseRepository.findAllWithDetails()
                 .stream()
                 .map(courseMapper::toResponse)
                 .collect(Collectors.toList());

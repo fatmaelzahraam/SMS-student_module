@@ -1,0 +1,104 @@
+<app-attendance-nav></app-attendance-nav>
+
+<div class="attendance-container">
+
+    <!-- Date Navigation -->
+    <div class="date-header">
+
+        <button class="nav-btn">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <div class="date-box">
+            {{ dailyAttendance?.date }}
+        </div>
+
+        <button class="nav-btn">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+    </div>
+
+    <!-- Overview -->
+    <div class="overview-card">
+
+        <h2>Daily Overview</h2>
+        <p>{{ dailyAttendance?.date }}</p>
+
+        <div class="stats">
+
+            <div class="stat-card total">
+                <h3>Total Session</h3>
+                <h1>{{ dailyAttendance?.totalSessions }}</h1>
+            </div>
+
+            <div class="stat-card present">
+                <h3>Present</h3>
+                <h1>{{ dailyAttendance?.present }}</h1>
+            </div>
+
+            <div class="stat-card absent">
+                <h3>Absent</h3>
+                <h1>{{ dailyAttendance?.absent }}</h1>
+            </div>
+
+            <div class="stat-card late">
+                <h3>Late</h3>
+                <h1>{{ dailyAttendance?.late }}</h1>
+            </div>
+
+            <div class="stat-card attendance">
+                <h3>Attendance</h3>
+                <h1>{{ dailyAttendance?.attendancePercentage }}%</h1>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+
+        <h2>Today's Classes</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Session</th>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Instructor</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let item of dailyAttendance?.attendanceList">
+
+                    <td>{{ item.session }}</td>
+                    <td>{{ item.time }}</td>
+                    <td>{{ item.subject }}</td>
+                    <td>{{ item.instructor }}</td>
+
+                    <td>
+                        <span class="badge"
+                              [ngClass]="{
+                                present: item.status === 'PRESENT',
+                                late: item.status === 'LATE',
+                                absent: item.status === 'ABSENT'
+                              }">
+                            {{ item.status }}
+                        </span>
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

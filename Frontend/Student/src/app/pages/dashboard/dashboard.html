@@ -1,0 +1,169 @@
+<app-dashboard-header></app-dashboard-header>
+<!-- Loading State -->
+ <div>
+<div class="loading-wrapper" *ngIf="loading()">
+  <div class="spinner"></div>
+  <p>Loading your dashboard...</p>
+</div>
+
+<!-- Error State -->
+<div class="error-wrapper" *ngIf="error() && !loading()">
+  <span class="error-icon">⚠️</span>
+  <p>{{ error() }}</p>
+  <button class="btn-retry" (click)="clearError()">Dismiss</button>
+</div>
+
+<!-- Dashboard Content -->
+<div class="dashboard-container" *ngIf="!loading()">
+
+  <!-- Welcome Header -->
+  <div class="welcome-header">
+    <h1>👋 Welcome Back!</h1>
+    <p class="subtitle">Are you ready to continue your academic journey?</p>
+  </div>
+
+  <!-- ── Top Cards ──────────────────────────────────────── -->
+  <div class="cards-grid">
+
+    <!-- Performance Card -->
+    <div class="card card--performance">
+      <div class="card__icon icon--dark">
+       <img src="../assets/images/good-feedback.png" alt="icon" style="width: 30px; height: 30px;">
+      </div>
+      <div class="card__body">
+        <p class="card__label">Performance</p>
+        <p class="card__value">{{ dashboard()?.performanceScore }}</p>
+        <div class="perf-bar">
+          <div class="perf-bar__fill" [style.width]="getPerformanceBarWidth()"></div>
+        </div>
+        <span class="badge badge--perf">
+          <span class="dot"></span>{{ performanceLabel().text }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Attendance Card -->
+    <div class="card card--att">
+      <div class="card__icon icon--green">
+        <img src="../assets/images/immigration.png" alt="icon" style="width: 30px; height: 30px;">
+      </div>
+      <div class="card__body">
+        <p class="card__label">Attendance</p>
+        <p class="card__value card__value--light" style="color: #1B7A4A;">
+          {{ dashboard()?.attendance?.presentPercentage | number:'1.0-0' }}%
+        </p>
+        <p class="card__sub">This month</p>
+        <div class="att-badges">
+          <span class="badge badge--absent">Absent: {{ dashboard()?.attendance?.absenceCount }}</span>
+          <span class="badge badge--late">Late: {{ dashboard()?.attendance?.LateCount }}</span>
+        </div>
+      </div>
+      <!-- SVG Ring -->
+      <div class="ring-wrap">
+        <img src="../assets/images/loading.png" alt="icon" style="width: 50px; height: 50px;">
+      </div>
+    </div>
+
+    <!-- Completed Assignments Card -->
+    <div class="card card--assignments">
+      <div class="card__icon icon--purple">
+        <img src="../assets/images/assignmentdash.png" alt="icon" style="width: 30px; height: 30px;">
+      </div>
+      <div class="card__body">
+        <p class="card__label">
+          Completed Assignments
+        </p>
+        <p class="card__value">
+          {{ completedAssignments() }}<span class="card__value-total">/{{ totalAssignments() }}</span>
+        </p>
+        <div class="perf-bar">
+          <div class="perf-bar__fill perf-bar__fill--purple"
+               [style.width]="completedPct() + '%'"></div>
+        </div>
+        <div class="assign-footer">
+          <span class="badge badge--remaining">▲ {{ remainingCount() }} remaining</span>
+          <span class="pct-label">{{ completedPct() }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Academic Rank Card -->
+    <div class="card card--rank">
+      <div class="card__icon icon--gold">
+      <img src="../assets/images/rank.png" alt="icon" style="width: 30px; height: 30px;">
+      </div>
+      <div class="card__body">
+        <p class="card__label">
+          Academic Rank
+        </p>
+        <p class="card__value card__value--light">#{{ dashboard()?.rank }}</p>
+        <span class="badge badge--rank">🔺 {{ rankOrdinal() }} Place</span>
+        <p class="card__sub card__sub--light">
+          Out of {{ dashboard()?.totalStudents }} Students
+        </p>
+      </div>
+      <div class="rank-star">⭐</div>
+  </div>
+
+  </div><!-- /cards-grid -->
+
+  <!-- ── Charts Row ─────────────────────────────────────── -->
+  <div class="charts-grid" *ngIf="!loading()">
+
+    <!-- Line Chart: Performance Over Time -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <div>
+          <p class="chart-card__title">Performance Over Time</p>
+          <p class="chart-card__sub">Based on your recent marks</p>
+        </div>
+        <span class="chart-badge">This Month</span>
+      </div>
+      <div class="chart-canvas-wrap">
+        <canvas #lineChartRef></canvas>
+      </div>
+    </div>
+
+    <!-- Donut Chart: Assignment Completion -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <div>
+          <p class="chart-card__title">Assignments Completion</p>
+          <p class="chart-card__sub">Submitted vs remaining</p>
+        </div>
+      </div>
+      <div class="donut-wrap">
+        <!-- Donut canvas -->
+        <div class="donut-canvas-wrap">
+          <canvas #donutChartRef></canvas>
+          <!-- Centre label -->
+          <div class="donut-center">
+            <p class="donut-center__pct">{{ completedPct() }}%</p>
+            <p class="donut-center__lbl">Completed</p>
+          </div>
+        </div>
+        <!-- Legend -->
+        <div class="donut-legend">
+          <div class="legend-item">
+            <span class="legend-dot legend-dot--completed"></span>
+            <div>
+              <p class="legend-label">Completed</p>
+              <p class="legend-value">{{ completedAssignments() }} ({{ completedPct() }}%)</p>
+            </div>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot legend-dot--remaining"></span>
+            <div>
+              <p class="legend-label">Remaining</p>
+              <p class="legend-value">
+                {{ remainingCount() }}
+                ({{ totalAssignments() === 0 ? 0 : (100 - completedPct()) }}%)
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </div><!-- /charts-grid -->
+
+</div><!-- /dashboard-container -->

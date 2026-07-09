@@ -1,0 +1,157 @@
+<!-- ── Page header ──────────────────────────────────────── -->
+<div class="page-header">
+  <div class="page-header-icon" aria-hidden="true">
+    <img src="../assets/images/team.png" width="50px" height="50px" alt="logo">
+  </div>
+  <div>
+    <h1 class="page-title">Projects</h1>
+    <p class="page-subtitle">View project materials, teams and submit your work</p>
+  </div>
+</div>
+
+<!-- ── Main content area ────────────────────────────────── -->
+<div class="content">
+
+  <!-- Loading -->
+  @if (isLoading()) {
+    <div class="state-center" role="status" aria-live="polite">
+      <div class="spinner"></div>
+      <p class="state-label">Loading projects…</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @else if (error()) {
+    <div class="state-center" role="alert">
+      <p class="error-msg">Could not load projects. Please try again.</p>
+      <button class="btn-retry" (click)="retry()">Retry</button>
+    </div>
+  }
+
+  <!-- Empty -->
+  @else if (hasProjects() && projects().length === 0) {
+    <div class="state-center">
+      <p class="state-label">No projects found.</p>
+    </div>
+  }
+
+  <!-- Projects table -->
+  @else if (hasProjects()) {
+    <div class="table-card">
+      <table class="projects-table" aria-label="Projects list">
+        <thead>
+          <tr>
+            <th class="col-name">Name</th>
+            <th class="col-deadline">
+              <span class="th-icon" aria-hidden="true">⏱</span> Deadline
+            </th>
+            <th class="col-subject">
+              <span class="th-icon" aria-hidden="true">📋</span> Subject
+            </th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (project of projects(); track trackById($index, project)) {
+            <tr
+              class="project-row"
+              [class.row--active]="teamProject()?.id === project.id || detailProject()?.id === project.id"
+            >
+              <!-- Name -->
+              <td class="col-name">{{ project.name }}</td>
+
+              <!-- Deadline -->
+              <td class="col-deadline">{{ formatDate(project.deadline) }}</td>
+
+              <!-- Subject badge -->
+              <td class="col-subject">
+                <span
+                  class="subject-badge"
+                  [class]="'subject-badge subject-badge--' + (project.courseName | lowercase | slice:0:4)"
+                  [attr.aria-label]="project.courseName"
+                >
+                  {{ project.courseName }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td class="col-actions">
+                <div class="actions-wrap">
+                  <button
+                    class="btn-team"
+                    (click)="openTeam(project)"
+                    [class.btn-team--active]="teamProject()?.id === project.id"
+                    aria-label="View team for {{ project.name }}">
+                    Team
+                  </button>
+                  <button
+                    class="btn-details"
+                    (click)="openDetail(project)"
+                    [class.btn-details--active]="detailProject()?.id === project.id"
+                    aria-label="View details for {{ project.name }}">
+                    Details
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>
+
+<!-- Team popup  -->
+@if (teamProject(); as project) {
+  <div class="overlay" (click)="closeAll()" aria-label="Close panel"></div>
+  <div class="popup popup--team" role="dialog" [attr.aria-label]="project.name + ' team'">
+    <table class="popup-table" aria-label="Team members">
+      <thead>
+        <tr><th>Name</th><th></th></tr>
+      </thead>
+      <tbody>
+        @for (member of teamFor(project); track $index) {
+          <tr [class.row-alt]="$index % 2 === 1">
+            <td class="member-name">{{ member.name }}</td>
+            <td class="member-role">
+              @if (member.role) {
+                <span class="role-tag">{{ member.role }}</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+<!--  Details popup  -->
+@if (detailProject(); as project) {
+  <div class="overlay" (click)="closeAll()" aria-label="Close panel"></div>
+  <div class="popup popup--details" role="dialog" [attr.aria-label]="project.name + ' details'">
+    <h3 class="popup-title">Description</h3>
+    <div class="popup-divider"></div>
+    <p class="detail-text">
+      @if (project.description) {
+        {{ project.description }}
+      } @else {
+        No description provided.
+      }
+    </p>
+    <div class="detail-meta">
+      <div class="meta-row">
+        <span class="meta-label">Assigned</span>
+        <span class="meta-value">{{ formatDate(project.assignDate) }}</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Deadline</span>
+        <span class="meta-value">{{ formatDate(project.deadline) }}</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Course</span>
+        <span class="meta-value">{{ project.courseName }}</span>
+      </div>
+    </div>
+  </div>
+}

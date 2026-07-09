@@ -49,53 +49,6 @@ public class ClassService {
                 .collect(Collectors.toList());
     }
 
-    // ─── CREATE ───────────────────────────────────────────────────────────────
-
-    @Transactional
-    public ClassResponse createClass(ClassRequest request) {
-        Grade grade = findGradeOrThrow(request.getGradeId());
-
-        if (classRepository.existsByNameAndGradeId(request.getName(), request.getGradeId())) {
-            throw new IllegalArgumentException(
-                    "A class named '" + request.getName() + "' already exists in this grade.");
-        }
-
-        Class classEntity = classMapper.toEntity(request, grade);
-        Class saved = classRepository.save(classEntity);
-        return classMapper.toResponse(saved);
-    }
-
-    // ─── UPDATE ───────────────────────────────────────────────────────────────
-
-    @Transactional
-    public ClassResponse updateClass(Long id, ClassRequest request) {
-        Class classEntity = findClassOrThrow(id);
-        Grade grade = findGradeOrThrow(request.getGradeId());
-
-        // Check name conflict only if name or grade changed
-        boolean nameChanged = !classEntity.getName().equals(request.getName());
-        boolean gradeChanged = !classEntity.getGrade().getId().equals(request.getGradeId());
-
-        if ((nameChanged || gradeChanged)
-                && classRepository.existsByNameAndGradeId(request.getName(), request.getGradeId())) {
-            throw new IllegalArgumentException(
-                    "A class named '" + request.getName() + "' already exists in this grade.");
-        }
-
-        classMapper.updateEntity(classEntity, request, grade);
-        Class updated = classRepository.save(classEntity);
-        return classMapper.toResponse(updated);
-    }
-
-    // ─── DELETE ───────────────────────────────────────────────────────────────
-
-    @Transactional
-    public void deleteClass(Long id) {
-        if (!classRepository.existsById(id)) {
-            throw new EntityNotFoundException("Class not found with id: " + id);
-        }
-        classRepository.deleteById(id);
-    }
 
     // ─── HELPERS ─────────────────────────────────────────────────────────────
 
@@ -104,8 +57,4 @@ public class ClassService {
                 .orElseThrow(() -> new EntityNotFoundException("Class not found with id: " + id));
     }
 
-    private Grade findGradeOrThrow(Long gradeId) {
-        return gradeRepository.findById(gradeId)
-                .orElseThrow(() -> new EntityNotFoundException("Grade not found with id: " + gradeId));
-    }
 }

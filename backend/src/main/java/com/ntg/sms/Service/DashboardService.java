@@ -1,9 +1,14 @@
+package com.ntg.sms.Service;
+
 import com.ntg.sms.Entities.Dtos.Response.CourseResponse;
+import com.ntg.sms.Entities.Dtos.Response.DashboardAttendanceOverView;
 import com.ntg.sms.Entities.Dtos.Response.DashboardResponse;
-import com.ntg.sms.Repositories.AssignmentRepository;
-import com.ntg.sms.Repositories.AttendanceRepository;
-import com.ntg.sms.Repositories.MarkRepository;
+import com.ntg.sms.Entities.Student;
+import com.ntg.sms.Repositories.*;
+import com.ntg.sms.Service.AttendanceService;
+import com.ntg.sms.Service.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,31 +19,33 @@ public class DashboardService {
     private final AttendanceRepository attendanceRepository;
     private final AssignmentRepository assignmentRepository;
     private final MarkRepository markRepository;
+    private final StudentService studentService;
+    private final AttendanceService attendanceService;
+    private final DelayRepository delayRepository;
+    private final StudentRepository studentRepository;
 
     @Transactional(readOnly = true)
-    public DashboardResponse getDashboard(Long studentId) {
+    public DashboardResponse getDashboard() {
 
-      //  AttendanceSummary attendance = attendanceRepository.getAttendanceSummary(studentId);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Student student = studentRepository.findByUser_Email(email).orElse(null);
 
-        CourseResponse.AssignmentSummary assignments =
-                assignmentRepository.getAssignmentSummary(studentId);
+
 
         Double performance =
-                markRepository.calculatePerformance(studentId);
+                markRepository.calculatePerformance(student.getId());
 
         Integer rank =
-                markRepository.getStudentRank(studentId);
+                markRepository.getStudentRank(student.getId());
 
         Long totalStudents =
-                markRepository.countStudents();
+                studentService.countStudents();
 
         return DashboardResponse.builder()
-                .attendance(attendance)
-                .assignments(assignments)
-                .performance(performance)
-                .academicRank(rank)
+                .attendance(DashboardAttendanceOverView.builder()
+                .presentPercentage(attendanceService.getPresentPercentage()).absenceCount(attendanceService.getAbsenceCount()).LateCount(delayRepository.countAllByStudent_Id(student.getId())).build())
+                .rank(rank)
                 .totalStudents(totalStudents)
                 .build();
     }
 }
-

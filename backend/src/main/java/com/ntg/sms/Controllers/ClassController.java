@@ -46,32 +46,5 @@ public class ClassController {
         return ResponseEntity.ok(classService.getClassesByGrade(gradeId));
     }
 
-    // ─── CREATE ───────────────────────────────────────────────────────────────
-
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ClassResponse> createClass(@Valid @RequestBody ClassRequest request) {
-        ClassResponse created = classService.createClass(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
-
-    // ─── UPDATE ───────────────────────────────────────────────────────────────
-
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ClassResponse> updateClass(
-            @PathVariable Long id,
-            @Valid @RequestBody ClassRequest request) {
-        return ResponseEntity.ok(classService.updateClass(id, request));
-    }
-
-    // ─── DELETE ───────────────────────────────────────────────────────────────
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteClass(@PathVariable Long id) {
-        classService.deleteClass(id);
-        return ResponseEntity.noContent().build();
-    }
 }
 

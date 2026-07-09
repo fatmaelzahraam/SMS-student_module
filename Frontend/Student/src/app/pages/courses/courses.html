@@ -1,0 +1,191 @@
+<!--  Header  -->
+<div class="header">
+  <div class="header-left">
+    <span class="header-icon" aria-hidden="true"><img src="../assets/images/coursesss.png" width="40px" height="40px" alt="logo" ></span>
+    <h1 class="header-title">My Courses</h1>
+  </div>
+
+  <div class="header-right">
+    <div class="search-box" role="search">
+      <span class="search-icon" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+      <input
+        type="search"
+        class="search-input"
+        placeholder="Search anything..."
+        [value]="searchQuery()"
+        (input)="onSearch($event)"
+        aria-label="Search courses"
+      />
+    </div>
+    <button class="bell-btn" aria-label="Notifications" routerLink="/notifications">
+      <span aria-hidden="true"><i class="fa-solid fa-bell"></i></span>
+    </button>
+  </div>
+</div>
+
+<!-- Body -->
+<main class="body">
+
+  <!-- Loading -->
+  @if (isLoading()) {
+    <div class="state-center" role="status" aria-live="polite">
+      <div class="spinner"></div>
+      <p class="state-label">Loading your courses…</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @else if (error()) {
+    <div class="state-center" role="alert">
+      <p class="error-msg">Could not load courses. Please try again.</p>
+      <button class="btn-retry" (click)="retry()">Retry</button>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @else if (hasCourses() && visibleCourses().length === 0) {
+    <div class="state-center">
+      <p class="state-label">
+        {{ showPrevious() ? 'No previous courses found.' : 'No courses match your search.' }}
+      </p>
+    </div>
+  }
+
+  <!-- Course grid -->
+  @else if (hasCourses()) {
+    <div class="course-grid" role="list">
+      @for (course of visibleCourses(); track trackById($index, course)) {
+        <article
+          class="course-card"
+          [class.card--active]="selectedCourse()?.id === course.id"
+          role="listitem"
+          tabindex="0"
+          (click)="openDetail(course)"
+          (keydown.enter)="openDetail(course)"
+          (keydown.space)="openDetail(course)"
+          [attr.aria-label]="course.courseName + ' — ' + course.courseType"
+        >
+          <!-- Top section -->
+          <div class="card-top">
+            <div class="card-icon-wrap" aria-hidden="true">
+              <img
+                [src]="iconFor(course.courseType)"
+                [alt]="course.courseType"
+                class="card-icon"
+                (error)="$any($event.target).style.display='none'; $any($event.target).nextElementSibling.style.display='flex'"
+              />
+              <div class="card-icon-fallback">{{ initials(course.courseName) }}</div>
+            </div>
+            <div class="card-title-block">
+              <h2 class="card-title">{{ course.courseName }}</h2>
+              <span class="card-badge">{{ course.courseType }}</span>
+            </div>
+          </div>
+
+          <!-- Bottom section -->
+          <div class="card-bottom">
+            <div class="card-meta">
+              <span aria-hidden="true"><img src="../assets/images/open-book.png" width="20px" height="20px" alt="logo"></span>
+              <span>{{ lessonCount(course) }} Lesson{{ lessonCount(course) !== 1 ? 's' : '' }}</span>
+            </div>
+            <button
+              class="btn-materials"
+              (click)="$event.stopPropagation(); openDetail(course)"
+              [attr.aria-label]="'Get materials for ' + course.courseName"
+            >
+              Get Materials
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+
+  <!-- Previous / Current toggle -->
+  @if (!isLoading() && !error()) {
+    <div class="bottom-bar">
+      <button class="btn-previous" (click)="togglePrevious()">
+        {{ showPrevious() ? 'View Current Courses' : 'View Previous Courses' }}
+      </button>
+    </div>
+  }
+
+</main>
+
+<!--  Detail side panel  -->
+@if (selectedCourse(); as course) {
+  <div
+    class="overlay"
+    role="presentation"
+    (click)="closeDetail()"
+  ></div>
+
+  <aside
+    class="detail-panel"
+    role="dialog"
+    [attr.aria-label]="course.courseName + ' details'"
+  >
+    <button class="detail-close" (click)="closeDetail()" aria-label="Close details">✕</button>
+
+    <!-- Header -->
+    <div class="detail-header">
+      <div class="detail-icon-wrap" aria-hidden="true">
+        <img
+          [src]="iconFor(course.courseType)"
+          [alt]="course.courseType"
+          class="detail-icon"
+          (error)="$any($event.target).style.display='none'"
+        />
+      </div>
+      <div>
+        <h2 class="detail-title">{{ course.courseName }}</h2>
+        <span class="card-badge">{{ course.courseType }}</span>
+      </div>
+    </div>
+
+    <!-- Meta grid -->
+    <dl class="detail-grid">
+      <div class="detail-cell">
+        <dt class="detail-label">Teacher</dt>
+        <dd class="detail-value">{{ course.teacherName }}</dd>
+      </div>
+      <div class="detail-cell">
+        <dt class="detail-label">Term</dt>
+        <dd class="detail-value">Term {{ course.termNumber }} · {{ course.termYear }}</dd>
+      </div>
+      <div class="detail-cell">
+        <dt class="detail-label">Lessons</dt>
+        <dd class="detail-value">{{ lessonCount(course) }}</dd>
+      </div>
+      <div class="detail-cell">
+        <dt class="detail-label">Type</dt>
+        <dd class="detail-value">{{ course.courseType }}</dd>
+      </div>
+      @if (course.description) {
+        <div class="detail-cell detail-cell--full">
+          <dt class="detail-label">Description</dt>
+          <dd class="detail-value">{{ course.description }}</dd>
+        </div>
+      }
+      @if (course.studyPlan) {
+        <div class="detail-cell detail-cell--full">
+          <dt class="detail-label">Study plan</dt>
+          <dd class="detail-value">{{ course.studyPlan }}</dd>
+        </div>
+      }
+    </dl>
+
+    <!-- Assignments -->
+    @if (course.assignments?.length) {
+      <h3 class="detail-section-title">Assignments</h3>
+      <ul class="assignment-list">
+        @for (a of course.assignments; track a.id) {
+          <li class="assignment-item">
+            <span class="assignment-dot" aria-hidden="true"></span>
+            {{ a.name }}
+          </li>
+        }
+      </ul>
+    }
+  </aside>
+}

@@ -34,31 +34,4 @@ public class MarksTypeController {
     public ResponseEntity<MarksTypeResponse> getTypeById(@PathVariable Long id) {
         return ResponseEntity.ok(marksTypeService.getTypeById(id));
     }
-
-    // ─── CREATE ───────────────────────────────────────────────────────────────
-
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<MarksTypeResponse> createType(@Valid @RequestBody MarksTypeRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(marksTypeService.createType(request));
-    }
-
-    // ─── UPDATE ───────────────────────────────────────────────────────────────
-
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<MarksTypeResponse> updateType(
-            @PathVariable Long id,
-            @Valid @RequestBody MarksTypeRequest request) {
-        return ResponseEntity.ok(marksTypeService.updateType(id, request));
-    }
-
-    // ─── DELETE ───────────────────────────────────────────────────────────────
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteType(@PathVariable Long id) {
-        marksTypeService.deleteType(id);
-        return ResponseEntity.noContent().build();
-    }
 }

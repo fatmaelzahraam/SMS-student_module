@@ -3,13 +3,18 @@ package com.ntg.sms.Service;
 import com.ntg.sms.Entities.Dtos.Request.AttendanceRequest;
 import com.ntg.sms.Entities.Dtos.Response.AttendaceResponse;
 import com.ntg.sms.Entities.Attendance;
+import com.ntg.sms.Entities.Dtos.Response.AttendanceDailyResponse;
+import com.ntg.sms.Entities.Dtos.Response.AttendanceMonthlyResponse;
+import com.ntg.sms.Entities.Dtos.Response.AttendanceOverviewResponse;
 import com.ntg.sms.Entities.Session;
 import com.ntg.sms.Entities.Student;
 import com.ntg.sms.Mapper.AttendanceMapper;
 import com.ntg.sms.Repositories.AttendanceRepository;
 import com.ntg.sms.Repositories.SessionRepository;
 import com.ntg.sms.Repositories.StudentRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -27,57 +32,7 @@ public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
     private final StudentRepository studentRepository;
-    private final SessionRepository sessionRepository;
     private final AttendanceMapper attendanceMapper;
-
-    public AttendaceResponse createAttendance(AttendanceRequest request) {
-
-        Student student = studentRepository.findById(request.getStudentId())
-                .orElseThrow(() -> new RuntimeException("Student not found"));
-
-        Session session = null;
-
-        if (request.getSessionId() != null) {
-            session = sessionRepository.findById(request.getSessionId())
-                    .orElseThrow(() -> new RuntimeException("Session not found"));
-        }
-
-        Attendance attendance = Attendance.builder()
-                .student(student)
-                .session(session)
-                .status(request.getStatus())
-                .dateTime(request.getDateTime())
-                .build();
-
-        attendance = attendanceRepository.save(attendance);
-
-        return attendanceMapper.toResponse(attendance);
-    }
-
-    public AttendaceResponse updateAttendance(Long id, AttendanceRequest request) {
-
-        Attendance attendance = attendanceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Attendance not found"));
-
-        Student student = studentRepository.findById(request.getStudentId())
-                .orElseThrow(() -> new RuntimeException("Student not found"));
-
-        Session session = null;
-
-        if (request.getSessionId() != null) {
-            session = sessionRepository.findById(request.getSessionId())
-                    .orElseThrow(() -> new RuntimeException("Session not found"));
-        }
-
-        attendance.setStudent(student);
-        attendance.setSession(session);
-        attendance.setStatus(request.getStatus());
-        attendance.setDateTime(request.getDateTime());
-
-        attendance = attendanceRepository.save(attendance);
-
-        return attendanceMapper.toResponse(attendance);
-    }
 
     public AttendaceResponse getAttendanceById(Long id) {
 
@@ -102,6 +57,11 @@ public class AttendanceService {
                 .map(attendanceMapper::toResponse)
                 .toList();
     }
+    public List<AttendaceResponse> getMyAttendance(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Student student = studentRepository.findByUser_Email(email).orElse(null);
+        return getAttendanceByStudent(student.getId());
+    }
 
     public List<AttendaceResponse> getAttendanceBySession(Long sessionId) {
 
@@ -109,14 +69,6 @@ public class AttendanceService {
                 .stream()
                 .map(attendanceMapper::toResponse)
                 .toList();
-    }
-
-    public void deleteAttendance(Long id) {
-
-        Attendance attendance = attendanceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Attendance not found"));
-
-        attendanceRepository.delete(attendance);
     }
 
     public Double getTodayAttendance() {
@@ -128,7 +80,7 @@ public class AttendanceService {
 
     public List<Long> getWeeklyAttendanceCounts(int weeks) {
         List<Long> result = new ArrayList<>();
-        // find the start of the current week (Monday)
+        // find the start of the current week (Sunday)
         LocalDate weekStart = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
         // walk backwards from the oldest week to the current one
         LocalDate firstWeekStart = weekStart.minusWeeks(weeks - 1);
@@ -154,6 +106,122 @@ public class AttendanceService {
             labels.add(monthAbbr + " " + wStart.getDayOfMonth());
         }
         return labels;
+    }
+
+    private Student getStudent(Long studentId) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+    }
+
+    public AttendanceOverviewResponse getOverview(Long studentId) {
+
+        Student student = getStudent(studentId);
+
+        long total   = attendanceRepository.countByStudent(student);
+        long present = attendanceRepository.countByStudentAndStatus(student, 'P');
+        long absent  = attendanceRepository.countByStudentAndStatus(student, 'A');
+        long late    = attendanceRepository.countByStudentAndStatus(student, 'L');
+
+        double percentage = total == 0 ? 0 : ((double) present / total) * 100;
+
+        return AttendanceOverviewResponse.builder()
+                .totalDays(total)
+                .presentDays(present)
+                .absentDays(absent)
+                .lateDays(late)
+                .attendancePercentage(percentage)
+                .build();
+    }
+
+    public List<AttendaceResponse> getAttendanceHistory(Long studentId) {
+
+        Student student = getStudent(studentId);
+
+        return attendanceRepository.findByStudent(student)
+                .stream()
+                .map(attendanceMapper::toResponse)
+                .toList();
+    }
+
+    public AttendanceDailyResponse getDailyAttendance(Long studentId, LocalDate date) {
+
+        Student student = getStudent(studentId);
+
+        List<Attendance> dailyAttendance = attendanceRepository.findByStudent(student)
+                .stream()
+                .filter(a -> a.getDateTime().toLocalDate().equals(date))
+                .toList();
+
+        long present = dailyAttendance.stream().filter(a -> a.getStatus() == 'P').count();
+        long absent  = dailyAttendance.stream().filter(a -> a.getStatus() == 'A').count();
+        long late    = dailyAttendance.stream().filter(a -> a.getStatus() == 'L').count();
+
+        double percentage = dailyAttendance.isEmpty()
+                ? 0
+                : ((double) present / dailyAttendance.size()) * 100;
+
+        return AttendanceDailyResponse.builder()
+                .date(date)
+                .totalSessions(dailyAttendance.size())
+                .present(present)
+                .absent(absent)
+                .late(late)
+                .attendancePercentage(percentage)
+                .attendanceList(
+                        dailyAttendance.stream()
+                                .map(attendanceMapper::toResponse)
+                                .toList()
+                )
+                .build();
+    }
+
+    public AttendanceMonthlyResponse getMonthlyAttendance(Long studentId, int month, int year) {
+
+        Student student = getStudent(studentId);
+
+        List<Attendance> monthlyAttendance = attendanceRepository.findByStudent(student)
+                .stream()
+                .filter(a -> a.getDateTime().getMonthValue() == month)
+                .filter(a -> a.getDateTime().getYear() == year)
+                .toList();
+
+        long present = monthlyAttendance.stream().filter(a -> a.getStatus() == 'P').count();
+        long absent  = monthlyAttendance.stream().filter(a -> a.getStatus() == 'A').count();
+        long late    = monthlyAttendance.stream().filter(a -> a.getStatus() == 'L').count();
+
+        double percentage = monthlyAttendance.isEmpty()
+                ? 0
+                : ((double) present / monthlyAttendance.size()) * 100;
+
+        return AttendanceMonthlyResponse.builder()
+                .month(month)
+                .year(year)
+                .present(present)
+                .absent(absent)
+                .late(late)
+                .attendancePercentage(percentage)
+                .build();
+    }
+
+    // ── Dashboard helpers (called by DashboardService) ───────────────────────
+
+    public Double getPresentPercentage() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Student student = studentRepository.findByUser_Email(email)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+
+        long total   = attendanceRepository.countByStudent(student);
+        long present = attendanceRepository.countByStudentAndStatus(student, 'P');
+
+        return total == 0 ? 0.0 : ((double) present / total) * 100;
+    }
+
+    public Long getAbsenceCount() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Student student = studentRepository.findByUser_Email(email)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+
+        return attendanceRepository.countByStudentAndStatus(student, 'A');
     }
 
 

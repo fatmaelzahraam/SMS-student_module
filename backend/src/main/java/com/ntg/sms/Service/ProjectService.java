@@ -20,40 +20,6 @@ public class ProjectService {
     private final CourseRepository courseRepository;
     private final ProjectMapper projectMapper;
 
-    public ProjectResponse createProject(ProjectRequest request){
-
-        Course course = courseRepository.findById(request.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
-
-        Project project = new Project();
-
-        project.setId(request.getId());
-        project.setCourse(course);
-        project.setName(request.getName());
-        project.setDescription(request.getDescription());
-        project.setAssignDate(request.getAssignDate());
-        project.setDeadline(request.getDeadline());
-
-        return projectMapper.toResponse(projectRepository.save(project));
-    }
-
-    public ProjectResponse updateProject(Long id, ProjectRequest request){
-
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
-
-        Course course = courseRepository.findById(request.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
-
-        project.setCourse(course);
-        project.setName(request.getName());
-        project.setDescription(request.getDescription());
-        project.setAssignDate(request.getAssignDate());
-        project.setDeadline(request.getDeadline());
-
-        return projectMapper.toResponse(projectRepository.save(project));
-    }
-
     public ProjectResponse getProjectById(Long id){
 
         Project project = projectRepository.findById(id)
@@ -64,7 +30,7 @@ public class ProjectService {
 
     public List<ProjectResponse> getAllProjects(){
 
-        return projectRepository.findAll()
+        return projectRepository.findAllWithCourse()
                 .stream()
                 .map(projectMapper::toResponse)
                 .toList();
@@ -72,18 +38,11 @@ public class ProjectService {
 
     public List<ProjectResponse> getProjectsByCourse(Long courseId){
 
-        return projectRepository.findByCourseId(courseId)
+        return projectRepository.findByCourseIdWithCourse(courseId)
                 .stream()
                 .map(projectMapper::toResponse)
                 .toList();
     }
 
-    public void deleteProject(Long id){
-
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
-
-        projectRepository.delete(project);
-    }
 
 }

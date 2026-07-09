@@ -1,28 +1,36 @@
 package com.ntg.sms.Mapper;
 
-
 import com.ntg.sms.Entities.Class;
 import com.ntg.sms.Entities.Dtos.Request.ClassRequest;
 import com.ntg.sms.Entities.Dtos.Response.ClassResponse;
 import com.ntg.sms.Entities.Grade;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface ClassMapper {
 
-    @Mapping(source = "grade.id",   target = "gradeId")
-    @Mapping(source = "grade.name", target = "gradeName")
+
+    @Mapping(source = "name", target = "className")
+    @Mapping(source = "grade.name", target = "grade")
     ClassResponse toResponse(Class classEntity);
 
-    @Mapping(source = "grade",            target = "grade")
-    @Mapping(source = "request.name",     target = "name")
+
+    @Mapping(source = "grade", target = "grade")
+    @Mapping(source = "request.name", target = "name")
     @Mapping(source = "request.capacity", target = "capacity")
-    @Mapping(target = "id",               ignore = true)
+    @Mapping(target = "id", ignore = true)
     Class toEntity(ClassRequest request, Grade grade);
 
-    @Mapping(source = "grade",            target = "grade")
-    @Mapping(source = "request.name",     target = "name")
+
+    @Mapping(source = "grade", target = "grade")
+    @Mapping(source = "request.name", target = "name")
     @Mapping(source = "request.capacity", target = "capacity")
-    @Mapping(target = "id",               ignore = true)
-    void updateEntity(@MappingTarget Class classEntity, ClassRequest request, Grade grade);
+    @Mapping(target = "id", ignore = true)
+    void updateEntity(
+            @MappingTarget Class classEntity,
+            ClassRequest request,
+            Grade grade
+    );
 }

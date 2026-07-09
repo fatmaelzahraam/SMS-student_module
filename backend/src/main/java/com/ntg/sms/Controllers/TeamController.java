@@ -10,25 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/projects/teams")
+@RequestMapping("/api/v1/projects/teams")
 @RequiredArgsConstructor
 public class TeamController {
 
     private final TeamService teamService;
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public TeamResponse createTeam(@RequestBody TeamRequest request) {
-        return teamService.createTeam(request);
-    }
-
-    @PutMapping("/{id}")
-    public TeamResponse updateTeam(
-            @PathVariable Long id,
-            @RequestBody TeamRequest request) {
-
-        return teamService.updateTeam(id, request);
-    }
 
     @GetMapping("/{id}")
     public TeamResponse getTeamById(@PathVariable Long id) {
@@ -43,12 +29,6 @@ public class TeamController {
     @GetMapping("/project/{projectId}")
     public List<TeamResponse> getTeamsByProject(@PathVariable Long projectId) {
         return teamService.getTeamsByProject(projectId);
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTeam(@PathVariable Long id) {
-        teamService.deleteTeam(id);
     }
 
 }

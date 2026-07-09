@@ -1,0 +1,30 @@
+
+
+ <nav>
+  <div class="logo">
+    <img src="../assets/images/attendancepage.png" alt="icon" class="img1">
+    <h2>Attendance</h2>
+  </div>
+ 
+
+  <div class="link">
+    <a
+      routerLink="/attendance"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }">
+      Overview
+    </a>
+
+    <a
+      routerLink="/daily"
+      routerLinkActive="active">
+      Daily
+    </a>
+
+    <a
+      routerLink="/monthly"
+      routerLinkActive="active">
+      Monthly
+    </a>
+  </div>
+</nav>

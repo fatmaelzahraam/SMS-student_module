@@ -69,56 +69,12 @@ public class PermissionService {
                 .collect(Collectors.toList());
     }
 
-    // ─── CREATE ───────────────────────────────────────────────────────────────
-
-    @Transactional
-    public PermissionResponse createPermission(PermissionRequest request) {
-        Student student = findStudentOrThrow(request.getStudentId());
-
-        // Default date to today if not provided (mirrors @ColumnDefault("sysdate"))
-        if (request.getDate() == null) {
-            request.setDate(LocalDate.now());
-        }
-
-        Permission saved = permissionRepository.save(permissionMapper.toEntity(request, student));
-        return permissionMapper.toResponse(saved);
-    }
-
-    // ─── UPDATE ───────────────────────────────────────────────────────────────
-
-    @Transactional
-    public PermissionResponse updatePermission(Long id, PermissionRequest request) {
-        Permission permission = findPermissionOrThrow(id);
-        Student student = findStudentOrThrow(request.getStudentId());
-
-        if (request.getDate() == null) {
-            request.setDate(permission.getDate());
-        }
-
-        permissionMapper.updateEntity(permission, request, student);
-        return permissionMapper.toResponse(permissionRepository.save(permission));
-    }
-
-    // ─── DELETE ───────────────────────────────────────────────────────────────
-
-    @Transactional
-    public void deletePermission(Long id) {
-        if (!permissionRepository.existsById(id)) {
-            throw new EntityNotFoundException("Permission not found with id: " + id);
-        }
-        permissionRepository.deleteById(id);
-    }
 
     // ─── HELPERS ─────────────────────────────────────────────────────────────
 
     private Permission findPermissionOrThrow(Long id) {
         return permissionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Permission not found with id: " + id));
-    }
-
-    private Student findStudentOrThrow(Long studentId) {
-        return studentRepository.findById(studentId)
-                .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + studentId));
     }
 
     private void assertStudentExists(Long studentId) {

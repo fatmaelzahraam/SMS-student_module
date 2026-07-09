@@ -22,8 +22,8 @@ public class MarksType {
 
     @Size(max = 50)
     @NotNull
-    @Column(name = "\"TYPE\"", nullable = false, length = 50)
-    private String type;
+    @Column(name = "TYPE", nullable = false, length = 50)
+    private String typeName;
 
 
 }

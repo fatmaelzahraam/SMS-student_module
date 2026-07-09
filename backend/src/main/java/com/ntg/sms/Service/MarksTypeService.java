@@ -43,37 +43,12 @@ public class MarksTypeService {
         if (marksTypeRepository.existsById(request.getId())) {
             throw new IllegalArgumentException("MarksType with id " + request.getId() + " already exists.");
         }
-        if (marksTypeRepository.existsByType(request.getType())) {
+        if (marksTypeRepository.existsByTypeName(request.getType())) {
             throw new IllegalArgumentException("MarksType '" + request.getType() + "' already exists.");
         }
 
         MarksType saved = marksTypeRepository.save(marksTypeMapper.toEntity(request));
         return marksTypeMapper.toResponse(saved);
-    }
-
-    // ─── UPDATE ───────────────────────────────────────────────────────────────
-
-    @Transactional
-    public MarksTypeResponse updateType(Long id, MarksTypeRequest request) {
-        MarksType marksType = findTypeOrThrow(id);
-
-        if (!marksType.getType().equals(request.getType())
-                && marksTypeRepository.existsByType(request.getType())) {
-            throw new IllegalArgumentException("MarksType '" + request.getType() + "' already exists.");
-        }
-
-        marksTypeMapper.updateEntity(marksType, request);
-        return marksTypeMapper.toResponse(marksTypeRepository.save(marksType));
-    }
-
-    // ─── DELETE ───────────────────────────────────────────────────────────────
-
-    @Transactional
-    public void deleteType(Long id) {
-        if (!marksTypeRepository.existsById(id)) {
-            throw new EntityNotFoundException("MarksType not found with id: " + id);
-        }
-        marksTypeRepository.deleteById(id);
     }
 
     // ─── HELPERS ─────────────────────────────────────────────────────────────

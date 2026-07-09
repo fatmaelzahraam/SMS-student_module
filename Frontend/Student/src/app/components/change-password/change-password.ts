@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Authentication } from '../../services/authentication';
+import { AuthService } from '../../pages/login/service/auth-service';
+
 
 
 @Component({
@@ -16,7 +17,7 @@ export class ChangPassword {
   newPassword = '';
   confirmPassword = '';
 
-  constructor(private authService: Authentication) {}
+  constructor(private authService: AuthService) {}
 
   updatePassword() {
 

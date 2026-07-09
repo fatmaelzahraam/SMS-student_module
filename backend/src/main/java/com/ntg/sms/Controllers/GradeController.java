@@ -42,49 +42,4 @@ public class GradeController {
     public ResponseEntity<List<GradeResponse>> getGradesByTerm(@PathVariable Long termId) {
         return ResponseEntity.ok(gradeService.getGradesByTerm(termId));
     }
-
-    // ─── CREATE ───────────────────────────────────────────────────────────────
-
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<GradeResponse> createGrade(@Valid @RequestBody GradeRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(gradeService.createGrade(request));
-    }
-
-    // ─── UPDATE ───────────────────────────────────────────────────────────────
-
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<GradeResponse> updateGrade(
-            @PathVariable Long id,
-            @Valid @RequestBody GradeRequest request) {
-        return ResponseEntity.ok(gradeService.updateGrade(id, request));
-    }
-
-    // ─── TERM MANAGEMENT ──────────────────────────────────────────────────────
-
-    @PostMapping("/{gradeId}/terms/{termId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<GradeResponse> addTerm(
-            @PathVariable Long gradeId,
-            @PathVariable Long termId) {
-        return ResponseEntity.ok(gradeService.addTerm(gradeId, termId));
-    }
-
-    @DeleteMapping("/{gradeId}/terms/{termId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<GradeResponse> removeTerm(
-            @PathVariable Long gradeId,
-            @PathVariable Long termId) {
-        return ResponseEntity.ok(gradeService.removeTerm(gradeId, termId));
-    }
-
-    // ─── DELETE ───────────────────────────────────────────────────────────────
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteGrade(@PathVariable Long id) {
-        gradeService.deleteGrade(id);
-        return ResponseEntity.noContent().build();
-    }
 }

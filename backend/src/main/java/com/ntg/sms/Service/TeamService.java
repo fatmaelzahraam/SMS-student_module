@@ -91,12 +91,5 @@ public class TeamService {
                 .toList();
     }
 
-    public void deleteTeam(Long id) {
-
-        Team team = teamRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Team not found"));
-
-        teamRepository.delete(team);
-    }
 
 }

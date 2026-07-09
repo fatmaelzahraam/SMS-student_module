@@ -9,14 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 
 public class ClassResponse {
-    Long id;
-    @NotNull
-    GradeResponse grade;
-    @NotNull
-    String name;
-    @NotNull
-    Long capacity;
-    // Flattened grade fields — avoids lazy-loading issues
-    private Long gradeId;
-    private String gradeName;
+   private Long id;
+   private String className;
+   private String grade;
 }

@@ -22,14 +22,6 @@ public class PermissionController {
 
     private final PermissionService permissionService;
 
-    // ─── GET ALL ─────────────────────────────────────────────────────────────
-
-    @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<PermissionResponse>> getAllPermissions() {
-        return ResponseEntity.ok(permissionService.getAllPermissions());
-    }
-
     // ─── GET BY ID ────────────────────────────────────────────────────────────
 
     @GetMapping("/{id}")
@@ -47,16 +39,6 @@ public class PermissionController {
         return ResponseEntity.ok(permissionService.getPermissionsByStudent(studentId));
     }
 
-    // ─── GET BY DATE RANGE ────────────────────────────────────────────────────
-
-    @GetMapping("/date/range")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<PermissionResponse>> getPermissionsByDateRange(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        return ResponseEntity.ok(permissionService.getPermissionsByDateRange(from, to));
-    }
-
     // ─── GET BY STUDENT + DATE RANGE ─────────────────────────────────────────
 
     @GetMapping("/student/{studentId}/date/range")
@@ -69,32 +51,4 @@ public class PermissionController {
                 permissionService.getPermissionsByStudentAndDateRange(studentId, from, to));
     }
 
-    // ─── CREATE ───────────────────────────────────────────────────────────────
-
-    @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    public ResponseEntity<PermissionResponse> createPermission(
-            @Valid @RequestBody PermissionRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(permissionService.createPermission(request));
-    }
-
-    // ─── UPDATE ───────────────────────────────────────────────────────────────
-
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PermissionResponse> updatePermission(
-            @PathVariable Long id,
-            @Valid @RequestBody PermissionRequest request) {
-        return ResponseEntity.ok(permissionService.updatePermission(id, request));
-    }
-
-    // ─── DELETE ───────────────────────────────────────────────────────────────
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deletePermission(@PathVariable Long id) {
-        permissionService.deletePermission(id);
-        return ResponseEntity.noContent().build();
-    }
 }

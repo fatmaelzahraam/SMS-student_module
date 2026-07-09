@@ -10,13 +10,14 @@ import { App } from './app/app';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { jwtInterceptor } from './app/interceptors/jwt-interceptor';
+import { authInterceptor } from './app/pages/login/interceptor/auth-interceptor';
+
 
 
 bootstrapApplication(App, {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
-     provideHttpClient(withInterceptors([jwtInterceptor])),
+     provideHttpClient(withInterceptors([authInterceptor])),
   ]
 });
