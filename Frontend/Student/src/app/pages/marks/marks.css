@@ -1,33 +1,23 @@
 .marks-page {
-  max-width: 1040px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
-
 .marks-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 95px;
+  padding: 10px 20px;
   background: #fff;
-  border-radius: 12px;
-  padding: 14px 18px;
+  border-bottom-left-radius: 15px;
+  border: 1px solid #8e8e93b6;
 }
-
-.marks-header-icon {
-  display: flex;
-  color: #16233f;
-}
-
 .marks-header h2 {
   margin: 0;
-  font-size: 30px;
+  font-size: 22px;
   font-weight: 700;
-  color: #16233f;
+  color: #05172F;
 }
-
 .state-message {
   color: #4a5364;
   font-size: 14px;
@@ -36,6 +26,13 @@
 
 .state-error {
   color: #b3261e;
+}
+.content
+{
+  margin: 10px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .subject-filter {
@@ -48,7 +45,7 @@
 .subject-filter label {
   font-size: 12.5px;
   font-weight: 700;
-  color: #16233f;
+  color: #05172F;
 }
 
 .subject-filter select {
@@ -137,20 +134,28 @@
 
 .theme-navy .stat-icon,
 .theme-navy .stat-chip {
-  background: #16233f;
+  background: #05172F;
 }
 .theme-navy .stat-label {
-  color: #16233f;
+  color: #05172F;
+}
+.theme-green .stat-value
+{
+  color: #189144;
 }
 
 .theme-green .stat-icon,
 .theme-green .stat-chip {
-  background: #2e8b57;
+  background: #189144;
 }
 .theme-green .stat-label {
-  color: #2e8b57;
+  color: #189144;
 }
 
+.theme-maroon .stat-value
+{
+  color: #620000;
+}
 .theme-maroon .stat-icon,
 .theme-maroon .stat-chip {
   background: #620000;
@@ -159,12 +164,17 @@
   color: #620000;
 }
 
+.theme-olive  .stat-value
+{
+  color: #675C07;
+}
+
 .theme-olive .stat-icon,
 .theme-olive .stat-chip {
-  background: #746f1d;
+  background: #675C07
 }
 .theme-olive .stat-label {
-  color: #746f1d;
+  color: #675C07;
 }
 
 .content-grid {
@@ -186,7 +196,7 @@
   margin: 0 0 14px;
   font-size: 15px;
   font-weight: 700;
-  color: #16233f;
+  color: #05172F;
 }
 
 .table-scroll {
@@ -202,7 +212,7 @@ table {
 thead th {
   text-align: left;
   font-weight: 700;
-  color: #16233f;
+  color: #05172F;
   padding: 8px 10px;
   white-space: nowrap;
 }
@@ -214,13 +224,13 @@ thead th {
 tbody td {
   padding: 12px 10px;
   border-top: 1px solid #eef0f3;
-  color: #2a3242;
+  color: #05172F;
   white-space: nowrap;
 }
 
 .month-cell {
   font-weight: 700;
-  color: #16233f;
+  color: #05172F;
 }
 
 .empty-cell {
@@ -241,7 +251,7 @@ tbody td {
   margin: 0 0 14px;
   font-size: 15px;
   font-weight: 700;
-  color: #16233f;
+  color: #05172F;
 }
 
 .donut-body {
@@ -277,7 +287,7 @@ tbody td {
 .donut-center-value {
   font-size: 18px;
   font-weight: 800;
-  color: #16233f;
+  color: #05172F;
 }
 
 .donut-center-label {

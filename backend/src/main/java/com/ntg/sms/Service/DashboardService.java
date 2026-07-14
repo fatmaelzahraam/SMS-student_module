@@ -23,13 +23,13 @@ public class DashboardService {
     private final AttendanceService attendanceService;
     private final DelayRepository delayRepository;
     private final StudentRepository studentRepository;
+    private final MarkService markService;
 
     @Transactional(readOnly = true)
     public DashboardResponse getDashboard() {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Student student = studentRepository.findByUser_Email(email).orElse(null);
-
 
 
         Double performance =
@@ -43,7 +43,16 @@ public class DashboardService {
 
         return DashboardResponse.builder()
                 .attendance(DashboardAttendanceOverView.builder()
-                .presentPercentage(attendanceService.getPresentPercentage()).absenceCount(attendanceService.getAbsenceCount()).LateCount(delayRepository.countAllByStudent_Id(student.getId())).build())
+                        .presentPercentage(
+                                attendanceService.getPresentPercentage()
+                        ).absenceCount(
+                                attendanceService.getAbsenceCount()
+                        ).LateCount(
+                                delayRepository.countAllByStudent_Id(student.getId())
+                        ).build()
+                )
+                .performanceLabel("Abdullah")
+                .performanceScore(markService.getPerformanceScore(student.getId()))
                 .rank(rank)
                 .totalStudents(totalStudents)
                 .build();

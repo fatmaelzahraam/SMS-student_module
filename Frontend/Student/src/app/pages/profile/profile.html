@@ -10,77 +10,81 @@
       </div>
     </div>
   </header>
+
   <!-- Loading -->
-  <div class="loading-full-page" *ngIf="loading">
-    <p>Loading...</p>
-  </div>
+  <!-- @if (loading) {
+    <div class="loading-full-page">
+      <p>Loading...</p>
+    </div>
+  } -->
   <!-- Error -->
-  <div class="loading-full-page" *ngIf="error && !loading">
-    <p>{{ error }}</p>
-  </div>
+  @if (error && !loading) {
+    <div class="loading-full-page">
+      <p>{{ error }}</p>
+    </div>
+  }
 
   <!-- Content -->
-  <div class="page-content" *ngIf="!loading && !error && studentData">
-    <div class="content-box">
-      <h2>Profile Overview</h2>
+  @if (!loading && !error && studentData) {
+    <div class="page-content">
+      <div class="content-box">
 
-      <!-- Avatar + Name -->
-      <div class="profile-card-display">
-        <div class="avatar-group">
-        
-          <img src="../assets/images/woman.png" width="50px" height="50px" alt="logo" >
-          <button class="change-avatar-btn">
-            <i class="fas fa-camera"></i>
-          </button>
+        <!-- Avatar + Name -->
+        <div class="profile-card-display">
+          <div class="avatar-group">
+            <img src="../assets/images/woman.png" width="50px" height="50px" alt="logo">
+            <button class="change-avatar-btn">
+              <i class="fas fa-camera"></i>
+            </button>
+          </div>
+          <h3 class="student-name">{{ studentData.fullName }}</h3>
+          <span class="status-badge-active-student">Active Student</span>
         </div>
-        <h3 class="student-name">{{ studentData.fullName }}</h3>
-        <span class="status-badge-active-student">Active Student</span>
-      </div>
 
-      <!-- Details Table -->
-      <div class="profile-details">
-        <table class="details-table">
-          <tr>
-            <td><i class="fas fa-id-badge"></i> Grade</td>
-            <td>{{ studentData.gradeName ?? '—' }}</td>
-          </tr>
-          <tr>
-            <td><i class="fas fa-chalkboard-teacher"></i> Class</td>
-            <td>{{ studentData.className ?? '—' }}</td>
-          </tr>
-          <tr>
-            <td><i class="fas fa-id-card-alt"></i> National ID</td>
-            <td>{{ studentData.nationalId ?? '—' }}</td>
-          </tr>
-          <tr>
-            <td><i class="fas fa-id-card"></i> Student ID</td>
-            <td>{{ studentData.studentId }}</td>
-          </tr>
-          <tr>
-            <td><i class="fas fa-envelope"></i> Email</td>
-            <td>{{ studentData.email }}</td>
-          </tr>
-          <tr>
-            <td><i class="fas fa-phone-alt"></i> Phone Number</td>
-            <td>{{ studentData.phoneNumber ?? '—' }}</td>
-          </tr>
-          <tr>
-          
-            <td><i class="fas fa-calendar-alt"></i> Date of Birth</td>
-            <td>{{ (studentData.birthDate | date:'d MMMM, y') ?? '—' }}</td>
-          </tr>
-          <tr>
-            <td><i class="fas fa-map-marker-alt"></i> Governorate</td>
-            <td>{{ studentData.governorate ?? '—' }}</td>
-          </tr>
-          <tr>
-            <td><i class="fas fa-city"></i> Place of Birth</td>
-            <td>{{ studentData.placeOfBirth ?? '—' }}</td>
-          </tr>
-        </table>
-      </div>
+        <!-- Details Table -->
+        <div class="profile-details">
+          <table class="details-table">
+            <tr>
+              <td><i class="fas fa-id-badge"></i> Grade</td>
+              <td>{{ studentData.gradeName ?? '—' }}</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-chalkboard-teacher"></i> Class</td>
+              <td>{{ studentData.className ?? '—' }}</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-id-card-alt"></i> National ID</td>
+              <td>{{ studentData.nationalId ?? '—' }}</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-id-card"></i> Student ID</td>
+              <td>{{ studentData.studentId }}</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-envelope"></i> Email</td>
+              <td>{{ studentData.email }}</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-phone-alt"></i> Phone Number</td>
+              <td>{{ studentData.phoneNumber ?? '—' }}</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-calendar-alt"></i> Date of Birth</td>
+              <td>{{ (studentData.birthDate | date:'d MMMM, y') ?? '—' }}</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-map-marker-alt"></i> Governorate</td>
+              <td>{{ studentData.governorate ?? '—' }}</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-city"></i> Place of Birth</td>
+              <td>{{ studentData.placeOfBirth ?? '—' }}</td>
+            </tr>
+          </table>
+        </div>
 
+      </div>
     </div>
-  </div>
+  }
 
 </main>

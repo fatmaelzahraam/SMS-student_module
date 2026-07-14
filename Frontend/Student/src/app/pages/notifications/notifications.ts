@@ -32,30 +32,29 @@ export class Notifications implements OnInit {
   }
 
   getIcon(type: string): string {
-    switch (type) {
-      case 'STUDENT':
-        return '👤';
+  switch (type) {
+    case 'STUDENT':
+      return 'fa-solid fa-user';
 
-      case 'GRADE':
-        return '📘';
+    case 'GRADE':
+      return 'fa-solid fa-book';
 
-      case 'ASSIGNMENT':
-        return '📝';
+    case 'ASSIGNMENT':
+      return 'fa-solid fa-file-lines';
 
-      case 'TRAINING':
-        return '📅';
+    case 'TRAINING':
+      return 'fa-solid fa-calendar-days';
 
-      case 'REPORT':
-        return '📄';
+    case 'REPORT':
+      return 'fa-solid fa-file';
 
-      case 'SYSTEM':
-        return '⚙️';
+    case 'SYSTEM':
+      return 'fa-solid fa-gear';
 
-      default:
-        return '🔔';
-    }
+    default:
+      return 'fa-solid fa-bell';
   }
-
+}
   getZoomClass(type: string): string {
     switch (type) {
       case 'STUDENT':

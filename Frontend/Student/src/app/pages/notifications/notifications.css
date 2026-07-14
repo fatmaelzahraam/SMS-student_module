@@ -1,46 +1,42 @@
-.notifications-container {
-  padding: 0px 30px 0px;
-  background: #EEEEEE;
-  min-height: 100vh;
-}
-
 .header-section {
   background: #fff;
-  border-radius: 14px;
-  padding: 22px 30px;
-  margin-bottom: 20px;
+  padding: 0px 20px;
   box-shadow: 0 3px 10px rgba(0,0,0,.08);
+  border-bottom-left-radius: 15px;
+  border: 1px solid #8e8e93b6;
 }
 
 .title-with-icon {
   display: flex;
   align-items: center;
   gap: 15px;
+  color: #05172F;
 }
 
 .title-with-icon h2 {
   margin: 0;
-  font-size: 30px;
+  font-size: 22px;
   font-weight: 700;
   color: #222;
 }
 
 .header-icon {
-  font-size: 34px;
+  font-size: 40px;
 }
 
 .notifications-card {
   background: white;
-  border-radius: 18px;
+  border-radius: 15px;
   padding: 10px 0;
   box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  margin: 30px;
 }
 
 .notification-item {
   display: flex;
   align-items: center;
   gap: 22px;
-  padding: 25px 30px;
+  padding: 15px;
   border-bottom: 1px solid #ececec;
   transition: .25s;
 }
@@ -54,18 +50,16 @@
 }
 
 .icon-container {
-  width: 65px;
-  height: 65px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-   background-color: #FFEAC3;
 }
-
-.icon {
-  font-size: 28px;
+.icon-container i{
+  font-size: 30px;
 }
 
 .content-container {
@@ -74,28 +68,30 @@
 
 .content-container h3 {
   margin: 0;
-  font-size: 20px;
-  color: #222;
+  font-size: 18px;
   font-weight: 700;
 }
 
 .content-container p {
-  margin-top: 8px;
   color: #777;
-  font-size: 17px;
+  font-size: 14px;
 }
 
 .time-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 2px;
 }
 
 .time {
   color: gray;
-  font-size: 15px;
+  font-size: 12px;
 }
-
+.priority-badge
+{
+  font-size: 12px;
+}
 .status-dot {
   width: 12px;
   height: 12px;

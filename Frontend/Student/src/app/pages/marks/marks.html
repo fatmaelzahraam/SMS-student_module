@@ -1,7 +1,7 @@
 <section class="marks-page">
   <header class="marks-header">
     <span class="marks-header-icon" aria-hidden="true">
-     <img src="../assets/images/score.png" width="50px" height="50px" alt="logo" alt="">
+     <img src="../assets/images/score.png" width="40px" height="40px" alt="logo" alt="">
     </span>
     <h2>Marks</h2>
   </header>
@@ -11,7 +11,7 @@
   } @else if (error()) {
     <p class="state-message state-error">{{ error() }}</p>
   }
-
+<div class="content">
   @if (dashboard(); as data) {
     <div class="subject-filter">
       <label for="subject-select">Select Subject</label>
@@ -72,12 +72,7 @@
       <article class="stat-card theme-olive">
         <span class="stat-chip" aria-hidden="true"></span>
         <span class="stat-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="5" y="4" width="14" height="17" rx="2" />
-            <path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" />
-            <path d="M9 11h6" />
-            <path d="M9 15h6" />
-          </svg>
+          <img src="../assets/images/assignmentdash.png" alt="icon" style="width:30px;height:30px;">
         </span>
         <span class="stat-body">
           <span class="stat-label">Total Subjects</span>
@@ -139,5 +134,7 @@
         </div>
       </section>
     </div>
+    
   }
+  </div>
 </section>

@@ -18,14 +18,12 @@ export class ScheduleService {
   private readonly http    = inject(HttpClient);
   private readonly baseUrl = 'http://localhost:8080/api/v1/schedule';
 
-  // ── Signals ───────────────────────────────────────────────
   classSchedule = signal<ClassScheduleResponse | null>(null);
   monthExams    = signal<ExamScheduleResponse   | null>(null);
   finalExams    = signal<ExamScheduleResponse   | null>(null);
   isLoading     = signal(false);
   error         = signal<string | null>(null);
 
-  // ── Load all three in parallel — no race condition ────────
   loadAll(studentId: number): void {
     this.isLoading.set(true);
     this.error.set(null);
@@ -33,19 +31,28 @@ export class ScheduleService {
     forkJoin({
       classSessions: this.http
         .get<SessionResponse[]>(`${this.baseUrl}/student/${studentId}`)
-        .pipe(catchError(() => of([] as SessionResponse[]))),
+        .pipe(catchError(err => {
+          console.error('Class schedule failed:', err.status, err.message);
+          this.error.set(`Failed to load class schedule (${err.status})`);
+          return of([] as SessionResponse[]);
+        })),
 
       monthSessions: this.http
         .get<SessionResponse[]>(`${this.baseUrl}/student/${studentId}/exams/month`)
-        .pipe(catchError(() => of([] as SessionResponse[]))),
+        .pipe(catchError(err => {
+          console.error('Month exams failed:', err.status, err.message);
+          return of([] as SessionResponse[]);
+        })),
 
       finalSessions: this.http
         .get<SessionResponse[]>(`${this.baseUrl}/student/${studentId}/exams/final`)
         .pipe(catchError(err => {
-          this.error.set(err.error?.message ?? 'Failed to load schedule');
+          console.error('Final exams failed:', err.status, err.message);
           return of([] as SessionResponse[]);
         })),
+
     }).subscribe(({ classSessions, monthSessions, finalSessions }) => {
+      console.log('RAW classSessions:', classSessions); // ← remove after confirming
       this.classSchedule.set(this.buildWeeklySchedule(studentId, classSessions));
       this.monthExams.set(this.buildExamSchedule(studentId, monthSessions, 'MONTH_EXAM'));
       this.finalExams.set(this.buildExamSchedule(studentId, finalSessions, 'FINAL_EXAM'));
@@ -53,29 +60,43 @@ export class ScheduleService {
     });
   }
 
-  // ── Build the weekly grid from flat session list ──────────
   private buildWeeklySchedule(
     studentId: number,
     sessions: SessionResponse[]
   ): ClassScheduleResponse {
+
     const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
     const breakSet = new Set(BREAK_SLOTS);
 
     const weeklySchedule: DaySchedule[] = DAYS.map((day, dayIndex) => {
-      const daySessions = sessions.filter(s => Number(s.dayOfWeek) === dayIndex + 1);
+
+      // dayOfWeek from backend: 1=Sunday, 2=Monday … 5=Thursday
+      const daySessions = sessions.filter(
+        s => Number(s.dayOfWeek) === dayIndex + 1
+      );
 
       const slots: ScheduleSlot[] = TIME_SLOTS.map(timeSlot => {
         if (breakSet.has(timeSlot)) {
           return { timeSlot, session: null };
         }
 
+        const slotStart = timeSlot.split(' - ')[0].trim(); // "8:00"
+
         const match = daySessions.find(s => {
-          const start = s.startAt?.substring(0, 5); // "08:00"
-          return timeSlot.startsWith(start?.replace(':', ':').substring(0, 5) ?? '___');
+          if (!s.startAt) return false;
+  
+          const raw = s.startAt.substring(0, 5);           // "08:00"
+          const normalized = raw.replace(/^0/, '');        // "8:00"
+          return normalized === slotStart;
         });
 
         const session: ClassSessionResponse | null = match
-          ? { id: match.id, subject: match.courseName, subjectCode: '', teacher: match.teacherName }
+          ? {
+              id:          match.id,
+              subject:     match.courseName,
+              subjectCode: '',
+              teacher:     match.teacherName,
+            }
           : null;
 
         return { timeSlot, session };
@@ -87,22 +108,18 @@ export class ScheduleService {
     return { studentId, weeklySchedule };
   }
 
-  // ── Build exam list from flat session list ────────────────
-  private buildExamSchedule(
-    studentId: number,
-    sessions: SessionResponse[],
-    type: 'MONTH_EXAM' | 'FINAL_EXAM'
-  ): ExamScheduleResponse {
-    const exams: ExamEntry[] = sessions.map(s => ({
-      id:        s.id,
-      subject:   s.courseName,
-      teacher:   s.teacherName,
-      startTime: s.startAt ?? '',
-      endTime:   s.endAt   ?? '',
-      type,
-    }));
-    return { studentId, exams };
-  }
+  private buildExamSchedule(studentId: number, sessions: SessionResponse[], type: 'MONTH_EXAM' | 'FINAL_EXAM'): ExamScheduleResponse {
+  const exams: ExamEntry[] = sessions.map(s => ({
+    id:        s.id,
+    subject:   s.courseName,
+    teacher:   s.teacherName,
+    startTime: s.startAt  ?? '',
+    endTime:   s.endAt    ?? '',
+    examDate:  s.examDate ?? '',   // ← from SessionResponse
+    type,
+  }));
+  return { studentId, exams };
+}
 
   clearError(): void {
     this.error.set(null);

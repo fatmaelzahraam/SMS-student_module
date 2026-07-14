@@ -7,54 +7,51 @@
         <div class="title-section">
 
             <div class="support-icon">
-                🤝
+                <img src="../assets/images/supportsss.png" width="40px" height="40px" alt="logo">
             </div>
 
-            <div>
                 <h1>Support</h1>
-            </div>
+            
 
         </div>
 
-        <button
-            class="new-complaint-btn"
-            (click)="openNewComplaint()">
+        <div class="lower-part">
 
-            + New Complaint
+            <!--  Tabs -->
+            <div class="tabs">
 
-        </button>
+                <button class="tab active">
+                    Complaints
+                </button>
 
-    </div>
+                <button class="tab" routerLink="/violations">
+                    Violations
+                </button>
 
-    <!-- ================= Tabs ================= -->
+            </div>
+            <button class="new-complaint-btn" (click)="openNewComplaint()">
+                + New Complaint
+            </button>
 
-    <div class="tabs">
+        </div>
 
-        <button class="tab active">
-            Complaints
-        </button>
 
-        <button
-    class="tab"
-    routerLink="/violations">
-
-    Violations
-
-</button>
 
     </div>
+
+
 
     <!-- ================= Statistics ================= -->
-
+<div class="main-cintainer">
     <div class="statistics">
 
         <div class="stat-card">
 
             <div class="stat-icon total">
-                💬
+                <img src="../assets/images/complain.png" alt="icon" class="img1">
             </div>
 
-            <div>
+            <div class="totalll">
 
                 <h3>Total Complaints</h3>
 
@@ -67,10 +64,10 @@
         <div class="stat-card">
 
             <div class="stat-icon replied">
-                ✅
+                <img src="../assets/images/auto-reply.png" alt="icon" class="img1">
             </div>
 
-            <div>
+            <div class="repliedd">
 
                 <h3>Replied</h3>
 
@@ -83,10 +80,10 @@
         <div class="stat-card">
 
             <div class="stat-icon pending">
-                ⏳
+                <img src="../assets/images/test.png" alt="icon" class="img1">
             </div>
 
-            <div>
+            <div class="pendingg">
 
                 <h3>Pending</h3>
 
@@ -110,9 +107,7 @@
 
         </div>
 
-        <div
-            class="complaint-item"
-            *ngFor="let complaint of complaints"
+        <div class="complaint-item" *ngFor="let complaint of complaints"
             (click)="selectComplaint(complaint.complaintId)"
             [class.active]="selectedComplaint?.complaintId === complaint.complaintId">
 
@@ -130,17 +125,13 @@
 
             <div class="right">
 
-                <span
-                    class="status replied"
-                    *ngIf="complaint.status=='REPLIED'">
+                <span class="status replied" *ngIf="complaint.status=='REPLIED'">
 
                     Replied
 
                 </span>
 
-                <span
-                    class="status pending"
-                    *ngIf="complaint.status!='REPLIED'">
+                <span class="status pending" *ngIf="complaint.status!='REPLIED'">
 
                     Pending
 
@@ -170,9 +161,7 @@
 
         </div>
 
-        <div
-            class="details"
-            *ngIf="selectedComplaint; else emptyState">
+        <div class="details" *ngIf="selectedComplaint; else emptyState">
 
             <div class="row">
 
@@ -257,25 +246,18 @@
     </div>
 
 </div>
-
+</div>
 <!-- ================= New Complaint Modal ================= -->
 
-<div
-    class="modal-backdrop"
-    *ngIf="showNewComplaint"
-    (click)="closeNewComplaint()">
+<div class="modal-backdrop" *ngIf="showNewComplaint" (click)="closeNewComplaint()">
 
-    <div
-        class="modal"
-        (click)="$event.stopPropagation()">
+    <div class="modal" (click)="$event.stopPropagation()">
 
         <div class="modal-header">
 
             <h2>New Complaint</h2>
 
-            <button
-                class="close-btn"
-                (click)="closeNewComplaint()">
+            <button class="close-btn" (click)="closeNewComplaint()">
 
                 ✕
 
@@ -291,10 +273,7 @@
 
             </label>
 
-            <input
-                type="text"
-                [(ngModel)]="newComplaint.title"
-                placeholder="Enter your complaint title">
+            <input type="text" [(ngModel)]="newComplaint.title" placeholder="Enter your complaint title">
 
             <label>
 
@@ -302,27 +281,20 @@
 
             </label>
 
-            <textarea
-                rows="7"
-                [(ngModel)]="newComplaint.description"
+            <textarea rows="7" [(ngModel)]="newComplaint.description"
                 placeholder="Enter your complaint description"></textarea>
 
         </div>
 
         <div class="modal-footer">
 
-            <button
-                class="cancel-btn"
-                (click)="closeNewComplaint()">
+            <button class="cancel-btn" (click)="closeNewComplaint()">
 
                 Cancel
 
             </button>
 
-            <button
-                class="send-btn"
-                (click)="submitComplaint()"
-                [disabled]="loading">
+            <button class="send-btn" (click)="submitComplaint()" [disabled]="loading">
 
                 {{loading ? 'Sending...' : 'Send'}}
 

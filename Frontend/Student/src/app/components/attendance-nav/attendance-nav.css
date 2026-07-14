@@ -1,16 +1,24 @@
 nav{
   width: 100%;
-  height: 100px;
-  background-color: rgb(255, 255, 255);
+  height: 90px;
+  background-color: white;
   position: relative;
   padding-top: 10px;
+  border-bottom-left-radius: 15px;
+  border: 1px solid #8e8e93b6;
 
+}
+h2
+{
+  font-size: 22px;
+  font-weight: 700;
+  color: #05172F;
 }
 .link{
   position: absolute;
   display: flex;
   gap: 20px;
-  bottom: 2px;
+  bottom: 0;
   left: 30px;
 }
 .link a{
@@ -21,10 +29,7 @@ nav{
 }
 .link a:focus{
   color: #620000;
-  border-bottom: 5px solid#620000;
-   /* bottom: 2px; */
-
-
+  border-bottom: 4px solid#620000;
 }
 .img1{
 width: 40px;
@@ -35,4 +40,8 @@ display: flex;
 margin-left: 33px;
 gap: 20px;
 color: #05172F;
+}
+.active
+{
+  color: #620000;
 }

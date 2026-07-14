@@ -1,89 +1,81 @@
 <div class="layout">
-
   <main class="content">
 
+    <!-- ── Header ── -->
     <div class="header">
-
       <div class="header-icon">
-
-        <img src="../assets/images/assignmentsss.png" width="50px" height="50px" alt="logo">
+        <img src="../assets/images/assignmentsss.png" width="40px" height="40px" alt="Assignments icon">
       </div>
-
       <div>
-
         <h2>My Assignments</h2>
-
-        <p>View and Manage all Your Assignments</p>
-
+        <p class="header-sub">View and Manage all Your Assignments</p>
       </div>
-
     </div>
 
+    <!-- ── Loading ── -->
+    @if (isLoading()) {
+      <div class="state-msg">Loading assignments…</div>
+    }
 
+    <!-- ── Error ── -->
+    @if (error()) {
+      <div class="state-msg error">{{ error() }}</div>
+    }
 
-    <div class="assignment-card">
-      <table>
+    <!-- ── Table ── -->
+    @if (!isLoading() && !error()) {
+      <div class="assignment-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>
+                <span class="th-icon"><i class="fa-regular fa-clock"></i></span> Deadline
+              </th>
+              <th>
+                <span class="th-icon"><i class="fa-regular fa-file"></i></span> Subject
+              </th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-        <thead>
+          <tbody>
+            @for (item of assignments(); track item.id) {
+              <tr>
+                <!-- Title -->
+                <td class="td-title">{{ item.name }}</td>
 
-          <tr>
+                <!-- Deadline -->
+                <td>{{ item.deadline | date: 'd MMM yyyy' }}</td>
 
-            <th>Title</th>
-            <th>Status</th>
-            <th>Deadline</th>
-            <th>Subject</th>
+                <!-- Subject badges — one per courseId -->
+                <td>
+                  @for (cId of $any(item.courseIds); track cId) {
+                    <span class="subject">
+                      {{ getCourseName(cId) }}
+                    </span>
+                  }
+                </td>
 
-            <th>Action</th>
-
-          </tr>
-
-        </thead>
-
-<tbody>
-
-  <tr *ngFor="let item of assignments">
-
-
-    <td>{{ item.name }}</td>
-
-    <td>
-
-
-      <span class="status">
-        Graded
-      </span>
-      <!-- <div class="circle_green"></div> -->
-    </td>
-
-
-    <td>{{ item.deadline | date:'dd MMM yyyy' }}</td>
-
-    <td>
-      <span class="subject">
-        IT
-      </span>
-    </td>
-
-
-
-
-    <td>
-      <button
-        class="view-btn"
-        (click)="viewAssignment(item)">
-        View
-      </button>
-    </td>
-
-  </tr>
-
-</tbody>
-
-      </table>
-
-    </div>
+                <!-- Action -->
+                <td>
+                  <button
+                    class="view-btn"
+                    [class.view-btn--urgent]="isUrgent(item.deadline)"
+                    (click)="viewAssignment(item)">
+                    View
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="state-msg">No assignments found.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
 
   </main>
-
 </div>
-

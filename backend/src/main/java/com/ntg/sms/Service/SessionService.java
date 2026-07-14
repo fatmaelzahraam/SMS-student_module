@@ -51,24 +51,12 @@ public class SessionService {
     public List<SessionResponse> getFinalExamsByStudent(Long studentId) {
         return repo.findFinalExamsByStudentId(studentId);
     }
-
-
-
-
 //    ===============================grade====================
-
-
     public List<Grade> getAllGrades (){
         return gradeRepo.findAll();
     }
-
-
 //    =====================class====================
-
-
     public List<Class> getAllClasses (){
         return classRepo.findAll();
     }
-
-
 }

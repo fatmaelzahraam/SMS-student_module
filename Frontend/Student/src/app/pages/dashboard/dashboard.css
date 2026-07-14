@@ -1,4 +1,3 @@
-/* ── Variables ─────────────────────────────────────── */
 :host {
   --crimson:    #620000;
   --navy:       #05172F;
@@ -14,6 +13,10 @@
   --text-muted: #9ca3af;
   --radius:     10px;
   --gap:        16px;
+}
+
+.hidden {
+  display: none;
 }
 
 /* ── Loading ───────────────────────────────────────── */
@@ -50,27 +53,9 @@
 
 /* ── Layout ────────────────────────────────────────── */
 .dashboard-container {
-  padding: 28px 32px;
-  min-height: 100vh;
-  margin-top: 20px;
-}
-
-/* ── Welcome ───────────────────────────────────────── */
-.welcome-header {
-  margin-bottom: 24px;
-}
-
-.welcome-header h1 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--navy);
-  margin: 0 0 4px;
-}
-
-.subtitle {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin: 0;
+  padding: 40px 32px;
+  margin-top: 40px;
+  min-height: 160px;
 }
 
 /* ── Cards Grid ────────────────────────────────────── */
@@ -93,6 +78,7 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(5, 23, 47, 0.07);
   transition: transform 0.2s;
+  height: 145px;
 }
 
 .card:hover {
@@ -144,7 +130,7 @@
   margin: 0;
 }
 
-.card__value--light  { color: var(--white); }
+.card__value--light  { color:#0C3161; }
 .card__value-total   { font-size: 1rem; font-weight: 500; color: var(--text-muted); }
 
 .card__sub           { font-size: 0.75rem; color: var(--text-muted); margin: 0; }
@@ -158,6 +144,7 @@
   border-radius: 99px;
   overflow: hidden;
   margin-top: 4px;
+  margin-bottom: 8px;
 }
 
 .perf-bar__fill {
@@ -170,8 +157,9 @@
 .perf-bar__fill--purple {
   background: linear-gradient(90deg, var(--purple), var(--steel));
 }
-.card--performance .card__label{
-  color:var(--navy);
+
+.card--performance .card__label {
+  color: var(--navy);
 }
 
 /* ── Attendance Card ───────────────────────────────── */
@@ -179,7 +167,7 @@
   background: var(--white);
 }
 
-.card--att .card__label { color:#177930; }
+.card--att .card__label { color: #177930; }
 
 .ring-wrap {
   position: absolute;
@@ -193,21 +181,14 @@
   gap: 6px;
   height: 25px;
   width: 120px;
-  /* flex-wrap: wrap; */
 }
 
-
- /* assignment card */
-.card--assignments .card__label
-{
-  color:var(--purple);
+/* ── Assignment Card ───────────────────────────────── */
+.card--assignments .card__label {
+  color: var(--purple);
 }
 
 /* ── Rank Card ─────────────────────────────────────── */
-/* .card--rank {
-  background: var(--white);
-} */
-
 .card--rank .card__label { color: #0E4894; }
 
 .rank-star {
@@ -241,14 +222,14 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+   width: fit-content;
   font-size: 0.7rem;
   font-weight: 600;
   padding: 3px 9px;
   border-radius: 99px;
 }
-
-.badge--perf      { background: rgba(46, 204, 113, 0.12); color: #1a9e5a; }
-.badge--rank      { background: rgba(255, 215, 0, 0.15);  color: #8a6800; }
+.badge--perf      { background: #D4E5F3; color: #05172F; }
+.badge--rank      { background: rgba(46, 204, 113, 0.12);  color: #1a9e5a; margin-top: 22px;}
 .badge--remaining { background: rgba(74, 48, 128, 0.1);   color: var(--purple); }
 .badge--absent    { background: rgba(231, 76, 60, 0.15);  color: #c0392b; }
 .badge--late      { background: rgba(243, 156, 18, 0.15); color: #9a7010; }
@@ -257,7 +238,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--success);
+  background:  #05172F;
 }
 
 .info-dot {
@@ -278,6 +259,7 @@
   display: grid;
   grid-template-columns: 1.6fr 1fr;
   gap: var(--gap);
+  padding: 0px 32px;
 }
 
 .chart-card {
@@ -412,7 +394,7 @@
 
 @media (max-width: 640px) {
   .dashboard-container { padding: 16px; }
-  .cards-grid { grid-template-columns: 1fr; }
-  .card__value { font-size: 1.7rem; }
-  .ring-wrap { display: none; }
+  .cards-grid          { grid-template-columns: 1fr; }
+  .card__value         { font-size: 1.7rem; }
+  .ring-wrap           { display: none; }
 }

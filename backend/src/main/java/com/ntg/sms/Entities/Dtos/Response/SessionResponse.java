@@ -20,6 +20,7 @@ public class SessionResponse {
     private String teacherName;
     private Long dayOfWeek;
     private LocalTime startAt;
-    private LocalTime endAt;      // ← LocalTime
+    private LocalTime endAt;
+    private LocalDate examDate;
 
 }

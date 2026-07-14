@@ -32,14 +32,12 @@ export class Dashboardservice {
   );
 
   // ── Load all dashboard data ───────────────────────────────────────────────
-  // Each request is wrapped in catchError(of(...)) so one failure
-  // does NOT cancel the others via forkJoin.
   loadAll(studentId: number): void {
     this.isLoading.set(true);
     this.error.set(null);
 
     forkJoin({
-      dashboard: this.http.get<DashboardResponse>(`${this.baseUrl}/dashboard`).pipe(
+      dashboard: this.getDashboard().pipe(
         catchError(err => {
           console.error('Dashboard fetch failed:', err.status, err.message);
           return of(null);
@@ -59,9 +57,9 @@ export class Dashboardservice {
       ),
     }).pipe(
       tap(({ dashboard, assignments, marks }) => {
-        if (dashboard)    this.dashboard.set(dashboard);
-        if (assignments)  this.assignments.set(assignments);
-        if (marks)        this.marks.set(marks);
+        if (dashboard)   this.dashboard.set(dashboard);
+        if (assignments) this.assignments.set(assignments);
+        if (marks)       this.marks.set(marks);
         this.isLoading.set(false);
       }),
       catchError(err => {
@@ -73,7 +71,7 @@ export class Dashboardservice {
   }
 
   getDashboard() {
-    return this.http.get<DashboardResponse>(`${this.baseUrl}/dashboard`);
+    return this.http.get<DashboardResponse>(`${this.baseUrl}/dashboard/`);
   }
 
   clearError(): void {

@@ -31,7 +31,6 @@ li{
     margin-right: 10px;
     padding: 7px;
 }
-
 li a 
 {
     text-decoration:none;
@@ -45,8 +44,12 @@ li:hover
     border: rgba(255, 255, 255, 0.801) 1px solid;
     border-radius: 10px;
 }
-i{
-    color: white;
-    width: auto;
-    height: auto;
+/* li:active
+{
+    border: rgba(255, 255, 255, 0.801) 1px solid;
+    border-radius: 10px;
+} */
+.active-link {
+  border: rgba(255, 255, 255, 0.801) 1px solid;
+    border-radius: 10px;
 }

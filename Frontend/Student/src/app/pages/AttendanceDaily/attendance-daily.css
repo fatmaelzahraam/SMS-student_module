@@ -1,38 +1,36 @@
 
-
 :host{
     display:block;
     background:#EEEEEE;
     min-height:100vh;
 }
-
-
 .attendance-container{
-  position: relative;
-    width:80%;
-    max-width:1200px;
-    margin:60px auto;
+    position: relative;
+    width:90%;
+    margin:40px;
 
 }
 
 /* ================= Date ================= */
 
 .date-header{
-  position: absolute;
-
-  width: 1075px;
-    background-color: #b5bbc5;
+    width:100%;
+    position: absolute;
+    background-color: #E6E6ED;
     display:flex;
     align-items:center;
     gap:10px;
     margin-bottom: 1px;
-    border-radius: 10px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
     top: -25px;
+    padding: 10px;
+    border: #8e8e93a8 solid 1px;
 }
 
 .nav-btn{
-    width:36px;
-    height:36px;
+    width:30px;
+    height:30px;
     border:1px solid #cccccc;
     border-radius:8px;
     background:#fff;
@@ -48,9 +46,10 @@
 .date-box{
     background:#fff;
     border:1px solid #d9d9d9;
-    padding:9px 18px;
+    padding:5px;
     border-radius:8px;
-    font-size:14px;
+    font-size:10px;
+    height:30px;
     font-weight:600;
 }
 
@@ -59,20 +58,25 @@
 .overview-card{
     background:#fff;
     border:1px solid #d9d9d9;
-    border-radius:18px;
+    border-radius:16px;
     padding:25px;
     box-shadow:0 3px 12px rgba(0,0,0,.05);
 }
 
 .overview-card h2{
-    font-size:32px;
-    color:#12233f;
-    margin-bottom:6px;
+    font-size:18px;
+    color:#05172F;
+    margin: 0;
+    padding: 0;
+    font-weight: 800;
 }
 
 .overview-card p{
-    color:#8a8a8a;
-    margin-bottom:30px;
+    color:#05172F;
+    margin-bottom:7px;
+    font-size: 12px;
+    font-weight:200 ;
+
 }
 
 /* ================= Stats ================= */
@@ -116,7 +120,7 @@
 
 .total h3,
 .total h1{
-    color:#1f3556;
+    color:#05172F;
 }
 
 .present{
@@ -126,12 +130,12 @@
 
 .present h3,
 .present h1{
-    color:#169148;
+    color:#189144;
 }
 
 .absent{
-    background:#f8d5d5;
-    border-color:#d87878;
+    background:#EFC6C5;
+    border-color:#620000b9;
 }
 
 .absent h3,
@@ -140,30 +144,28 @@
 }
 
 .late{
-    background:#ffffad;
-    border-color:#d9c934;
+    background:#F9FFA8;
+    border-color:#675c077e;
 }
 
 .late h3,
 .late h1{
-    color:#6b5900;
+    color:#675C07;
 }
 
 .attendance{
-    background:#efe6ff;
-    border-color:#9d79ef;
+    background:#F2EBFF;
+    border-color:#9B7FC9;
 }
 
 .attendance h3,
 .attendance h1{
-    color:#43206d;
+    color:#2B0A4D;
 }
 
 
 .table-card{
-  width: auto;
-
-  height: auto;
+    width: 100%;
     margin-top:30px;
     background:#fff;
     border:1px solid #d8d8d8;
@@ -174,12 +176,13 @@
 
 .table-card h2{
     margin-bottom:20px;
-    font-size:28px;
-    color:#16253f;
+    font-size:18px;
+    font-weight: bold;
+    color:#05172F;
 }
 
 table{
-    width:80%;
+    width:100%;
     border-collapse:separate;
     border-spacing:0;
     overflow:hidden;
@@ -194,7 +197,7 @@ thead{
 th{
     padding:18px 22px;
     text-align:left;
-    color:#45556d;
+    color:#05172fd8;
     font-weight:600;
     font-size:15px;
 }
@@ -203,7 +206,7 @@ td{
     padding:16px 22px;
     border-top:1px solid #ededed;
     font-size:15px;
-    color:#20324d;
+    color:#05172F;
 }
 
 tbody tr{

@@ -477,72 +477,170 @@ public class DataSeeder implements CommandLineRunner {
             violationRepository.save(violation2);
 
             // ====================== SESSIONS (CLASS SCHEDULE) ======================
-            // dayOfWeek: 1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday
+// TIME_SLOTS: 8:00-8:50 | 8:50-9:40 | 9:40-10:30 | BREAK 10:30-11:00 | 11:00-11:50 | 11:50-12:40 | 12:40-1:30 | BREAK 1:30-1:50 | 1:50-2:40 | 2:40-3:30
+// dayOfWeek: 1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday
 
-            // ====================== SESSIONS (CLASS SCHEDULE) ======================
-// dayOfWeek: 1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday, 6=Friday, 7=Saturday
+// ── SUNDAY ──
+            Session s1 = new Session(); s1.setClassField(classEntity); s1.setCourse(course);  s1.setDayOfWeek(1L); s1.setStartAt(LocalTime.of(8,0));   s1.setEndAt(LocalTime.of(8,50));  s1.setSessionType(Session.SessionType.CLASS); s1.setUpdatedAt(LocalDate.now());  sessionRepository.save(s1);
+            Session s2 = new Session(); s2.setClassField(classEntity); s2.setCourse(course2); s2.setDayOfWeek(1L); s2.setStartAt(LocalTime.of(8,50));  s2.setEndAt(LocalTime.of(9,40));  s2.setSessionType(Session.SessionType.CLASS); s2.setUpdatedAt(LocalDate.now());  sessionRepository.save(s2);
+            Session s3 = new Session(); s3.setClassField(classEntity); s3.setCourse(course3); s3.setDayOfWeek(1L); s3.setStartAt(LocalTime.of(9,40));  s3.setEndAt(LocalTime.of(10,30)); s3.setSessionType(Session.SessionType.CLASS); s3.setUpdatedAt(LocalDate.now());  sessionRepository.save(s3);
+// 10:30-11:00 = BREAK (no session)
+            Session s4 = new Session(); s4.setClassField(classEntity); s4.setCourse(course4); s4.setDayOfWeek(1L); s4.setStartAt(LocalTime.of(11,0));  s4.setEndAt(LocalTime.of(11,50)); s4.setSessionType(Session.SessionType.CLASS); s4.setUpdatedAt(LocalDate.now());  sessionRepository.save(s4);
+            Session s5 = new Session(); s5.setClassField(classEntity); s5.setCourse(course5); s5.setDayOfWeek(1L); s5.setStartAt(LocalTime.of(11,50)); s5.setEndAt(LocalTime.of(12,40)); s5.setSessionType(Session.SessionType.CLASS); s5.setUpdatedAt(LocalDate.now());  sessionRepository.save(s5);
+            Session s6 = new Session(); s6.setClassField(classEntity); s6.setCourse(course6); s6.setDayOfWeek(1L); s6.setStartAt(LocalTime.of(12,40)); s6.setEndAt(LocalTime.of(13,30)); s6.setSessionType(Session.SessionType.CLASS); s6.setUpdatedAt(LocalDate.now());  sessionRepository.save(s6);
+// 1:30-1:50 = BREAK (no session)
+            Session s7 = new Session(); s7.setClassField(classEntity); s7.setCourse(course7); s7.setDayOfWeek(1L); s7.setStartAt(LocalTime.of(13,50)); s7.setEndAt(LocalTime.of(14,40)); s7.setSessionType(Session.SessionType.CLASS); s7.setUpdatedAt(LocalDate.now());  sessionRepository.save(s7);
+            Session s8 = new Session(); s8.setClassField(classEntity); s8.setCourse(course8); s8.setDayOfWeek(1L); s8.setStartAt(LocalTime.of(14,40)); s8.setEndAt(LocalTime.of(15,30)); s8.setSessionType(Session.SessionType.CLASS); s8.setUpdatedAt(LocalDate.now());  sessionRepository.save(s8);
 
-// ====================== SUNDAY ======================
-            Session s1 = new Session(); s1.setClassField(classEntity); s1.setCourse(course);  s1.setDayOfWeek(1L); s1.setStartAt(LocalTime.of(8,0));  s1.setEndAt(LocalTime.of(8,50));  s1.setSessionType(Session.SessionType.CLASS); s1.setUpdatedAt(LocalDate.now()); sessionRepository.save(s1);
-            Session s2 = new Session(); s2.setClassField(classEntity); s2.setCourse(course2); s2.setDayOfWeek(1L); s2.setStartAt(LocalTime.of(8,50)); s2.setEndAt(LocalTime.of(9,40));  s2.setSessionType(Session.SessionType.CLASS); s2.setUpdatedAt(LocalDate.now()); sessionRepository.save(s2);
-            Session s3 = new Session(); s3.setClassField(classEntity); s3.setCourse(course);  s3.setDayOfWeek(1L); s3.setStartAt(LocalTime.of(9,40)); s3.setEndAt(LocalTime.of(10,30)); s3.setSessionType(Session.SessionType.CLASS); s3.setUpdatedAt(LocalDate.now()); sessionRepository.save(s3);
-            Session s4 = new Session(); s4.setClassField(classEntity); s4.setCourse(course2); s4.setDayOfWeek(1L); s4.setStartAt(LocalTime.of(10,30)); s4.setEndAt(LocalTime.of(11,20)); s4.setSessionType(Session.SessionType.CLASS); s4.setUpdatedAt(LocalDate.now()); sessionRepository.save(s4);
-            Session s5 = new Session(); s5.setClassField(classEntity); s5.setCourse(course);  s5.setDayOfWeek(1L); s5.setStartAt(LocalTime.of(11,20)); s5.setEndAt(LocalTime.of(12,10)); s5.setSessionType(Session.SessionType.CLASS); s5.setUpdatedAt(LocalDate.now()); sessionRepository.save(s5);
-            Session s6 = new Session(); s6.setClassField(classEntity); s6.setCourse(course2); s6.setDayOfWeek(1L); s6.setStartAt(LocalTime.of(12,10)); s6.setEndAt(LocalTime.of(13,0));  s6.setSessionType(Session.SessionType.CLASS); s6.setUpdatedAt(LocalDate.now()); sessionRepository.save(s6);
-            Session s7 = new Session(); s7.setClassField(classEntity); s7.setCourse(course);  s7.setDayOfWeek(1L); s7.setStartAt(LocalTime.of(13,0));  s7.setEndAt(LocalTime.of(13,50)); s7.setSessionType(Session.SessionType.CLASS); s7.setUpdatedAt(LocalDate.now()); sessionRepository.save(s7);
-            Session s8 = new Session(); s8.setClassField(classEntity); s8.setCourse(course2); s8.setDayOfWeek(1L); s8.setStartAt(LocalTime.of(13,50)); s8.setEndAt(LocalTime.of(14,40)); s8.setSessionType(Session.SessionType.CLASS); s8.setUpdatedAt(LocalDate.now()); sessionRepository.save(s8);
+// ── MONDAY ──
+            Session s9  = new Session(); s9.setClassField(classEntity);  s9.setCourse(course2); s9.setDayOfWeek(2L); s9.setStartAt(LocalTime.of(8,0));   s9.setEndAt(LocalTime.of(8,50));  s9.setSessionType(Session.SessionType.CLASS); s9.setUpdatedAt(LocalDate.now());  sessionRepository.save(s9);
+            Session s10 = new Session(); s10.setClassField(classEntity); s10.setCourse(course3); s10.setDayOfWeek(2L); s10.setStartAt(LocalTime.of(8,50));  s10.setEndAt(LocalTime.of(9,40));  s10.setSessionType(Session.SessionType.CLASS); s10.setUpdatedAt(LocalDate.now()); sessionRepository.save(s10);
+            Session s11 = new Session(); s11.setClassField(classEntity); s11.setCourse(course);  s11.setDayOfWeek(2L); s11.setStartAt(LocalTime.of(9,40));  s11.setEndAt(LocalTime.of(10,30)); s11.setSessionType(Session.SessionType.CLASS); s11.setUpdatedAt(LocalDate.now()); sessionRepository.save(s11);
+// BREAK 10:30-11:00
+            Session s12 = new Session(); s12.setClassField(classEntity); s12.setCourse(course4); s12.setDayOfWeek(2L); s12.setStartAt(LocalTime.of(11,0));  s12.setEndAt(LocalTime.of(11,50)); s12.setSessionType(Session.SessionType.CLASS); s12.setUpdatedAt(LocalDate.now()); sessionRepository.save(s12);
+            Session s13 = new Session(); s13.setClassField(classEntity); s13.setCourse(course5); s13.setDayOfWeek(2L); s13.setStartAt(LocalTime.of(11,50)); s13.setEndAt(LocalTime.of(12,40)); s13.setSessionType(Session.SessionType.CLASS); s13.setUpdatedAt(LocalDate.now()); sessionRepository.save(s13);
+            Session s14 = new Session(); s14.setClassField(classEntity); s14.setCourse(course6); s14.setDayOfWeek(2L); s14.setStartAt(LocalTime.of(12,40)); s14.setEndAt(LocalTime.of(13,30)); s14.setSessionType(Session.SessionType.CLASS); s14.setUpdatedAt(LocalDate.now()); sessionRepository.save(s14);
+// BREAK 1:30-1:50
+            Session s15 = new Session(); s15.setClassField(classEntity); s15.setCourse(course9); s15.setDayOfWeek(2L); s15.setStartAt(LocalTime.of(13,50)); s15.setEndAt(LocalTime.of(14,40)); s15.setSessionType(Session.SessionType.CLASS); s15.setUpdatedAt(LocalDate.now()); sessionRepository.save(s15);
+            Session s16 = new Session(); s16.setClassField(classEntity); s16.setCourse(course7); s16.setDayOfWeek(2L); s16.setStartAt(LocalTime.of(14,40)); s16.setEndAt(LocalTime.of(15,30)); s16.setSessionType(Session.SessionType.CLASS); s16.setUpdatedAt(LocalDate.now()); sessionRepository.save(s16);
 
+// ── TUESDAY ──
+            Session s17 = new Session(); s17.setClassField(classEntity); s17.setCourse(course3); s17.setDayOfWeek(3L); s17.setStartAt(LocalTime.of(8,0));   s17.setEndAt(LocalTime.of(8,50));  s17.setSessionType(Session.SessionType.CLASS); s17.setUpdatedAt(LocalDate.now()); sessionRepository.save(s17);
+            Session s18 = new Session(); s18.setClassField(classEntity); s18.setCourse(course);  s18.setDayOfWeek(3L); s18.setStartAt(LocalTime.of(8,50));  s18.setEndAt(LocalTime.of(9,40));  s18.setSessionType(Session.SessionType.CLASS); s18.setUpdatedAt(LocalDate.now()); sessionRepository.save(s18);
+            Session s19 = new Session(); s19.setClassField(classEntity); s19.setCourse(course8); s19.setDayOfWeek(3L); s19.setStartAt(LocalTime.of(9,40));  s19.setEndAt(LocalTime.of(10,30)); s19.setSessionType(Session.SessionType.CLASS); s19.setUpdatedAt(LocalDate.now()); sessionRepository.save(s19);
+// BREAK 10:30-11:00
+            Session s20 = new Session(); s20.setClassField(classEntity); s20.setCourse(course);  s20.setDayOfWeek(3L); s20.setStartAt(LocalTime.of(11,0));  s20.setEndAt(LocalTime.of(11,50)); s20.setSessionType(Session.SessionType.CLASS); s20.setUpdatedAt(LocalDate.now()); sessionRepository.save(s20);
+            Session s21 = new Session(); s21.setClassField(classEntity); s21.setCourse(course6); s21.setDayOfWeek(3L); s21.setStartAt(LocalTime.of(11,50)); s21.setEndAt(LocalTime.of(12,40)); s21.setSessionType(Session.SessionType.CLASS); s21.setUpdatedAt(LocalDate.now()); sessionRepository.save(s21);
+            Session s22 = new Session(); s22.setClassField(classEntity); s22.setCourse(course6); s22.setDayOfWeek(3L); s22.setStartAt(LocalTime.of(12,40)); s22.setEndAt(LocalTime.of(13,30)); s22.setSessionType(Session.SessionType.CLASS); s22.setUpdatedAt(LocalDate.now()); sessionRepository.save(s22);
+// BREAK 1:30-1:50
+            Session s23 = new Session(); s23.setClassField(classEntity); s23.setCourse(course4); s23.setDayOfWeek(3L); s23.setStartAt(LocalTime.of(13,50)); s23.setEndAt(LocalTime.of(14,40)); s23.setSessionType(Session.SessionType.CLASS); s23.setUpdatedAt(LocalDate.now()); sessionRepository.save(s23);
+            Session s24 = new Session(); s24.setClassField(classEntity); s24.setCourse(course2); s24.setDayOfWeek(3L); s24.setStartAt(LocalTime.of(14,40)); s24.setEndAt(LocalTime.of(15,30)); s24.setSessionType(Session.SessionType.CLASS); s24.setUpdatedAt(LocalDate.now()); sessionRepository.save(s24);
 
-// ====================== MONDAY ======================
-            Session s9 = new Session(); s9.setClassField(classEntity); s9.setCourse(course2); s9.setDayOfWeek(2L); s9.setStartAt(LocalTime.of(8,0)); s9.setEndAt(LocalTime.of(8,50)); s9.setSessionType(Session.SessionType.CLASS); s9.setUpdatedAt(LocalDate.now()); sessionRepository.save(s9);
-            Session s10 = new Session(); s10.setClassField(classEntity); s10.setCourse(course); s10.setDayOfWeek(2L); s10.setStartAt(LocalTime.of(8,50)); s10.setEndAt(LocalTime.of(9,40)); s10.setSessionType(Session.SessionType.CLASS); s10.setUpdatedAt(LocalDate.now()); sessionRepository.save(s10);
-            Session s11 = new Session(); s11.setClassField(classEntity); s11.setCourse(course2); s11.setDayOfWeek(2L); s11.setStartAt(LocalTime.of(9,40)); s11.setEndAt(LocalTime.of(10,30)); s11.setSessionType(Session.SessionType.CLASS); s11.setUpdatedAt(LocalDate.now()); sessionRepository.save(s11);
-            Session s12 = new Session(); s12.setClassField(classEntity); s12.setCourse(course); s12.setDayOfWeek(2L); s12.setStartAt(LocalTime.of(10,30)); s12.setEndAt(LocalTime.of(11,20)); s12.setSessionType(Session.SessionType.CLASS); s12.setUpdatedAt(LocalDate.now()); sessionRepository.save(s12);
-            Session s13 = new Session(); s13.setClassField(classEntity); s13.setCourse(course2); s13.setDayOfWeek(2L); s13.setStartAt(LocalTime.of(11,20)); s13.setEndAt(LocalTime.of(12,10)); s13.setSessionType(Session.SessionType.CLASS); s13.setUpdatedAt(LocalDate.now()); sessionRepository.save(s13);
-            Session s14 = new Session(); s14.setClassField(classEntity); s14.setCourse(course); s14.setDayOfWeek(2L); s14.setStartAt(LocalTime.of(12,10)); s14.setEndAt(LocalTime.of(13,0)); s14.setSessionType(Session.SessionType.CLASS); s14.setUpdatedAt(LocalDate.now()); sessionRepository.save(s14);
-            Session s15 = new Session(); s15.setClassField(classEntity); s15.setCourse(course2); s15.setDayOfWeek(2L); s15.setStartAt(LocalTime.of(13,0)); s15.setEndAt(LocalTime.of(13,50)); s15.setSessionType(Session.SessionType.CLASS); s15.setUpdatedAt(LocalDate.now()); sessionRepository.save(s15);
-            Session s16 = new Session(); s16.setClassField(classEntity); s16.setCourse(course); s16.setDayOfWeek(2L); s16.setStartAt(LocalTime.of(13,50)); s16.setEndAt(LocalTime.of(14,40)); s16.setSessionType(Session.SessionType.CLASS); s16.setUpdatedAt(LocalDate.now()); sessionRepository.save(s16);
+// ── WEDNESDAY ──
+            Session s25 = new Session(); s25.setClassField(classEntity); s25.setCourse(course5); s25.setDayOfWeek(4L); s25.setStartAt(LocalTime.of(8,0));   s25.setEndAt(LocalTime.of(8,50));  s25.setSessionType(Session.SessionType.CLASS); s25.setUpdatedAt(LocalDate.now()); sessionRepository.save(s25);
+            Session s26 = new Session(); s26.setClassField(classEntity); s26.setCourse(course4); s26.setDayOfWeek(4L); s26.setStartAt(LocalTime.of(8,50));  s26.setEndAt(LocalTime.of(9,40));  s26.setSessionType(Session.SessionType.CLASS); s26.setUpdatedAt(LocalDate.now()); sessionRepository.save(s26);
+            Session s27 = new Session(); s27.setClassField(classEntity); s27.setCourse(course2); s27.setDayOfWeek(4L); s27.setStartAt(LocalTime.of(9,40));  s27.setEndAt(LocalTime.of(10,30)); s27.setSessionType(Session.SessionType.CLASS); s27.setUpdatedAt(LocalDate.now()); sessionRepository.save(s27);
+// BREAK 10:30-11:00
+            Session s28 = new Session(); s28.setClassField(classEntity); s28.setCourse(course9); s28.setDayOfWeek(4L); s28.setStartAt(LocalTime.of(11,0));  s28.setEndAt(LocalTime.of(11,50)); s28.setSessionType(Session.SessionType.CLASS); s28.setUpdatedAt(LocalDate.now()); sessionRepository.save(s28);
+            Session s29 = new Session(); s29.setClassField(classEntity); s29.setCourse(course3); s29.setDayOfWeek(4L); s29.setStartAt(LocalTime.of(11,50)); s29.setEndAt(LocalTime.of(12,40)); s29.setSessionType(Session.SessionType.CLASS); s29.setUpdatedAt(LocalDate.now()); sessionRepository.save(s29);
+            Session s30 = new Session(); s30.setClassField(classEntity); s30.setCourse(course);  s30.setDayOfWeek(4L); s30.setStartAt(LocalTime.of(12,40)); s30.setEndAt(LocalTime.of(13,30)); s30.setSessionType(Session.SessionType.CLASS); s30.setUpdatedAt(LocalDate.now()); sessionRepository.save(s30);
+// BREAK 1:30-1:50
+            Session s31 = new Session(); s31.setClassField(classEntity); s31.setCourse(course8); s31.setDayOfWeek(4L); s31.setStartAt(LocalTime.of(13,50)); s31.setEndAt(LocalTime.of(14,40)); s31.setSessionType(Session.SessionType.CLASS); s31.setUpdatedAt(LocalDate.now()); sessionRepository.save(s31);
+            Session s32 = new Session(); s32.setClassField(classEntity); s32.setCourse(course5); s32.setDayOfWeek(4L); s32.setStartAt(LocalTime.of(14,40)); s32.setEndAt(LocalTime.of(15,30)); s32.setSessionType(Session.SessionType.CLASS); s32.setUpdatedAt(LocalDate.now()); sessionRepository.save(s32);
 
-            // ====================== TUESDAY ======================
-            Session s17 = new Session(); s17.setClassField(classEntity); s17.setCourse(course);  s17.setDayOfWeek(3L); s17.setStartAt(LocalTime.of(8,0)); s17.setEndAt(LocalTime.of(8,50)); s17.setSessionType(Session.SessionType.CLASS); s17.setUpdatedAt(LocalDate.now()); sessionRepository.save(s17);
-            Session s18 = new Session(); s18.setClassField(classEntity); s18.setCourse(course2); s18.setDayOfWeek(3L); s18.setStartAt(LocalTime.of(8,50)); s18.setEndAt(LocalTime.of(9,40)); s18.setSessionType(Session.SessionType.CLASS); s18.setUpdatedAt(LocalDate.now()); sessionRepository.save(s18);
-            Session s19 = new Session(); s19.setClassField(classEntity); s19.setCourse(course);  s19.setDayOfWeek(3L); s19.setStartAt(LocalTime.of(9,40)); s19.setEndAt(LocalTime.of(10,30)); s19.setSessionType(Session.SessionType.CLASS); s19.setUpdatedAt(LocalDate.now()); sessionRepository.save(s19);
-            Session s20 = new Session(); s20.setClassField(classEntity); s20.setCourse(course2); s20.setDayOfWeek(3L); s20.setStartAt(LocalTime.of(10,30)); s20.setEndAt(LocalTime.of(11,20)); s20.setSessionType(Session.SessionType.CLASS); s20.setUpdatedAt(LocalDate.now()); sessionRepository.save(s20);
-            Session s21 = new Session(); s21.setClassField(classEntity); s21.setCourse(course);  s21.setDayOfWeek(3L); s21.setStartAt(LocalTime.of(11,20)); s21.setEndAt(LocalTime.of(12,10)); s21.setSessionType(Session.SessionType.CLASS); s21.setUpdatedAt(LocalDate.now()); sessionRepository.save(s21);
-            Session s22 = new Session(); s22.setClassField(classEntity); s22.setCourse(course2); s22.setDayOfWeek(3L); s22.setStartAt(LocalTime.of(12,10)); s22.setEndAt(LocalTime.of(13,0)); s22.setSessionType(Session.SessionType.CLASS); s22.setUpdatedAt(LocalDate.now()); sessionRepository.save(s22);
-            Session s23 = new Session(); s23.setClassField(classEntity); s23.setCourse(course);  s23.setDayOfWeek(3L); s23.setStartAt(LocalTime.of(13,0)); s23.setEndAt(LocalTime.of(13,50)); s23.setSessionType(Session.SessionType.CLASS); s23.setUpdatedAt(LocalDate.now()); sessionRepository.save(s23);
-            Session s24 = new Session(); s24.setClassField(classEntity); s24.setCourse(course2); s24.setDayOfWeek(3L); s24.setStartAt(LocalTime.of(13,50)); s24.setEndAt(LocalTime.of(14,40)); s24.setSessionType(Session.SessionType.CLASS); s24.setUpdatedAt(LocalDate.now()); sessionRepository.save(s24);
-
-
-            // ====================== WEDNESDAY ======================
-            Session s25 = new Session(); s25.setClassField(classEntity); s25.setCourse(course2); s25.setDayOfWeek(4L); s25.setStartAt(LocalTime.of(8,0)); s25.setEndAt(LocalTime.of(8,50)); s25.setSessionType(Session.SessionType.CLASS); s25.setUpdatedAt(LocalDate.now()); sessionRepository.save(s25);
-            Session s26 = new Session(); s26.setClassField(classEntity); s26.setCourse(course); s26.setDayOfWeek(4L); s26.setStartAt(LocalTime.of(8,50)); s26.setEndAt(LocalTime.of(9,40)); s26.setSessionType(Session.SessionType.CLASS); s26.setUpdatedAt(LocalDate.now()); sessionRepository.save(s26);
-            Session s27 = new Session(); s27.setClassField(classEntity); s27.setCourse(course2); s27.setDayOfWeek(4L); s27.setStartAt(LocalTime.of(9,40)); s27.setEndAt(LocalTime.of(10,30)); s27.setSessionType(Session.SessionType.CLASS); s27.setUpdatedAt(LocalDate.now()); sessionRepository.save(s27);
-            Session s28 = new Session(); s28.setClassField(classEntity); s28.setCourse(course); s28.setDayOfWeek(4L); s28.setStartAt(LocalTime.of(10,30)); s28.setEndAt(LocalTime.of(11,20)); s28.setSessionType(Session.SessionType.CLASS); s28.setUpdatedAt(LocalDate.now()); sessionRepository.save(s28);
-            Session s29 = new Session(); s29.setClassField(classEntity); s29.setCourse(course2); s29.setDayOfWeek(4L); s29.setStartAt(LocalTime.of(11,20)); s29.setEndAt(LocalTime.of(12,10)); s29.setSessionType(Session.SessionType.CLASS); s29.setUpdatedAt(LocalDate.now()); sessionRepository.save(s29);
-            Session s30 = new Session(); s30.setClassField(classEntity); s30.setCourse(course); s30.setDayOfWeek(4L); s30.setStartAt(LocalTime.of(12,10)); s30.setEndAt(LocalTime.of(13,0)); s30.setSessionType(Session.SessionType.CLASS); s30.setUpdatedAt(LocalDate.now()); sessionRepository.save(s30);
-            Session s31 = new Session(); s31.setClassField(classEntity); s31.setCourse(course2); s31.setDayOfWeek(4L); s31.setStartAt(LocalTime.of(13,0)); s31.setEndAt(LocalTime.of(13,50)); s31.setSessionType(Session.SessionType.CLASS); s31.setUpdatedAt(LocalDate.now()); sessionRepository.save(s31);
-            Session s32 = new Session(); s32.setClassField(classEntity); s32.setCourse(course); s32.setDayOfWeek(4L); s32.setStartAt(LocalTime.of(13,50)); s32.setEndAt(LocalTime.of(14,40)); s32.setSessionType(Session.SessionType.CLASS); s32.setUpdatedAt(LocalDate.now()); sessionRepository.save(s32);
-
-            // ====================== THURSDAY ======================
-            Session s33 = new Session(); s33.setClassField(classEntity); s33.setCourse(course);  s33.setDayOfWeek(5L); s33.setStartAt(LocalTime.of(8,0));   s33.setEndAt(LocalTime.of(8,50));  s33.setSessionType(Session.SessionType.CLASS); s33.setUpdatedAt(LocalDate.now()); sessionRepository.save(s33);
-            Session s34 = new Session(); s34.setClassField(classEntity); s34.setCourse(course2); s34.setDayOfWeek(5L); s34.setStartAt(LocalTime.of(8,50));  s34.setEndAt(LocalTime.of(9,40));  s34.setSessionType(Session.SessionType.CLASS); s34.setUpdatedAt(LocalDate.now()); sessionRepository.save(s34);
+// ── THURSDAY ──
+            Session s33 = new Session(); s33.setClassField(classEntity); s33.setCourse(course6); s33.setDayOfWeek(5L); s33.setStartAt(LocalTime.of(8,0));   s33.setEndAt(LocalTime.of(8,50));  s33.setSessionType(Session.SessionType.CLASS); s33.setUpdatedAt(LocalDate.now()); sessionRepository.save(s33);
+            Session s34 = new Session(); s34.setClassField(classEntity); s34.setCourse(course);  s34.setDayOfWeek(5L); s34.setStartAt(LocalTime.of(8,50));  s34.setEndAt(LocalTime.of(9,40));  s34.setSessionType(Session.SessionType.CLASS); s34.setUpdatedAt(LocalDate.now()); sessionRepository.save(s34);
             Session s35 = new Session(); s35.setClassField(classEntity); s35.setCourse(course);  s35.setDayOfWeek(5L); s35.setStartAt(LocalTime.of(9,40));  s35.setEndAt(LocalTime.of(10,30)); s35.setSessionType(Session.SessionType.CLASS); s35.setUpdatedAt(LocalDate.now()); sessionRepository.save(s35);
-            Session s36 = new Session(); s36.setClassField(classEntity); s36.setCourse(course2); s36.setDayOfWeek(5L); s36.setStartAt(LocalTime.of(10,30)); s36.setEndAt(LocalTime.of(11,20)); s36.setSessionType(Session.SessionType.CLASS); s36.setUpdatedAt(LocalDate.now()); sessionRepository.save(s36);
-            Session s37 = new Session(); s37.setClassField(classEntity); s37.setCourse(course);  s37.setDayOfWeek(5L); s37.setStartAt(LocalTime.of(11,20)); s37.setEndAt(LocalTime.of(12,10)); s37.setSessionType(Session.SessionType.CLASS); s37.setUpdatedAt(LocalDate.now()); sessionRepository.save(s37);
-            Session s38 = new Session(); s38.setClassField(classEntity); s38.setCourse(course2); s38.setDayOfWeek(5L); s38.setStartAt(LocalTime.of(12,10)); s38.setEndAt(LocalTime.of(13,0));  s38.setSessionType(Session.SessionType.CLASS); s38.setUpdatedAt(LocalDate.now()); sessionRepository.save(s38);
-            Session s39 = new Session(); s39.setClassField(classEntity); s39.setCourse(course);  s39.setDayOfWeek(5L); s39.setStartAt(LocalTime.of(13,0));  s39.setEndAt(LocalTime.of(13,50)); s39.setSessionType(Session.SessionType.CLASS); s39.setUpdatedAt(LocalDate.now()); sessionRepository.save(s39);
-            Session s40 = new Session(); s40.setClassField(classEntity); s40.setCourse(course2); s40.setDayOfWeek(5L); s40.setStartAt(LocalTime.of(13,50)); s40.setEndAt(LocalTime.of(14,40)); s40.setSessionType(Session.SessionType.CLASS); s40.setUpdatedAt(LocalDate.now()); sessionRepository.save(s40);
-            // ====================== SESSIONS (MONTH EXAMS) ======================
-            Session monthExam1 = new Session(); monthExam1.setClassField(classEntity); monthExam1.setCourse(course);  monthExam1.setDayOfWeek(1L); monthExam1.setStartAt(LocalTime.of(9, 0)); monthExam1.setEndAt(LocalTime.of(11, 0)); monthExam1.setSessionType(Session.SessionType.MONTH_EXAM); monthExam1.setUpdatedAt(LocalDate.now()); sessionRepository.save(monthExam1);
-            Session monthExam2 = new Session(); monthExam2.setClassField(classEntity); monthExam2.setCourse(course2); monthExam2.setDayOfWeek(3L); monthExam2.setStartAt(LocalTime.of(9, 0)); monthExam2.setEndAt(LocalTime.of(11, 0)); monthExam2.setSessionType(Session.SessionType.MONTH_EXAM); monthExam2.setUpdatedAt(LocalDate.now()); sessionRepository.save(monthExam2);
+// BREAK 10:30-11:00
+            Session s36 = new Session(); s36.setClassField(classEntity); s36.setCourse(course2); s36.setDayOfWeek(5L); s36.setStartAt(LocalTime.of(11,0));  s36.setEndAt(LocalTime.of(11,50)); s36.setSessionType(Session.SessionType.CLASS); s36.setUpdatedAt(LocalDate.now()); sessionRepository.save(s36);
+            Session s37 = new Session(); s37.setClassField(classEntity); s37.setCourse(course7); s37.setDayOfWeek(5L); s37.setStartAt(LocalTime.of(11,50)); s37.setEndAt(LocalTime.of(12,40)); s37.setSessionType(Session.SessionType.CLASS); s37.setUpdatedAt(LocalDate.now()); sessionRepository.save(s37);
+            Session s38 = new Session(); s38.setClassField(classEntity); s38.setCourse(course3); s38.setDayOfWeek(5L); s38.setStartAt(LocalTime.of(12,40)); s38.setEndAt(LocalTime.of(13,30)); s38.setSessionType(Session.SessionType.CLASS); s38.setUpdatedAt(LocalDate.now()); sessionRepository.save(s38);
+// BREAK 1:30-1:50
+            Session s39 = new Session(); s39.setClassField(classEntity); s39.setCourse(course9); s39.setDayOfWeek(5L); s39.setStartAt(LocalTime.of(13,50)); s39.setEndAt(LocalTime.of(14,40)); s39.setSessionType(Session.SessionType.CLASS); s39.setUpdatedAt(LocalDate.now()); sessionRepository.save(s39);
+// slot 2:40-3:30 empty on Thursday
 
-            // ====================== SESSIONS (FINAL EXAMS) ======================
-            Session finalExam1 = new Session(); finalExam1.setClassField(classEntity); finalExam1.setCourse(course);  finalExam1.setDayOfWeek(2L); finalExam1.setStartAt(LocalTime.of(9, 0)); finalExam1.setEndAt(LocalTime.of(12, 0)); finalExam1.setSessionType(Session.SessionType.FINAL_EXAM); finalExam1.setUpdatedAt(LocalDate.now()); sessionRepository.save(finalExam1);
-            Session finalExam2 = new Session(); finalExam2.setClassField(classEntity); finalExam2.setCourse(course2); finalExam2.setDayOfWeek(4L); finalExam2.setStartAt(LocalTime.of(9, 0)); finalExam2.setEndAt(LocalTime.of(12, 0)); finalExam2.setSessionType(Session.SessionType.FINAL_EXAM); finalExam2.setUpdatedAt(LocalDate.now()); sessionRepository.save(finalExam2);
+// ====================== SESSIONS (MONTH EXAMS) ======================
+// Month exams use updatedAt as the exam DATE — this is what groupByDate() reads
+            Session monthExam1 = new Session();
+            monthExam1.setClassField(classEntity); monthExam1.setCourse(course);
+            monthExam1.setDayOfWeek(1L); // Sunday
+            monthExam1.setStartAt(LocalTime.of(9,0)); monthExam1.setEndAt(LocalTime.of(11,0));
+            monthExam1.setSessionType(Session.SessionType.MONTH_EXAM);
+            monthExam1.setUpdatedAt(LocalDate.of(2026, 4, 24)); // Sunday 24 Apr
+            sessionRepository.save(monthExam1);
+
+            Session monthExam2 = new Session();
+            monthExam2.setClassField(classEntity); monthExam2.setCourse(course2);
+            monthExam2.setDayOfWeek(2L); // Monday
+            monthExam2.setStartAt(LocalTime.of(9,0)); monthExam2.setEndAt(LocalTime.of(11,0));
+            monthExam2.setSessionType(Session.SessionType.MONTH_EXAM);
+            monthExam2.setUpdatedAt(LocalDate.of(2026, 4, 27)); // Monday 27 Apr
+            sessionRepository.save(monthExam2);
+
+            Session monthExam3 = new Session();
+            monthExam3.setClassField(classEntity); monthExam3.setCourse(course3);
+            monthExam3.setDayOfWeek(3L); // Tuesday
+            monthExam3.setStartAt(LocalTime.of(9,0)); monthExam3.setEndAt(LocalTime.of(10,30));
+            monthExam3.setSessionType(Session.SessionType.MONTH_EXAM);
+            monthExam3.setUpdatedAt(LocalDate.of(2026, 4, 28)); // Tuesday 28 Apr
+            sessionRepository.save(monthExam3);
+
+            Session monthExam4 = new Session();
+            monthExam4.setClassField(classEntity); monthExam4.setCourse(course4);
+            monthExam4.setDayOfWeek(3L); // Tuesday
+            monthExam4.setStartAt(LocalTime.of(11,0)); monthExam4.setEndAt(LocalTime.of(12,30));
+            monthExam4.setSessionType(Session.SessionType.MONTH_EXAM);
+            monthExam4.setUpdatedAt(LocalDate.of(2026, 4, 28)); // same day, 2nd exam
+            sessionRepository.save(monthExam4);
+
+            Session monthExam5 = new Session();
+            monthExam5.setClassField(classEntity); monthExam5.setCourse(course5);
+            monthExam5.setDayOfWeek(5L); // Thursday
+            monthExam5.setStartAt(LocalTime.of(9,0)); monthExam5.setEndAt(LocalTime.of(11,0));
+            monthExam5.setSessionType(Session.SessionType.MONTH_EXAM);
+            monthExam5.setUpdatedAt(LocalDate.of(2026, 4, 30)); // Thursday 30 Apr
+            sessionRepository.save(monthExam5);
+
+// ====================== SESSIONS (FINAL EXAMS) ======================
+            Session finalExam1 = new Session();
+            finalExam1.setClassField(classEntity); finalExam1.setCourse(course);
+            finalExam1.setDayOfWeek(1L); // Sunday
+            finalExam1.setStartAt(LocalTime.of(9,0)); finalExam1.setEndAt(LocalTime.of(11,0));
+            finalExam1.setSessionType(Session.SessionType.FINAL_EXAM);
+            finalExam1.setUpdatedAt(LocalDate.of(2026, 5, 10)); // Sunday 10 May
+            sessionRepository.save(finalExam1);
+
+            Session finalExam2 = new Session();
+            finalExam2.setClassField(classEntity); finalExam2.setCourse(course2);
+            finalExam2.setDayOfWeek(1L); // Sunday
+            finalExam2.setStartAt(LocalTime.of(11,30)); finalExam2.setEndAt(LocalTime.of(12,30));
+            finalExam2.setSessionType(Session.SessionType.FINAL_EXAM);
+            finalExam2.setUpdatedAt(LocalDate.of(2026, 5, 10)); // same day, 2nd exam
+            sessionRepository.save(finalExam2);
+
+            Session finalExam3 = new Session();
+            finalExam3.setClassField(classEntity); finalExam3.setCourse(course3);
+            finalExam3.setDayOfWeek(3L); // Tuesday
+            finalExam3.setStartAt(LocalTime.of(9,0)); finalExam3.setEndAt(LocalTime.of(10,30));
+            finalExam3.setSessionType(Session.SessionType.FINAL_EXAM);
+            finalExam3.setUpdatedAt(LocalDate.of(2026, 5, 12)); // Tuesday 12 May
+            sessionRepository.save(finalExam3);
+
+            Session finalExam4 = new Session();
+            finalExam4.setClassField(classEntity); finalExam4.setCourse(course4);
+            finalExam4.setDayOfWeek(3L); // Tuesday
+            finalExam4.setStartAt(LocalTime.of(11,0)); finalExam4.setEndAt(LocalTime.of(13,0));
+            finalExam4.setSessionType(Session.SessionType.FINAL_EXAM);
+            finalExam4.setUpdatedAt(LocalDate.of(2026, 5, 12)); // same day
+            sessionRepository.save(finalExam4);
+
+            Session finalExam5 = new Session();
+            finalExam5.setClassField(classEntity); finalExam5.setCourse(course5);
+            finalExam5.setDayOfWeek(5L); // Thursday
+            finalExam5.setStartAt(LocalTime.of(9,0)); finalExam5.setEndAt(LocalTime.of(11,0));
+            finalExam5.setSessionType(Session.SessionType.FINAL_EXAM);
+            finalExam5.setUpdatedAt(LocalDate.of(2026, 5, 14)); // Thursday 14 May
+            sessionRepository.save(finalExam5);
+
+            Session finalExam6 = new Session();
+            finalExam6.setClassField(classEntity); finalExam6.setCourse(course6);
+            finalExam6.setDayOfWeek(1L); // Sunday
+            finalExam6.setStartAt(LocalTime.of(11,30)); finalExam6.setEndAt(LocalTime.of(12,30));
+            finalExam6.setSessionType(Session.SessionType.FINAL_EXAM);
+            finalExam6.setUpdatedAt(LocalDate.of(2026, 5, 17)); // Sunday 17 May
+            finalExam6.setStartAt(LocalTime.of(9,0));
+            sessionRepository.save(finalExam6);
+
+            Session finalExam7 = new Session();
+            finalExam7.setClassField(classEntity); finalExam7.setCourse(course7);
+            finalExam7.setDayOfWeek(3L); // Tuesday
+            finalExam7.setStartAt(LocalTime.of(9,0)); finalExam7.setEndAt(LocalTime.of(12,0));
+            finalExam7.setSessionType(Session.SessionType.FINAL_EXAM);
+            finalExam7.setUpdatedAt(LocalDate.of(2026, 5, 19)); // Tuesday 19 May
+            sessionRepository.save(finalExam7);
 
             System.out.println("=== Sessions saved: " + sessionRepository.count() + " ===");
-
             // ====================== ATTENDANCE ======================
             // 30 records across the last 30 days — realistic mix of P / A / L
             // Each day has 2 sessions (course + course2), except absences and lates

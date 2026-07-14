@@ -20,8 +20,8 @@ Chart.register(...registerables);
 })
 export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
 
-  // ── Chart canvas refs ────────────────────────────────────────────────────
-  @ViewChild('lineChartRef') lineChartRef!: ElementRef<HTMLCanvasElement>;
+  // ── Chart canvas refs ─────────────────────────────────────────────────────
+  @ViewChild('lineChartRef')  lineChartRef!:  ElementRef<HTMLCanvasElement>;
   @ViewChild('donutChartRef') donutChartRef!: ElementRef<HTMLCanvasElement>;
 
   private lineChartInst:  Chart | null = null;
@@ -72,14 +72,12 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
     Math.max(0, this.totalAssignments() - this.completedAssignments())
   );
 
-  // ── Effects declared as fields (valid injection context) ─────────────────
+  // ── Effects ───────────────────────────────────────────────────────────────
   private readonly dataEffect = effect(() => {
-    // React to service loading finishing
     const loading   = this.svc.isLoading();
     const dashboard = this.svc.dashboard();
     const err       = this.svc.error();
 
-    // Use untracked queueMicrotask to avoid NG0100
     queueMicrotask(() => {
       if (!loading) {
         this.dashboard.set(dashboard);
@@ -91,9 +89,13 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   });
 
   private readonly chartEffect = effect(() => {
-    // Track the signals that should trigger a chart rebuild
-    this.svc.recentMarks();
-    this.svc.assignments();
+    // Track signals that should trigger a rebuild
+    const marks       = this.svc.recentMarks();
+    const assignments = this.svc.assignments();
+    const loading     = this.svc.isLoading();
+
+    // Only build charts once loading is done and canvas refs exist
+    if (loading) return;
 
     queueMicrotask(() => {
       this.buildLineChart();
@@ -115,9 +117,8 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Initial chart render once view is ready (data may already be cached)
-    this.buildLineChart();
-    this.buildDonutChart();
+    // Intentionally empty — chartEffect handles initial render
+    // once data is ready and canvases are in the DOM
   }
 
   ngOnDestroy(): void {

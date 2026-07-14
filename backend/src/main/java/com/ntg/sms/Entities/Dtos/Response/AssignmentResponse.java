@@ -13,7 +13,6 @@ public class AssignmentResponse {
     private int total;
     private int completionPercent;
     private Long id;
-
     private String name;
     private LocalDate deadline;
     private LocalDate assignDate;

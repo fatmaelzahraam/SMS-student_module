@@ -4,32 +4,23 @@
   <div class="page-header">
     <div class="header-part">
       <div class="icon-wrapper">
-        <img src="../assets/images/date.png" alt="">
+        <img src="../assets/images/date.png" style="width: 40px; height: 40px;" alt="">
       </div>
       <div>
         <h2>Schedule</h2>
-        <p>View your class schedule and exam schedules</p>
       </div>
     </div>
-
-    <!-- Tabs -->
     <div class="tabs">
-      <button [class.active]="activeTab() === 'class'"  (click)="setTab('class')">Class schedule</button>
-      <button [class.active]="activeTab() === 'month'"  (click)="setTab('month')">Month exam schedule</button>
-      <button [class.active]="activeTab() === 'final'"  (click)="setTab('final')">Final exam schedule</button>
+      <button [class.active]="activeTab() === 'class'"  (click)="setTab('class')">Class Schedule</button>
+      <button [class.active]="activeTab() === 'month'"  (click)="setTab('month')">Month Exam Schedule</button>
+      <button [class.active]="activeTab() === 'final'"  (click)="setTab('final')">Final Exam Schedule</button>
     </div>
   </div>
 
-  <!-- Loading -->
   @if (isLoading()) {
     <div class="state-box">Loading...</div>
   }
-<!-- <pre style="background:#f5f5f5; padding:12px; font-size:11px; overflow:auto">
-  isLoading: {{ isLoading() }}
-  error: {{ error() }}
-  classSchedule: {{ classSchedule() | json }}
-</pre> -->
-  <!-- Error -->
+
   @if (error()) {
     <div class="error-banner">
       {{ error() }}
@@ -37,10 +28,9 @@
     </div>
   }
 
-  <!-- ── CLASS SCHEDULE ─────────────────────────────────────── -->
+  <!-- ── CLASS SCHEDULE ── -->
   @if (activeTab() === 'class' && !isLoading()) {
-
-    @if (classSchedule()) {
+    @if (classSchedule() && classSchedule()!.weeklySchedule.length > 0) {
       <div class="grid-wrapper">
         <table class="schedule-table">
           <thead>
@@ -50,20 +40,20 @@
                 <th [class.break-col]="isBreak(slot)">
                   {{ slot }}
                   @if (isBreak(slot)) {
-                    <span class="break-label">Break</span>
+                    <div class="break-label">Break</div>
                   }
                 </th>
               }
             </tr>
           </thead>
           <tbody>
-            @for (row of classSchedule()!.weeklySchedule; track row.day) {
-              <tr>
+            @for (row of classSchedule()!.weeklySchedule; track row.day; let i = $index) {
+              <tr [class.row-alt]="i % 2 === 1">
                 <td class="day-name">{{ row.day }}</td>
-                @for (slot of row.slots; track $index) {
-                  <td [class.break-col]="isBreak(timeSlots[$index])">
+                @for (slot of row.slots; track $index; let si = $index) {
+                  <td [class.break-col]="isBreak(timeSlots[si])">
                     @if (slot.session) {
-                      <div class="class-card">
+                      <div class="class-card" [class]="getCardClass(si)">
                         <span class="subject">{{ slot.session.subject }}</span>
                         <span class="teacher">{{ slot.session.teacher }}</span>
                       </div>
@@ -75,71 +65,91 @@
           </tbody>
         </table>
       </div>
-
     } @else {
       <div class="state-box">No class schedule available.</div>
     }
   }
 
-  <!-- ── MONTH EXAM SCHEDULE ────────────────────────────────── -->
+  <!-- ── MONTH EXAM SCHEDULE ── -->
   @if (activeTab() === 'month' && !isLoading()) {
-
     @if (monthExams() && monthExams()!.exams.length > 0) {
-      <div class="exam-wrapper">
-        <table class="exam-table">
+      <div class="exam-card">
+        <table class="exam-col-table">
           <thead>
             <tr>
-              <th>Subject</th>
-              <th>Teacher</th>
-              <th>Start Time</th>
-              <th>End Time</th>
+              <td class="row-label">Date</td>
+              @for (group of groupedMonthExams(); track group.date) {
+                <th class="date-cell">{{ group.date }}</th>
+              }
+            </tr>
+            <tr>
+              <td class="row-label">Day</td>
+              @for (group of groupedMonthExams(); track group.date) {
+                <td class="day-cell">{{ group.day }}</td>
+              }
             </tr>
           </thead>
           <tbody>
-            @for (exam of monthExams()!.exams; track exam.id) {
-              <tr>
-                <td>{{ exam.subject }}</td>
-                <td>{{ exam.teacher }}</td>
-                <td>{{ exam.startTime }}</td>
-                <td>{{ exam.endTime }}</td>
-              </tr>
-            }
+            <tr>
+              <td class="row-label subject-label">Subject</td>
+              @for (group of groupedMonthExams(); track group.date) {
+                <td class="subject-cell">
+                  @for (exam of group.exams; track exam.id) {
+                    <div class="pill" [class]="getPillClass(exam.subject)">
+                      {{ exam.subject }}
+                    </div>
+                  }
+                </td>
+              }
+            </tr>
           </tbody>
         </table>
       </div>
-
     } @else {
       <div class="state-box">No month exam schedule available.</div>
     }
   }
 
-  <!-- ── FINAL EXAM SCHEDULE ────────────────────────────────── -->
+  <!-- ── FINAL EXAM SCHEDULE ── -->
   @if (activeTab() === 'final' && !isLoading()) {
-
     @if (finalExams() && finalExams()!.exams.length > 0) {
-      <div class="exam-wrapper">
-        <table class="exam-table">
+      <div class="exam-card">
+        <table class="final-table">
           <thead>
             <tr>
+              <th>Day & Date</th>
               <th>Subject</th>
-              <th>Teacher</th>
-              <th>Start Time</th>
-              <th>End Time</th>
+              <th>Time</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Notes</th>
             </tr>
           </thead>
           <tbody>
-            @for (exam of finalExams()!.exams; track exam.id) {
-              <tr>
-                <td>{{ exam.subject }}</td>
-                <td>{{ exam.teacher }}</td>
-                <td>{{ exam.startTime }}</td>
-                <td>{{ exam.endTime }}</td>
-              </tr>
+            @for (group of groupedFinalExams(); track group.date) {
+              @for (exam of group.exams; track exam.id; let fi = $index) {
+                <tr>
+                  @if (fi === 0) {
+                    <td class="date-group-cell" [attr.rowspan]="group.exams.length">
+                      <div class="date-day">{{ group.day }}</div>
+                      <div class="date-date">{{ group.date }}</div>
+                    </td>
+                  }
+                  <td>
+                    <div class="pill" [class]="getPillClass(exam.subject)">
+                      {{ exam.subject }}
+                    </div>
+                  </td>
+                  <td>{{ exam.duration }}</td>
+                  <td>{{ exam.from }}</td>
+                  <td>{{ exam.to }}</td>
+                  <td>{{ exam.notes }}</td>
+                </tr>
+              }
             }
           </tbody>
         </table>
       </div>
-
     } @else {
       <div class="state-box">No final exam schedule available.</div>
     }

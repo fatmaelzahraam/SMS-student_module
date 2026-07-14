@@ -37,6 +37,23 @@ public class MarkService {
                 .toList();
     }
 
+    public int getPerformanceScore(Long studentId) {
+        List<Mark> marks = markRepository.findByStudentId(studentId);
+
+        if (marks.isEmpty()) return 0;
+
+        double totalMaxScore = marks.stream()
+                .mapToDouble(mark -> mark.getMaxScore().doubleValue())
+                .sum();
+
+        double totalStudentScore = marks.stream()
+                .mapToDouble(mark -> mark.getScore().doubleValue())
+                .sum();
+
+        if (totalMaxScore == 0) return 0;
+
+        return (int) ((totalStudentScore / totalMaxScore) * 100);
+    }
 
      // Dashboard API
 

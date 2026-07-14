@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 
 public class ClassResponse {
-   private Long id;
-   private String className;
-   private String grade;
+    private Long id;
+    private String className;
+    private String grade;
 }

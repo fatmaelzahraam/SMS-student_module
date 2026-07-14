@@ -1,61 +1,61 @@
 // models/session-interface.ts
 
-// ── Raw backend response (what /api/v1/schedule returns) ──────
 export interface SessionResponse {
-  id: number;
+  id:          number;
   className:   string;
   courseName:  string;
   teacherName: string;
-  dayOfWeek:   number;   // 1 = Sunday … 5 = Thursday
-  startAt:     string;   // "08:00:00"
-  endAt:       string;   // "08:50:00"
+  dayOfWeek:   number;
+  startAt:     string;   // "09:00:00"
+  endAt:       string;   // "11:00:00"
+  examDate:    string;   // "2026-04-24" ← maps to Session.updatedAt
 }
 
-// ── Raw session card (used in static/local data) ──────────────
-export interface SessionInterface {
-  subject: string;
-  teacher: string;
-  color?: string;
-}
-
-// ── Backend response DTOs ─────────────────────────────────────
 export interface ClassSessionResponse {
-  id: number;
-  subject: string;      // course.courseName
-  subjectCode: string;  // course.courseType
-  teacher: string;      // firstName + lastName
+  id:          number;
+  subject:     string;
+  subjectCode: string;
+  teacher:     string;
 }
 
 export interface ScheduleSlot {
-  timeSlot: string;               // "08:00 - 08:50"
-  session: ClassSessionResponse | null;
+  timeSlot: string;
+  session:  ClassSessionResponse | null;
 }
 
 export interface DaySchedule {
-  day: string;                    // "Sunday" ... "Thursday"
+  day:   string;
   slots: ScheduleSlot[];
 }
 
 export interface ClassScheduleResponse {
-  studentId: number;
-  weeklySchedule: DaySchedule[];
+  studentId:       number;
+  weeklySchedule:  DaySchedule[];
 }
 
 export interface ExamEntry {
-  id: number;
-  subject: string;
-  teacher: string;
+  id:        number;
+  subject:   string;
+  teacher:   string;
   startTime: string;
-  endTime: string;
-  type: 'MONTH_EXAM' | 'FINAL_EXAM';
+  endTime:   string;
+  examDate:  string;
+  type:      'MONTH_EXAM' | 'FINAL_EXAM';
 }
 
 export interface ExamScheduleResponse {
   studentId: number;
-  exams: ExamEntry[];
+  exams:     ExamEntry[];
 }
 
-// ── Schedule grid constants ───────────────────────────────────
+export interface SessionInterface {
+  subject: string;
+  teacher: string;
+  color?:  string;
+}
+
+// ── Grid constants ────────────────────────────────────────────
+// Keep these as "H:MM" (no leading zero) to match backend "08:00:00" → stripped to "8:00"
 export const TIME_SLOTS = [
   '8:00 - 8:50',
   '8:50 - 9:40',

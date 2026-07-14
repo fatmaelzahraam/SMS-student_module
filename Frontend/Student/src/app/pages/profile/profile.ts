@@ -15,7 +15,6 @@ export class Profile implements OnInit {
   error: string | null = null;
 
   constructor(private studentService: Profileservice) {}
-  
 
   ngOnInit(): void {
     this.studentService.getProfile().subscribe({

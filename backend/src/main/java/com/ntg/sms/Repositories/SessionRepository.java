@@ -13,77 +13,76 @@ import java.util.List;
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
-    // ── By classId (all session types) ──────────────────────────────────────
     @Query("""
-        SELECT new com.ntg.sms.Entities.Dtos.Response.SessionResponse(
-            s.id,
-            s.classField.name,
-            s.course.courseName,
-            CONCAT(s.course.teacher.user.firstName, ' ', s.course.teacher.user.lastName),
-            s.dayOfWeek,
-            s.startAt,
-            s.endAt
-        )
-        FROM Session s
-        WHERE s.classField.id = :classId
-    """)
+    SELECT new com.ntg.sms.Entities.Dtos.Response.SessionResponse(
+        s.id,
+        s.classField.name,
+        s.course.courseName,
+        CONCAT(s.course.teacher.user.firstName, ' ', s.course.teacher.user.lastName),
+        s.dayOfWeek,
+        s.startAt,
+        s.endAt,
+        s.updatedAt
+    )
+    FROM Session s
+    WHERE s.classField.id = :classId
+""")
     List<SessionResponse> findAllSessionsByClassId(@Param("classId") Long classId);
 
-    // ── CLASS sessions for a student (via student → class) ──────────────────
     @Query("""
-        SELECT new com.ntg.sms.Entities.Dtos.Response.SessionResponse(
-            s.id,
-            s.classField.name,
-            s.course.courseName,
-            CONCAT(s.course.teacher.user.firstName, ' ', s.course.teacher.user.lastName),
-            s.dayOfWeek,
-            s.startAt,
-            s.endAt
-        )
-        FROM Session s
-        JOIN Student st ON st.studentClass.id = s.classField.id
-        WHERE st.id = :studentId
-        AND s.sessionType = com.ntg.sms.Entities.Session$SessionType.CLASS
-        ORDER BY s.dayOfWeek, s.startAt
-    """)
+    SELECT new com.ntg.sms.Entities.Dtos.Response.SessionResponse(
+        s.id,
+        s.classField.name,
+        s.course.courseName,
+        CONCAT(s.course.teacher.user.firstName, ' ', s.course.teacher.user.lastName),
+        s.dayOfWeek,
+        s.startAt,
+        s.endAt,
+        s.updatedAt
+    )
+    FROM Session s
+    JOIN Student st ON st.studentClass.id = s.classField.id
+    WHERE st.id = :studentId
+    AND s.sessionType = com.ntg.sms.Entities.Session$SessionType.CLASS
+    ORDER BY s.dayOfWeek, s.startAt
+""")
     List<SessionResponse> findClassSessionsByStudentId(@Param("studentId") Long studentId);
 
-    // ── MONTH_EXAM sessions for a student ────────────────────────────────────
     @Query("""
-        SELECT new com.ntg.sms.Entities.Dtos.Response.SessionResponse(
-            s.id,
-            s.classField.name,
-            s.course.courseName,
-            CONCAT(s.course.teacher.user.firstName, ' ', s.course.teacher.user.lastName),
-            s.dayOfWeek,
-            s.startAt,
-            s.endAt
-        )
-        FROM Session s
-        JOIN Student st ON st.studentClass.id = s.classField.id
-        WHERE st.id = :studentId
-        AND s.sessionType = com.ntg.sms.Entities.Session$SessionType.MONTH_EXAM
-        ORDER BY s.startAt
-    """)
+    SELECT new com.ntg.sms.Entities.Dtos.Response.SessionResponse(
+        s.id,
+        s.classField.name,
+        s.course.courseName,
+        CONCAT(s.course.teacher.user.firstName, ' ', s.course.teacher.user.lastName),
+        s.dayOfWeek,
+        s.startAt,
+        s.endAt,
+        s.updatedAt
+    )
+    FROM Session s
+    JOIN Student st ON st.studentClass.id = s.classField.id
+    WHERE st.id = :studentId
+    AND s.sessionType = com.ntg.sms.Entities.Session$SessionType.MONTH_EXAM
+    ORDER BY s.updatedAt, s.startAt
+""")
     List<SessionResponse> findMonthExamsByStudentId(@Param("studentId") Long studentId);
 
-    // ── FINAL_EXAM sessions for a student ────────────────────────────────────
     @Query("""
-        SELECT new com.ntg.sms.Entities.Dtos.Response.SessionResponse(
-            s.id,
-            s.classField.name,
-            s.course.courseName,
-            CONCAT(s.course.teacher.user.firstName, ' ', s.course.teacher.user.lastName),
-            s.dayOfWeek,
-            s.startAt,
-            s.endAt
-        )
-        FROM Session s
-        JOIN Student st ON st.studentClass.id = s.classField.id
-        WHERE st.id = :studentId
-        AND s.sessionType = com.ntg.sms.Entities.Session$SessionType.FINAL_EXAM
-        ORDER BY s.startAt
-    """)
+    SELECT new com.ntg.sms.Entities.Dtos.Response.SessionResponse(
+        s.id,
+        s.classField.name,
+        s.course.courseName,
+        CONCAT(s.course.teacher.user.firstName, ' ', s.course.teacher.user.lastName),
+        s.dayOfWeek,
+        s.startAt,
+        s.endAt,
+        s.updatedAt
+    )
+    FROM Session s
+    JOIN Student st ON st.studentClass.id = s.classField.id
+    WHERE st.id = :studentId
+    AND s.sessionType = com.ntg.sms.Entities.Session$SessionType.FINAL_EXAM
+    ORDER BY s.updatedAt, s.startAt
+""")
     List<SessionResponse> findFinalExamsByStudentId(@Param("studentId") Long studentId);
-
 }

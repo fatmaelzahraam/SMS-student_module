@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Profileservice } from '../../pages/profile/service/profileservice';
+import { RouterLink } from '@angular/router';
 
 
 
 @Component({
   selector: 'app-dashboard-header',
-  imports: [CommonModule],
+  imports: [CommonModule,RouterLink],
   templateUrl: './dashboard-header.html',
   styleUrl: './dashboard-header.css',
 })

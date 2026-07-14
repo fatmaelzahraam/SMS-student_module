@@ -1,218 +1,153 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    background:#EEEEEE;
-}
-
-/* ================= Layout ================= */
-
-.layout{
-    display:flex;
-    min-height:100vh;
-    background:#EEEEEE;
-}
-
-/* ================= Main ================= */
-
-.content{
+.content {
   width: 100%;
 }
 
-/* ================= Header ================= */
-
-.header{
-
-    background:#fff;
-    display:flex;
-    align-items:center;
-    gap:18px;
-    border-bottom-left-radius:15px;
-    padding:21px 30px;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-    margin-bottom:30px;
-
-}
-.header h2{
-
-    color:#05172F;
+/* ─── Header ─── */
+.header {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border-bottom-left-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  border: 1px solid #8e8e93b6;
 }
 
-.header p{
-
-    color:#64748b;
-    font-size:13px;
+.header h2 {
+  color: #05172F;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-/* ================= Card ================= */
-
-.assignment-card{
-
-    background:#fff;
-    border-radius:18px;
-    box-shadow:0 8px 20px rgba(0,0,0,.1);
-    overflow:hidden;
-    margin: 30px  30px;
-
+.header-sub {
+  color: #87A7C8;
+  font-size: 12px;
+  margin-top: 2px;
 }
 
-/* ================= Table ================= */
-
-table{
-
-    width:100%;
-    border-collapse:collapse;
-
+/* ─── Assignment card / table wrapper ─── */
+.assignment-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
+  overflow: hidden;
+  margin: 0 30px 30px;
 }
 
-thead{
-
-    background:#05172F;
-
+/* ─── Table ─── */
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-th{
-
-    color:#fff;
-    padding:18px;
-    text-align:left;
+thead {
+  background: #05172F;   /* SMS dark navy */
 }
 
-td{
-
-    padding:18px;
-    border-bottom:1px solid #eee;
+th {
+  color: #fff;
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-tbody tr:hover{
-
-    background:#fafafa;
-
+.th-icon {
+  margin-right: 4px;
+  font-size: 12px;
+  opacity: 0.75;
 }
 
-/* ================= Status ================= */
-/* .circle_green{
-  background-color: #3B6D11;
-  border-radius: 100%;
-  height: 10PX;
-  width: 10px;
-  position: absolute;
-  right: 650px;
-
-
-
-} */
-.status{
-
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    color: green;
-    padding:12px 14px;
-    background-color: #EAF3DE;
-    border-radius:30px;
-    font-size:12px;
-    font-weight:bold;
-
+td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #EEEEEE;
+  font-size: 14px;
+  color: #05172F;
+  vertical-align: middle;
 }
 
-.status::before{
-    background-color: #3B6D11;
-    content:"";
-    width:8px;
-    height:8px;
-    border-radius:50%;
-
+.td-title {
+  font-weight: 500;
 }
 
-
-
-.submitted{
-
-    background:#fff4d8;
-    color:#e08a00;
+tbody tr:last-child td {
+  border-bottom: none;
 }
 
-.submitted::before{
-
-    background:#e08a00;
+tbody tr:hover {
+  background: #fafafa;
 }
 
-.pending{
-
-    background:#e9e9e9;
-    color:#555;
+/* ─── Subject badge ─── */
+.subject {
+  display: inline-block;
+  padding: 4px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-right: 4px;
+  background-color: #F5E6E6;
+  color: #620000;
 }
 
-.pending::before{
-
-    background:#555;
+/* ─── View button ─── */
+.view-btn {
+  padding: 5px 22px;
+  border-radius: 25px;
+  background: #fff;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
 }
 
-/* ================= Subject ================= */
-
-.subject{
-
-    display:inline-block;
-    padding:10px 30px;
-    border-radius:20px;
-    font-size:12px;
-        background:#ffe4c4;
-    color:#f97316;
+.view-btn:hover {
+  background: #05172F;
+  color: #fff;
+  border-color: #05172F;
 }
 
-
-
-/* ================= Button ================= */
-
-.view-btn{
-
-    border:none;
-    padding:8px 22px;
-
-    border-radius:25px;
-
-    background:#fff;
-
-    border:1px solid #bbb;
-
-    cursor:pointer;
-
-    transition:.3s;
-
+/* Urgent deadline → burgundy (matches image's third row) */
+.view-btn--urgent {
+  background: #620000;
+  color: #fff;
+  border-color: #620000;
 }
 
-.view-btn:hover{
-
-    background:#620000;
-    color:#fff;
-
+.view-btn--urgent:hover {
+  background: #8a0000;
+  border-color: #8a0000;
 }
 
-/* ================= Responsive ================= */
-
-@media(max-width:900px){
-
-.sidebar{
-
-    width:80px;
-
+/* ─── State messages (loading / error / empty) ─── */
+.state-msg {
+  text-align: center;
+  padding: 40px;
+  color: #87A7C8;
+  font-size: 14px;
 }
 
-.sidebar span{
-
-    display:none;
-
+.state-msg.error {
+  color: #620000;
 }
 
-.content{
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .assignment-card {
+    margin: 0 12px 20px;
+    border-radius: 10px;
+  }
 
-    margin-left:80px;
-    width:calc(100% - 80px);
+  th, td {
+    padding: 12px 10px;
+    font-size: 12px;
+  }
 
-}
-
+  .subject {
+    padding: 3px 10px;
+  }
 }

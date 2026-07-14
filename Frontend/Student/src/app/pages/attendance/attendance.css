@@ -1,15 +1,8 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 :host{
     display: block;
     min-height: 100vh;
 
 }
-
 /* =======================
         Overview
 ======================= */
@@ -25,14 +18,15 @@
 }
 
 .simster h4{
-    font-size:20px;
+    font-size:18px;
     color:#05172F;
     font-weight:400;
 }
 
 .simster p{
     color:#4D4B4B;
-    font-size:18px;
+    font-size:14px;
+    font-weight: 300;
 }
 
 .ovarall{
@@ -40,7 +34,7 @@
     border:1px solid #05172F;
     border-radius:15px;
     background:#bad4eeda;
-    font-size:20px;
+    font-size:18px;
     font-weight:500;
     color:#05172F;
 }
@@ -101,7 +95,7 @@
     background:#620000;
     border-radius:50%;
     padding: 7px;
-     display: flex;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -112,7 +106,7 @@
     background:#675C07;
     border-radius:50%;
     padding: 7px;
-     display: flex;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -165,35 +159,26 @@
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:20px;
-
+    margin-bottom: 20px;
 }
 
 .chart-card{
 
     background:#fff;
-
-    border-radius:18px;
-
-    padding:25px;
-
+    border-radius:15px;
+    padding:20px;
     box-shadow:0 4px 12px rgba(0,0,0,.15);
-
-    min-height:420px;
-
+    height:370px;
 }
 
 .chart-card h3{
-
-    margin-bottom:20px;
-
+    margin-bottom:10px;
 }
 
 apx-chart{
-
     display:block;
-
     width:100%;
-
+    height: 90%;
 }
 
 /* =======================
