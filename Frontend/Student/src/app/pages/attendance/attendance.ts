@@ -1,13 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
+import {
+  ApexChart,
+  ApexAxisChartSeries,
+  ApexNonAxisChartSeries,
+  ApexXAxis,
+  ApexYAxis,
+  ApexTitleSubtitle,
+  ApexDataLabels,
+  ApexStroke,
+  ApexPlotOptions,
+  ApexTooltip,
+  ChartComponent
+} from 'ng-apexcharts';
 
-import {ApexChart, ApexAxisChartSeries, ApexNonAxisChartSeries, ApexXAxis, ApexTitleSubtitle,
-  ApexDataLabels, ApexStroke, ApexPlotOptions ,ChartComponent} from 'ng-apexcharts';
+import { forkJoin } from 'rxjs';
+
 import { AttendanceNav } from '../../components/attendance-nav/attendance-nav';
 import { AttendanceOverview } from '../../models/AttendanceOverview';
+import { PermissionResponse } from '../../models/PermissionResponse';
+import { PermissionService } from '../attendance/service/permission.service';
 import { AttendanceService } from './service/attendace-service';
-
 
 export type RadialChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -20,6 +34,8 @@ export type LineChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
   xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
+  tooltip: ApexTooltip;
   dataLabels: ApexDataLabels;
   stroke: ApexStroke;
   title: ApexTitleSubtitle;
@@ -28,26 +44,25 @@ export type LineChartOptions = {
 @Component({
   selector: 'app-attendance',
   standalone: true,
-  imports: [AttendanceNav,ChartComponent],
+  imports: [CommonModule, AttendanceNav, ChartComponent],
   templateUrl: './attendance.html',
   styleUrl: './attendance.css'
 })
 export class Attendance implements OnInit {
 
   attendance?: AttendanceOverview;
-
-  constructor(private attendanceService: AttendanceService) {}
+  permissions: PermissionResponse[] = [];
 
   radialChartOptions: RadialChartOptions = {
     series: [0],
-    chart: {
-      type: 'radialBar',
-      height: 300
-    },
+    chart: { type: 'radialBar', height: 300 },
     plotOptions: {
       radialBar: {
-        hollow: {
-          size: '70%'
+        hollow: { size: '70%' },
+        dataLabels: {
+          value: {
+            formatter: (val: number) => val.toFixed(2) + '%'
+          }
         }
       }
     },
@@ -55,69 +70,54 @@ export class Attendance implements OnInit {
   };
 
   lineChartOptions: LineChartOptions = {
-    series: [
-      {
-        name: 'Attendance',
-        data: []
+    series: [{ name: 'Attendance', data: [] }],
+    chart: { type: 'line', height: 300 },
+    dataLabels: { enabled: false },
+    stroke: { curve: 'smooth' },
+    title: { text: 'Attendance Trend' },
+    xaxis: { categories: ['Present', 'Absent', 'Late'] },
+    yaxis: {
+      labels: {
+        formatter: (val: number) => val.toFixed(2) + '%'
       }
-    ],
-    chart: {
-      type: 'line',
-      height: 300
     },
-    dataLabels: {
-      enabled: false
-    },
-    stroke: {
-      curve: 'smooth'
-    },
-    title: {
-      text: 'Attendance Trend'
-    },
-    xaxis: {
-      categories: ['Present', 'Absent', 'Late']
+    tooltip: {
+      y: {
+        formatter: (val: number) => val.toFixed(2) + '%'
+      }
     }
   };
 
+  constructor(
+    private attendanceService: AttendanceService ,
+    private permissionService: PermissionService
+  ) {}
+
   ngOnInit(): void {
+    forkJoin({
+      overview:    this.attendanceService.getOverview(),
+      permissions: this.permissionService.getMyPermissions()
+    }).subscribe({
+      next: ({ overview, permissions }) => {
 
-    const studentId = 1;
-
-    this.attendanceService.getOverview(studentId).subscribe({
-
-      next: (data) => {
-
-        console.log(data);
-
-        this.attendance = data;
+        this.attendance = overview;
 
         this.radialChartOptions = {
           ...this.radialChartOptions,
-          series: [data.attendancePercentage]
+          series: [overview.attendancePercentage]
         };
 
         this.lineChartOptions = {
           ...this.lineChartOptions,
-          series: [
-            {
-              name: 'Attendance',
-              data: [
-                data.presentDays,
-                data.absentDays,
-                data.lateDays
-              ]
-            }
-          ]
+          series: [{
+            name: 'Attendance',
+            data: [overview.presentDays, overview.absentDays, overview.lateDays]
+          }]
         };
 
+        this.permissions = permissions;
       },
-
-      error: (err) => {
-        console.error(err);
-      }
-
+      error: (err) => console.error('Failed to load attendance data:', err)
     });
-
   }
-
 }

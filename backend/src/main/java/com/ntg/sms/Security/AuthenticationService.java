@@ -91,6 +91,11 @@ public class AuthenticationService {
         return userRepository.findAll();
     }
 
+    public Long getUserIdByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email))
+                .getId();
+    }
     
 
 }

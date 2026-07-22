@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @Table(name = "PROJECT")
 public class Project {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "PROJECT_ID", nullable = false)
     private Long id;
 

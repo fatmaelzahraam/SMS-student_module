@@ -7,7 +7,13 @@ import {
   ApexNonAxisChartSeries,
   ApexPlotOptions
 } from 'ng-apexcharts';
+
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
 import { AttendanceNav } from '../../components/attendance-nav/attendance-nav';
+import { PermissionResponse } from '../../models/PermissionResponse';
+import { PermissionService } from '../attendance/service/permission.service';
 import { AttendanceMonthlyResponse } from '../../models/AttendaceMonthlyResponse';
 import { AttendanceService } from '../attendance/service/attendace-service';
 
@@ -21,61 +27,99 @@ export type RadialChartOptions = {
 @Component({
   selector: 'app-attendance-monthly',
   standalone: true,
-  imports: [
-    CommonModule,
-    AttendanceNav,
-    NgApexchartsModule
-  ],
+  imports: [CommonModule, AttendanceNav, NgApexchartsModule],
   templateUrl: './attendance-monthly.html',
   styleUrl: './attendance-monthly.css'
 })
 export class AttendanceMonthly implements OnInit {
 
   monthlyAttendance?: AttendanceMonthlyResponse;
+  permissions: PermissionResponse[] = [];
 
-  studentId = 1;
-  month = 7;
-  year = 2026;
+  month = new Date().getMonth() + 1;
+  year  = new Date().getFullYear();
 
   radialChartOptions: RadialChartOptions = {
     series: [0],
-    chart: {
-      type: 'radialBar',
-      height: 300
-    },
+    chart: { type: 'radialBar', height: 300 },
     plotOptions: {
       radialBar: {
-        hollow: {
-          size: '70%'
+        hollow: { size: '70%' },
+        dataLabels: {
+          value: {
+            formatter: (val: number) => val.toFixed(2) + '%'
+          }
         }
       }
     },
     labels: ['Attendance']
   };
 
-  constructor(private attendanceService: AttendanceService) {}
+  constructor(
+    private attendanceService: AttendanceService,
+    private permissionService: PermissionService
+  ) {}
 
   ngOnInit(): void {
-    this.loadMonthlyAttendance();
+    this.loadMonthlyData();
   }
 
-  loadMonthlyAttendance(): void {
-    this.attendanceService
-      .getMonthlyAttendance(this.studentId, this.month, this.year)
-      .subscribe({
-        next: (response) => {
-          this.monthlyAttendance = response;
+  loadMonthlyData(): void {
+    const from = this.firstDayOfMonth();
+    const to   = this.lastDayOfMonth();
 
-          this.radialChartOptions = {
-            ...this.radialChartOptions,
-            series: [response.attendancePercentage]
-          };
+    forkJoin({
+      monthly: this.attendanceService
+        .getMonthlyAttendance(this.month, this.year)
+        .pipe(catchError(err => {
+          console.error('Monthly attendance error:', err);
+          return of(null);
+        })),
 
-          console.log(response);
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      });
+      permissions: this.permissionService
+        .getMyPermissionsByDateRange(from, to)
+        .pipe(catchError(err => {
+          console.error('Permissions error:', err);
+          return of([]);
+        }))
+
+    }).subscribe(({ monthly, permissions }) => {
+
+      if (monthly) {
+        this.monthlyAttendance = monthly;
+        this.radialChartOptions = {
+          ...this.radialChartOptions,
+          series: [monthly.attendancePercentage]
+        };
+      }
+
+      this.permissions = permissions ?? [];
+    });
+  }
+
+  previousMonth(): void {
+    if (this.month === 1) { this.month = 12; this.year -= 1; }
+    else                  { this.month -= 1; }
+    this.loadMonthlyData();
+  }
+
+  nextMonth(): void {
+    if (this.month === 12) { this.month = 1; this.year += 1; }
+    else                   { this.month += 1; }
+    this.loadMonthlyData();
+  }
+
+  get monthLabel(): string {
+    return new Date(this.year, this.month - 1, 1)
+      .toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+
+  private firstDayOfMonth(): string {
+    return `${this.year}-${String(this.month).padStart(2, '0')}-01`;
+  }
+
+  private lastDayOfMonth(): string {
+    const last = new Date(this.year, this.month, 0).getDate();
+    return `${this.year}-${String(this.month).padStart(2, '0')}-${String(last).padStart(2, '0')}`;
   }
 }

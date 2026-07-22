@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule, NgModel } from '@angular/forms';  // ← add NgModel
+import { RouterLink } from '@angular/router';
 import { ComplaintResponse } from '../../models/ComplaintResponse';
 import { ComplaintDetailsResponse } from '../../models/ComplaintDetailsResponse';
 import { ComplaintStatisticsResponse } from '../../models/ComplaintStatisticsResponse';
 import { CreateComplaintRequest } from '../../models/CreateComplaintRequest';
 import { ComplaintsService } from './service/complaints';
-
-
 
 @Component({
   selector: 'app-complaints',
@@ -17,7 +15,7 @@ import { ComplaintsService } from './service/complaints';
     CommonModule,
     FormsModule,
     RouterLink,
-    RouterLinkActive
+    DatePipe
   ],
   templateUrl: './complaints.html',
   styleUrls: ['./complaints.css']
@@ -25,23 +23,18 @@ import { ComplaintsService } from './service/complaints';
 export class Complaints implements OnInit {
 
   complaints: ComplaintResponse[] = [];
-
   selectedComplaint?: ComplaintDetailsResponse;
-
   statistics?: ComplaintStatisticsResponse;
-
   showNewComplaint = false;
-
   loading = false;
+  errorMessage: string | null = null;
 
   newComplaint: CreateComplaintRequest = {
     title: '',
     description: ''
   };
 
-  constructor(
-    private complaintsService: ComplaintsService
-  ) {}
+  constructor(private complaintsService: ComplaintsService) {}
 
   ngOnInit(): void {
     this.loadStatistics();
@@ -49,138 +42,78 @@ export class Complaints implements OnInit {
   }
 
   loadComplaints(): void {
-
     this.complaintsService.getMyComplaints().subscribe({
-
       next: (data) => {
-
         this.complaints = data;
-
         if (this.complaints.length > 0) {
-
           this.selectComplaint(this.complaints[0].complaintId);
-
         }
-
       },
-
-      error: (err) => {
-
-        console.error(err);
-
-      }
-
+      error: (err) => console.error(err)
     });
-
   }
 
   loadStatistics(): void {
-
     this.complaintsService.getStatistics().subscribe({
-
-      next: (data) => {
-
-        this.statistics = data;
-
-      },
-
-      error: (err) => {
-
-        console.error(err);
-
-      }
-
+      next: (data) => { this.statistics = data; },
+      error: (err) => console.error(err)
     });
-
   }
 
   selectComplaint(id: number): void {
-
     this.showNewComplaint = false;
-
     this.complaintsService.getComplaintDetails(id).subscribe({
-
-      next: (data) => {
-
-        this.selectedComplaint = data;
-
-      },
-
-      error: (err) => {
-
-        console.error(err);
-
-      }
-
+      next: (data) => { this.selectedComplaint = data; },
+      error: (err) => console.error(err)
     });
-
   }
 
   openNewComplaint(): void {
+  this.showNewComplaint = true;
+  this.selectedComplaint = undefined;
+  this.errorMessage = null;          // ← clear on open
+  this.newComplaint = { title: '', description: '' };
+}
 
-    this.showNewComplaint = true;
+closeNewComplaint(): void {
+  this.showNewComplaint = false;
+  this.errorMessage = null;          // ← clear on close
+  this.newComplaint = { title: '', description: '' };
+}
 
-    this.selectedComplaint = undefined;
 
-    this.newComplaint = {
-      title: '',
-      description: ''
-    };
-
-  }
-
-  closeNewComplaint(): void {
-
-    this.showNewComplaint = false;
-
-    this.newComplaint = {
-      title: '',
-      description: ''
-    };
-
-  }
 
   cancelComplaint(): void {
-
     this.closeNewComplaint();
-
   }
 
-  submitComplaint(): void {
 
-    if (
-      !this.newComplaint.title.trim() ||
-      !this.newComplaint.description.trim()
-    ) {
-      return;
+submitComplaint(titleField: NgModel, descField: NgModel): void {
+  titleField.control.markAsTouched();
+  descField.control.markAsTouched();
+
+  if (titleField.invalid || descField.invalid) {
+    return;
+  }
+
+  if (!this.newComplaint.title.trim() || !this.newComplaint.description.trim()) {
+    return;
+  }
+
+  this.loading = true;
+
+  this.complaintsService.createComplaint(this.newComplaint).subscribe({
+    next: () => {
+      this.loading = false;
+      this.closeNewComplaint();
+      this.loadComplaints();
+      this.loadStatistics();
+    },
+    error: (err) => {
+      console.error(err);
+      this.loading = false;
+      this.errorMessage = 'Failed to submit complaint. Please try again.';
     }
-
-    this.loading = true;
-
-    this.complaintsService.createComplaint(this.newComplaint).subscribe({
-
-      next: () => {
-
-        this.loading = false;
-
-        this.closeNewComplaint();
-
-        this.loadComplaints();
-
-        this.loadStatistics();
-
-      },
-
-      error: (err) => {
-
-        console.error(err);
-
-        this.loading = false;
-
-      }
-
-    });
-
-  }
-
+  });
+}
 }

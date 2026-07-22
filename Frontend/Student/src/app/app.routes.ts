@@ -23,7 +23,6 @@ import { Settings } from './pages/settings/settings';
 import { Support } from './pages/support/support';
 import { Violations } from './pages/violations/violation-comp';
 
-import { ChangPassword } from './components/change-password/change-password';
 
 export const routes: Routes = [
 
@@ -118,25 +117,10 @@ export const routes: Routes = [
         path: 'support',
         component: Support
       },
-
-      {
-        path: 'change-password',
-        component: ChangPassword
-      },
-
       {
         path: 'violations',
         component: Violations
       }
     ]
   },
-
-  // // =========================
-  // // Unknown Route
-  // // =========================
-  // {
-  //   path: '**',
-  //   redirectTo: 'login'
-  // }
-
 ];

@@ -1,6 +1,5 @@
 package com.ntg.sms.Controllers;
 
-import com.ntg.sms.Entities.Dtos.Request.AttendanceRequest;
 import com.ntg.sms.Entities.Dtos.Response.AttendaceResponse;
 import com.ntg.sms.Entities.Dtos.Response.AttendanceDailyResponse;
 import com.ntg.sms.Entities.Dtos.Response.AttendanceMonthlyResponse;
@@ -8,8 +7,8 @@ import com.ntg.sms.Entities.Dtos.Response.AttendanceOverviewResponse;
 import com.ntg.sms.Service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,89 +21,102 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
-    // Get Attendance by ID
+    // ── Admin endpoints (studentId in path) ─────────────────────────────────
+
     @GetMapping("/{id}")
-    public AttendaceResponse getAttendanceById(@PathVariable Long id) {
-        return attendanceService.getAttendanceById(id);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AttendaceResponse> getAttendanceById(@PathVariable Long id) {
+        return ResponseEntity.ok(attendanceService.getAttendanceById(id));
     }
 
-    // Get All Attendance
     @GetMapping
-    public List<AttendaceResponse> getAllAttendance() {
-        return attendanceService.getAllAttendance();
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<AttendaceResponse>> getAllAttendance() {
+        return ResponseEntity.ok(attendanceService.getAllAttendance());
     }
 
-    // Get Attendance by Student ID
     @GetMapping("/student/{studentId}")
-    public List<AttendaceResponse> getAttendanceByStudent(
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<AttendaceResponse>> getAttendanceByStudent(
             @PathVariable Long studentId) {
-
-        return attendanceService.getAttendanceByStudent(studentId);
+        return ResponseEntity.ok(attendanceService.getAttendanceByStudent(studentId));
     }
 
-    // Get Attendance by Session ID
     @GetMapping("/session/{sessionId}")
-    public List<AttendaceResponse> getAttendanceBySession(
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<AttendaceResponse>> getAttendanceBySession(
             @PathVariable Long sessionId) {
-
-        return attendanceService.getAttendanceBySession(sessionId);
+        return ResponseEntity.ok(attendanceService.getAttendanceBySession(sessionId));
     }
 
+    // ── Student-facing endpoints (resolved from JWT — no studentId param) ───
 
-    // Get Today's Attendance Count
-    @GetMapping("/today/count")
-    public Double getTodayAttendance() {
-        return attendanceService.getTodayAttendance();
+    /**
+     * GET /api/v1/attendance/my
+     * Full attendance history for the logged-in student.
+     */
+    @GetMapping("/my")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<List<AttendaceResponse>> getMyAttendance() {
+        return ResponseEntity.ok(attendanceService.getMyAttendance());
     }
 
-    // Get Weekly Attendance Counts
-    @GetMapping("/weekly/count")
-    public List<Long> getWeeklyAttendanceCounts(
-            @RequestParam(defaultValue = "7") int weeks) {
-
-        return attendanceService.getWeeklyAttendanceCounts(weeks);
-    }
-
-    // Get Weekly Labels
-    @GetMapping("/weekly/labels")
-    public List<String> getWeeklyLabels(
-            @RequestParam(defaultValue = "7") int weeks) {
-
-        return attendanceService.getWeeklyLabels(weeks);
-    }
-
-
+    /**
+     * GET /api/v1/attendance/overview
+     * Total / present / absent / late / percentage for the logged-in student.
+     */
     @GetMapping("/overview")
-    public ResponseEntity<AttendanceOverviewResponse> getOverview(
-            @RequestParam Long studentId) {
-
-        return ResponseEntity.ok(
-                attendanceService.getOverview(studentId));
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<AttendanceOverviewResponse> getOverview() {
+        return ResponseEntity.ok(attendanceService.getOverview());
     }
 
+    /**
+     * GET /api/v1/attendance/daily?date=2026-07-06
+     * Day-level breakdown for the logged-in student.
+     */
     @GetMapping("/daily")
+    @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<AttendanceDailyResponse> getDailyAttendance(
-
-            @RequestParam Long studentId,
-
             @RequestParam
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date) {
 
-        return ResponseEntity.ok(
-                attendanceService.getDailyAttendance(studentId, date));
+        return ResponseEntity.ok(attendanceService.getDailyAttendance(date));
     }
 
+    /**
+     * GET /api/v1/attendance/monthly?month=7&year=2026
+     * Month-level breakdown for the logged-in student.
+     */
     @GetMapping("/monthly")
+    @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<AttendanceMonthlyResponse> getMonthlyAttendance(
-
-            @RequestParam Long studentId,
-
             @RequestParam int month,
-
             @RequestParam int year) {
 
-        return ResponseEntity.ok(
-                attendanceService.getMonthlyAttendance(studentId, month, year));
+        return ResponseEntity.ok(attendanceService.getMonthlyAttendance(month, year));
+    }
+
+    // ── Weekly chart helpers ─────────────────────────────────────────────────
+
+    @GetMapping("/today/count")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Double> getTodayAttendance() {
+        return ResponseEntity.ok(attendanceService.getTodayAttendance());
+    }
+
+    @GetMapping("/weekly/count")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<List<Long>> getWeeklyAttendanceCounts(
+            @RequestParam(defaultValue = "7") int weeks) {
+        return ResponseEntity.ok(attendanceService.getWeeklyAttendanceCounts(weeks));
+    }
+
+    @GetMapping("/weekly/labels")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<List<String>> getWeeklyLabels(
+            @RequestParam(defaultValue = "7") int weeks) {
+        return ResponseEntity.ok(attendanceService.getWeeklyLabels(weeks));
     }
 }

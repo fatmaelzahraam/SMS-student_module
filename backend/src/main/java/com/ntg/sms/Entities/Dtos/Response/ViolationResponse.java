@@ -13,4 +13,5 @@ public class ViolationResponse {
     private Long violationId;
     private String violation;
     private LocalDate date;
+    private boolean isMeeting;
 }

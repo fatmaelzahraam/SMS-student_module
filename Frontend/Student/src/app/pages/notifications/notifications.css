@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  color: #05172F;
+  color: var(--color-navy);
 }
 
 .title-with-icon h2 {
@@ -25,7 +25,7 @@
 }
 
 .notifications-card {
-  background: white;
+  background: var(--color-card);
   border-radius: 15px;
   padding: 10px 0;
   box-shadow: 0 4px 14px rgba(0,0,0,.08);

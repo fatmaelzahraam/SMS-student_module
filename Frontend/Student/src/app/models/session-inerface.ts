@@ -55,7 +55,8 @@ export interface SessionInterface {
 }
 
 // ── Grid constants ────────────────────────────────────────────
-// Keep these as "H:MM" (no leading zero) to match backend "08:00:00" → stripped to "8:00"
+// Display labels use 12-hour format (no leading zero).
+// Comparison against backend HH:MM:SS is handled in the service via to24Hour().
 export const TIME_SLOTS = [
   '8:00 - 8:50',
   '8:50 - 9:40',

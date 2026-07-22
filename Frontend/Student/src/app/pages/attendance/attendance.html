@@ -1,90 +1,85 @@
 <app-attendance-nav></app-attendance-nav>
 <div class="Wrapper">
-<div class="overview">
-  <div class="simster">
-    <h4>Semester Overview</h4>
-    <p>Academic Year 2025-2026</p>
+  <div class="overview">
+    <div class="simster">
+      <h4>Semester Overview</h4>
+      <p>Academic Year 2025-2026</p>
+    </div>
+
+    <div class="ovarall">
+      Overall: {{ attendance?.attendancePercentage | number:'1.0-2' }} %
+    </div>
   </div>
 
-  <div class="ovarall">
-    Overall: {{ attendance?.attendancePercentage ?? 0 }}%
-  </div>
-</div>
+  <div class="boxs">
 
-<div class="boxs">
-
-  <div class="box1">
-    <div class="img-wrapper1">
-
-    <img src="../assets/images/attcalendar.png" alt="calendar">
+    <div class="box1">
+      <div class="img-wrapper1">
+        <img src="../assets/images/attcalendar.png" alt="calendar">
       </div>
-    <div>
-      <h3>Total Days</h3>
-      <h3>{{ attendance?.totalDays ?? 0 }}</h3>
+      <div>
+        <h3>Total Days</h3>
+        <h3>{{ attendance?.totalDays ?? 0 }}</h3>
+      </div>
+    </div>
+
+    <div class="box2">
+      <div class="img-wrapper2">
+        <img src="../assets/images/checked.png" alt="check">
+      </div>
+      <div>
+        <h3>Days present</h3>
+        <h3>{{ attendance?.presentDays ?? 0 }}</h3>
+      </div>
+    </div>
+
+    <div class="box3">
+      <div class="img-wrapper3">
+        <img src="../assets/images/cancel.png" alt="cross">
+      </div>
+      <div>
+        <h3>Days absent</h3>
+        <h3>{{ attendance?.absentDays ?? 0 }}</h3>
+      </div>
+    </div>
+
+    <div class="box4">
+      <div class="img-wrapper4">
+        <img src="../assets/images/late.png" alt="clock">
+      </div>
+      <div>
+        <h3>Days late</h3>
+        <h3>{{ attendance?.lateDays ?? 0 }}</h3>
+      </div>
     </div>
 
   </div>
 
-  <div class="box2">
-    <div class="img-wrapper2">
-    <img src="../assets/images/checked.png" alt="check">
-  </div>
-    <div>
-      <h3>Present Days</h3>
-      <h3>{{ attendance?.presentDays ?? 0 }}</h3>
+  <div class="charts">
+
+    <div class="chart-card">
+      <h3>Attendance Percentage</h3>
+      <apx-chart
+        [series]="radialChartOptions.series"
+        [chart]="radialChartOptions.chart"
+        [plotOptions]="radialChartOptions.plotOptions"
+        [labels]="radialChartOptions.labels">
+      </apx-chart>
     </div>
 
-  </div>
-
-  <div class="box3">
-    <div class="img-wrapper3">
-    <img src="../assets/images/cancel.png" alt="cross">
+    <div class="chart-card">
+      <h3>Monthly Attendance</h3>
+      <apx-chart
+        [series]="lineChartOptions.series"
+        [chart]="lineChartOptions.chart"
+        [xaxis]="lineChartOptions.xaxis"
+        [yaxis]="lineChartOptions.yaxis"
+        [tooltip]="lineChartOptions.tooltip"
+        [dataLabels]="lineChartOptions.dataLabels"
+        [stroke]="lineChartOptions.stroke"
+        [title]="lineChartOptions.title">
+      </apx-chart>
     </div>
-    <div>
-      <h3>Absent Days</h3>
-      <h3>{{ attendance?.absentDays ?? 0 }}</h3>
-    </div>
-
-  </div>
-
-  <div class="box4">
-    <div class="img-wrapper4">
-    <img src="../assets/images/late.png" alt="clock">
-    </div>
-    <div>
-      <h3>Late Days</h3>
-      <h3>{{ attendance?.lateDays ?? 0 }}</h3>
-    </div>
-
-  </div>
-
-</div>
-
-<div class="charts">
-
-  <div class="chart-card">
-    <h3>Attendance Percentage</h3>
-      <apx-chart [series]="radialChartOptions.series"
-      [chart]="radialChartOptions.chart"
-      [plotOptions]="radialChartOptions.plotOptions"
-      [labels]="radialChartOptions.labels">
-    </apx-chart>
-
-  </div>
-
-  <div class="chart-card">
-    <h3>Monthly Attendance</h3>
-
-    <apx-chart
-      [series]="lineChartOptions.series"
-      [chart]="lineChartOptions.chart"
-      [xaxis]="lineChartOptions.xaxis"
-      [dataLabels]="lineChartOptions.dataLabels"
-      [stroke]="lineChartOptions.stroke"
-      [title]="lineChartOptions.title">
-    </apx-chart>
-
-  </div>
 
   </div>
 </div>

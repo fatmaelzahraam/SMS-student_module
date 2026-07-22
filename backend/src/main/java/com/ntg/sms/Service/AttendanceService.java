@@ -1,21 +1,19 @@
 package com.ntg.sms.Service;
 
-import com.ntg.sms.Entities.Dtos.Request.AttendanceRequest;
-import com.ntg.sms.Entities.Dtos.Response.AttendaceResponse;
 import com.ntg.sms.Entities.Attendance;
+import com.ntg.sms.Entities.Dtos.Response.AttendaceResponse;
 import com.ntg.sms.Entities.Dtos.Response.AttendanceDailyResponse;
 import com.ntg.sms.Entities.Dtos.Response.AttendanceMonthlyResponse;
 import com.ntg.sms.Entities.Dtos.Response.AttendanceOverviewResponse;
-import com.ntg.sms.Entities.Session;
 import com.ntg.sms.Entities.Student;
 import com.ntg.sms.Mapper.AttendanceMapper;
 import com.ntg.sms.Repositories.AttendanceRepository;
-import com.ntg.sms.Repositories.SessionRepository;
 import com.ntg.sms.Repositories.StudentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -31,167 +29,188 @@ import java.util.Locale;
 public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
-    private final StudentRepository studentRepository;
-    private final AttendanceMapper attendanceMapper;
+    private final StudentRepository    studentRepository;
+    private final AttendanceMapper     attendanceMapper;
 
+    // ── Private helpers ──────────────────────────────────────────────────────
+
+    /**
+     * Resolves the currently authenticated student from the JWT.
+     * Used by every student-facing endpoint so no studentId is
+     * ever trusted from the request.
+     */
+    private Student getAuthenticatedStudent() {
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+        return studentRepository.findByUser_Email(email)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+    }
+
+    private Student getStudentById(Long studentId) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + studentId));
+    }
+
+    // ── Basic CRUD (admin-facing) ────────────────────────────────────────────
+
+    @Transactional(readOnly = true)
     public AttendaceResponse getAttendanceById(Long id) {
-
         Attendance attendance = attendanceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Attendance not found"));
-
+                .orElseThrow(() -> new EntityNotFoundException("Attendance not found"));
         return attendanceMapper.toResponse(attendance);
     }
 
+    @Transactional(readOnly = true)
     public List<AttendaceResponse> getAllAttendance() {
-
         return attendanceRepository.findAll()
                 .stream()
                 .map(attendanceMapper::toResponse)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<AttendaceResponse> getAttendanceByStudent(Long studentId) {
-
         return attendanceRepository.findByStudentId(studentId)
                 .stream()
                 .map(attendanceMapper::toResponse)
                 .toList();
     }
-    public List<AttendaceResponse> getMyAttendance(){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Student student = studentRepository.findByUser_Email(email).orElse(null);
-        return getAttendanceByStudent(student.getId());
-    }
 
+    @Transactional(readOnly = true)
     public List<AttendaceResponse> getAttendanceBySession(Long sessionId) {
-
         return attendanceRepository.findBySessionId(sessionId)
                 .stream()
                 .map(attendanceMapper::toResponse)
                 .toList();
     }
 
-    public Double getTodayAttendance() {
-     LocalDate today = LocalDate.now();
-      LocalDateTime start = today.atStartOfDay();
-     LocalDateTime end   = today.plusDays(1).atStartOfDay();
-      return (double) attendanceRepository.countByWeek(start, end);
-  }
+    // ── Student-facing: resolved from JWT ───────────────────────────────────
 
-    public List<Long> getWeeklyAttendanceCounts(int weeks) {
-        List<Long> result = new ArrayList<>();
-        // find the start of the current week (Sunday)
-        LocalDate weekStart = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
-        // walk backwards from the oldest week to the current one
-        LocalDate firstWeekStart = weekStart.minusWeeks(weeks - 1);
-        for (int i = 0; i < weeks; i++) {
-            LocalDate wStart = firstWeekStart.plusWeeks(i);
-            LocalDate wEnd   = wStart.plusWeeks(1);
-            long count = attendanceRepository.countByWeek(
-                    wStart.atStartOfDay(),
-                    wEnd.atStartOfDay()
-            );
-            result.add(count);
-        }
-        return result;
-    }
-
-    public List<String> getWeeklyLabels(int weeks) {
-        List<String> labels = new ArrayList<>();
-        LocalDate weekStart = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        LocalDate firstWeekStart = weekStart.minusWeeks(weeks - 1);
-        for (int i = 0; i < weeks; i++) {
-            LocalDate wStart = firstWeekStart.plusWeeks(i);
-            String monthAbbr = wStart.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
-            labels.add(monthAbbr + " " + wStart.getDayOfMonth());
-        }
-        return labels;
-    }
-
-    private Student getStudent(Long studentId) {
-        return studentRepository.findById(studentId)
-                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
-    }
-
-    public AttendanceOverviewResponse getOverview(Long studentId) {
-
-        Student student = getStudent(studentId);
-
-        long total   = attendanceRepository.countByStudent(student);
-        long present = attendanceRepository.countByStudentAndStatus(student, 'P');
-        long absent  = attendanceRepository.countByStudentAndStatus(student, 'A');
-        long late    = attendanceRepository.countByStudentAndStatus(student, 'L');
-
-        double percentage = total == 0 ? 0 : ((double) present / total) * 100;
-
-        return AttendanceOverviewResponse.builder()
-                .totalDays(total)
-                .presentDays(present)
-                .absentDays(absent)
-                .lateDays(late)
-                .attendancePercentage(percentage)
-                .build();
-    }
-
-    public List<AttendaceResponse> getAttendanceHistory(Long studentId) {
-
-        Student student = getStudent(studentId);
-
+    /**
+     * Returns the full attendance history for the logged-in student.
+     */
+    @Transactional(readOnly = true)
+    public List<AttendaceResponse> getMyAttendance() {
+        Student student = getAuthenticatedStudent();
         return attendanceRepository.findByStudent(student)
                 .stream()
                 .map(attendanceMapper::toResponse)
                 .toList();
     }
 
-    public AttendanceDailyResponse getDailyAttendance(Long studentId, LocalDate date) {
+    /**
+     * Overview for the logged-in student.
+     *
+     * 1 day = 8 sessions. Counts are at the DAY level:
+     *   totalDays   = distinct school days with any attendance record
+     *   presentDays = distinct days where the student had NO absent session
+     *                 (a day with only P or L records counts as present)
+     *   absentDays  = distinct days where the student had at least 1 absent session
+     *   percentage  = presentDays / totalDays * 100  (rounded to 2 decimal places)
+     *
+     * Day-level grouping is done in Java to avoid Oracle-unsafe JPQL date functions.
+     */
+    @Transactional(readOnly = true)
+    public AttendanceOverviewResponse getOverview() {
+        Student student = getAuthenticatedStudent();
 
-        Student student = getStudent(studentId);
+        List<Attendance> all = attendanceRepository.findAllByStudentOrderByDateTime(student);
 
-        List<Attendance> dailyAttendance = attendanceRepository.findByStudent(student)
-                .stream()
-                .filter(a -> a.getDateTime().toLocalDate().equals(date))
-                .toList();
+        // Group records by their calendar date
+        java.util.Map<LocalDate, List<Attendance>> byDay = all.stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                        a -> a.getDateTime().toLocalDate()
+                ));
 
-        long present = dailyAttendance.stream().filter(a -> a.getStatus() == 'P').count();
-        long absent  = dailyAttendance.stream().filter(a -> a.getStatus() == 'A').count();
-        long late    = dailyAttendance.stream().filter(a -> a.getStatus() == 'L').count();
+        long totalDays  = byDay.size();
 
-        double percentage = dailyAttendance.isEmpty()
+        // A day is "absent"  → at least 1 session has status 'A'
+        long absentDays  = byDay.values().stream()
+                .filter(sessions -> sessions.stream().anyMatch(a -> a.getStatus() == 'A'))
+                .count();
+
+        // A day is "late"    → at least 1 session has status 'L', but NO session has 'A'
+        long lateDays    = byDay.values().stream()
+                .filter(sessions -> sessions.stream().noneMatch(a -> a.getStatus() == 'A')
+                        && sessions.stream().anyMatch(a -> a.getStatus() == 'L'))
+                .count();
+
+        // A day is "present" → all sessions are 'P' (no A, no L)
+        long presentDays = totalDays - absentDays - lateDays;
+
+        double percentage = totalDays == 0 ? 0
+                : Math.round(((double) presentDays / totalDays) * 100 * 100.0) / 100.0;
+
+        return AttendanceOverviewResponse.builder()
+                .totalDays(totalDays)
+                .presentDays(presentDays)
+                .absentDays(absentDays)
+                .lateDays(lateDays)
+                .attendancePercentage(percentage)
+                .build();
+    }
+
+    /**
+     * Daily breakdown for the logged-in student on a specific date.
+     */
+    @Transactional(readOnly = true)
+    public AttendanceDailyResponse getDailyAttendance(LocalDate date) {
+        Student student = getAuthenticatedStudent();
+
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay   = date.plusDays(1).atStartOfDay();
+
+        // Already ordered by dateTime from the repo query
+        List<Attendance> daily = attendanceRepository.findDailyAttendance(student, startOfDay, endOfDay);
+
+        long present = daily.stream().filter(a -> a.getStatus() == 'P').count();
+        long absent  = daily.stream().filter(a -> a.getStatus() == 'A').count();
+        long late    = daily.stream().filter(a -> a.getStatus() == 'L').count();
+
+        double percentage = daily.isEmpty()
                 ? 0
-                : ((double) present / dailyAttendance.size()) * 100;
+                : Math.round(((double) present / daily.size()) * 100 * 100.0) / 100.0;
+
+        // Assign session number 1-8 by position in the sorted list
+        List<AttendaceResponse> attendanceList = new ArrayList<>();
+        for (int i = 0; i < daily.size(); i++) {
+            AttendaceResponse response = attendanceMapper.toResponse(daily.get(i));
+            response.setSessionNumber(i + 1);
+            attendanceList.add(response);
+        }
 
         return AttendanceDailyResponse.builder()
                 .date(date)
-                .totalSessions(dailyAttendance.size())
+                .totalSessions(daily.size())
                 .present(present)
                 .absent(absent)
                 .late(late)
                 .attendancePercentage(percentage)
-                .attendanceList(
-                        dailyAttendance.stream()
-                                .map(attendanceMapper::toResponse)
-                                .toList()
-                )
+                .attendanceList(attendanceList)
                 .build();
     }
 
-    public AttendanceMonthlyResponse getMonthlyAttendance(Long studentId, int month, int year) {
+    /**
+     * Monthly breakdown for the logged-in student.
+     */
+    @Transactional(readOnly = true)
+    public AttendanceMonthlyResponse getMonthlyAttendance(int month, int year) {
+        Student student = getAuthenticatedStudent();
 
-        Student student = getStudent(studentId);
+        // Use date-range bounds — Oracle does not support MONTH()/YEAR() in JPQL
+        LocalDateTime startOfMonth     = LocalDate.of(year, month, 1).atStartOfDay();
+        LocalDateTime startOfNextMonth = startOfMonth.plusMonths(1);
 
-        List<Attendance> monthlyAttendance = attendanceRepository.findByStudent(student)
-                .stream()
-                .filter(a -> a.getDateTime().getMonthValue() == month)
-                .filter(a -> a.getDateTime().getYear() == year)
-                .toList();
+        List<Attendance> monthly =
+                attendanceRepository.findByStudentAndMonthAndYear(student, startOfMonth, startOfNextMonth);
 
-        long present = monthlyAttendance.stream().filter(a -> a.getStatus() == 'P').count();
-        long absent  = monthlyAttendance.stream().filter(a -> a.getStatus() == 'A').count();
-        long late    = monthlyAttendance.stream().filter(a -> a.getStatus() == 'L').count();
+        long present = monthly.stream().filter(a -> a.getStatus() == 'P').count();
+        long absent  = monthly.stream().filter(a -> a.getStatus() == 'A').count();
+        long late    = monthly.stream().filter(a -> a.getStatus() == 'L').count();
 
-        double percentage = monthlyAttendance.isEmpty()
+        double percentage = monthly.isEmpty()
                 ? 0
-                : ((double) present / monthlyAttendance.size()) * 100;
+                : ((double) present / monthly.size()) * 100;
 
         return AttendanceMonthlyResponse.builder()
                 .month(month)
@@ -205,24 +224,67 @@ public class AttendanceService {
 
     // ── Dashboard helpers (called by DashboardService) ───────────────────────
 
+    /**
+     * Attendance percentage for the logged-in student.
+     * Used by DashboardService — do NOT expose as a controller endpoint.
+     */
     public Double getPresentPercentage() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Student student = studentRepository.findByUser_Email(email)
-                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
-
+        Student student = getAuthenticatedStudent();
         long total   = attendanceRepository.countByStudent(student);
         long present = attendanceRepository.countByStudentAndStatus(student, 'P');
-
         return total == 0 ? 0.0 : ((double) present / total) * 100;
     }
 
+    /**
+     * Absence count for the logged-in student.
+     * Used by DashboardService — do NOT expose as a controller endpoint.
+     */
     public Long getAbsenceCount() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Student student = studentRepository.findByUser_Email(email)
-                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
-
+        Student student = getAuthenticatedStudent();
         return attendanceRepository.countByStudentAndStatus(student, 'A');
     }
 
+    // ── Weekly chart helpers ─────────────────────────────────────────────────
 
+    @Transactional(readOnly = true)
+    public Double getTodayAttendance() {
+        Student student = getAuthenticatedStudent();
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end   = today.plusDays(1).atStartOfDay();
+        // Count only for the authenticated student
+        return (double) attendanceRepository.countByStudentAndDateTimeBetween(student, start, end);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Long> getWeeklyAttendanceCounts(int weeks) {
+        Student student = getAuthenticatedStudent();
+        List<Long> result = new ArrayList<>();
+        LocalDate weekStart     = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+        LocalDate firstWeekStart = weekStart.minusWeeks(weeks - 1);
+        for (int i = 0; i < weeks; i++) {
+            LocalDate wStart = firstWeekStart.plusWeeks(i);
+            LocalDate wEnd   = wStart.plusWeeks(1);
+            long count = attendanceRepository.countByStudentAndDateTimeBetween(
+                    student,
+                    wStart.atStartOfDay(),
+                    wEnd.atStartOfDay()
+            );
+            result.add(count);
+        }
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getWeeklyLabels(int weeks) {
+        List<String> labels = new ArrayList<>();
+        LocalDate weekStart      = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate firstWeekStart = weekStart.minusWeeks(weeks - 1);
+        for (int i = 0; i < weeks; i++) {
+            LocalDate wStart = firstWeekStart.plusWeeks(i);
+            String monthAbbr = wStart.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+            labels.add(monthAbbr + " " + wStart.getDayOfMonth());
+        }
+        return labels;
+    }
 }

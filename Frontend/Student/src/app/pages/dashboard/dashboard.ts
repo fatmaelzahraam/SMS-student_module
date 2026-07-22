@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, AfterViewInit, OnDestroy,
+  Component, OnInit, OnDestroy,
   ViewChild, ElementRef, signal, computed, effect, ChangeDetectorRef
 } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
@@ -18,21 +18,20 @@ Chart.register(...registerables);
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
+export class Dashboard implements OnInit, OnDestroy {
 
-  // ── Chart canvas refs ─────────────────────────────────────────────────────
+  // ── Chart canvas refs ────────────────────────────────────────────────────────
   @ViewChild('lineChartRef')  lineChartRef!:  ElementRef<HTMLCanvasElement>;
   @ViewChild('donutChartRef') donutChartRef!: ElementRef<HTMLCanvasElement>;
 
   private lineChartInst:  Chart | null = null;
   private donutChartInst: Chart | null = null;
 
-  // ── Signals ───────────────────────────────────────────────────────────────
+  // ── Signals ──────────────────────────────────────────────────────────────────
   dashboard = signal<DashboardResponse | null>(null);
   loading   = signal(true);
   error     = signal<string | null>(null);
 
-  // ── Derived signals ───────────────────────────────────────────────────────
   performanceLabel = computed(() => {
     const score = this.dashboard()?.performanceScore ?? 0;
     if (score >= 90) return { text: 'Excellent',         color: '#2ecc71' };
@@ -56,7 +55,7 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
     return `${r}th`;
   });
 
-  // ── Assignment computed signals ───────────────────────────────────────────
+  // ── Assignment computed signals ───────────────────────────────────────────────
   totalAssignments = computed(() => this.svc.assignments().length);
 
   completedAssignments = computed(() =>
@@ -72,7 +71,7 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
     Math.max(0, this.totalAssignments() - this.completedAssignments())
   );
 
-  // ── Effects ───────────────────────────────────────────────────────────────
+  // ── Effects ───────────────────────────────────────────────────────────────────
   private readonly dataEffect = effect(() => {
     const loading   = this.svc.isLoading();
     const dashboard = this.svc.dashboard();
@@ -89,12 +88,12 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   });
 
   private readonly chartEffect = effect(() => {
-    // Track signals that should trigger a rebuild
+    // Track every signal that feeds the charts
     const marks       = this.svc.recentMarks();
     const assignments = this.svc.assignments();
     const loading     = this.svc.isLoading();
 
-    // Only build charts once loading is done and canvas refs exist
+    // Wait until the backend has responded before touching the canvas
     if (loading) return;
 
     queueMicrotask(() => {
@@ -103,22 +102,16 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
     });
   });
 
-  // ── Constructor / DI ──────────────────────────────────────────────────────
   constructor(
     readonly svc: Dashboardservice,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
   ) {}
 
-  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  // ── Lifecycle ─────────────────────────────────────────────────────────────────
   ngOnInit(): void {
     const studentId = this.authService.getCurrentUserId();
     this.svc.loadAll(studentId);
-  }
-
-  ngAfterViewInit(): void {
-    // Intentionally empty — chartEffect handles initial render
-    // once data is ready and canvases are in the DOM
   }
 
   ngOnDestroy(): void {
@@ -128,7 +121,7 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
     this.chartEffect.destroy();
   }
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
+  // ── Helpers used by the template ─────────────────────────────────────────────
   getPerformanceBarWidth(): string {
     return `${this.dashboard()?.performanceScore ?? 0}%`;
   }
@@ -149,18 +142,28 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
 
   clearError(): void { this.svc.clearError(); }
 
-  // ── Chart builders ────────────────────────────────────────────────────────
+  // ── Chart builders ────────────────────────────────────────────────────────────
   private buildLineChart(): void {
     if (!this.lineChartRef?.nativeElement) return;
-    if (this.lineChartInst) { this.lineChartInst.destroy(); this.lineChartInst = null; }
+    if (this.lineChartInst) {
+      this.lineChartInst.destroy();
+      this.lineChartInst = null;
+    }
 
     const marks = this.svc.recentMarks();
-    const labels = marks.length
-      ? marks.map(m => m.feedbackDate?.slice(5) ?? '').reverse()
-      : ['May 18', 'May 19', 'May 20', 'May 21', 'May 22', 'May 23', 'May 24', 'May 25'];
-    const data = marks.length
-      ? marks.map(m => Math.round((m.score / m.maxScore) * 100)).reverse()
-      : [20, 35, 28, 55, 60, 72, 80, 85];
+
+
+    const sorted = [...marks].sort((a, b) =>
+      (a.feedbackDate ?? '').localeCompare(b.feedbackDate ?? '')
+    );
+    const labels = sorted.map(m =>
+      m.feedbackDate ? m.feedbackDate.slice(5) : '??'
+    );
+
+
+    const data = sorted.map(m =>
+      m.maxScore > 0 ? Math.round((m.score / m.maxScore) * 100) : 0
+    );
 
     this.lineChartInst = new Chart(this.lineChartRef.nativeElement, {
       type: 'line',
@@ -181,10 +184,21 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        plugins: {
+          legend: { display: false },
+          ...(marks.length === 0 && {
+            title: {
+              display: true,
+              text: 'No marks data available yet',
+              color: '#aaa',
+              font: { size: 13 },
+            },
+          }),
+        },
         scales: {
           y: {
-            min: 0, max: 100,
+            min: 0,
+            max: 100,
             ticks: { callback: v => v + '%', font: { size: 10 }, color: '#888' },
             grid:   { color: '#f0f0f0' },
             border: { display: false },
@@ -198,21 +212,26 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
       },
     });
   }
-
   private buildDonutChart(): void {
     if (!this.donutChartRef?.nativeElement) return;
-    if (this.donutChartInst) { this.donutChartInst.destroy(); this.donutChartInst = null; }
+    if (this.donutChartInst) {
+      this.donutChartInst.destroy();
+      this.donutChartInst = null;
+    }
 
     const completed = this.completedAssignments();
     const remaining = this.remainingCount();
+    const hasData   = this.totalAssignments() > 0;
 
     this.donutChartInst = new Chart(this.donutChartRef.nativeElement, {
       type: 'doughnut',
       data: {
         labels: ['Completed', 'Remaining'],
         datasets: [{
-          data: [completed || 24, remaining || 4],
-          backgroundColor: ['#620000', '#e0e0e0'],
+          data: hasData ? [completed, remaining] : [1, 0],
+          backgroundColor: hasData
+            ? ['#620000', '#e0e0e0']
+            : ['#e0e0e0', '#e0e0e0'], 
           borderWidth: 0,
           hoverOffset: 4,
         }],
@@ -223,7 +242,15 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
         cutout: '75%',
         plugins: {
           legend:  { display: false },
-          tooltip: { enabled: true },
+          tooltip: { enabled: hasData },   // disable tooltip on empty state
+          ...((!hasData) && {
+            title: {
+              display: true,
+              text: 'No assignments yet',
+              color: '#aaa',
+              font: { size: 13 },
+            },
+          }),
         },
       },
     });

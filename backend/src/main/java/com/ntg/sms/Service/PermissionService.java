@@ -1,6 +1,5 @@
 package com.ntg.sms.Service;
 
-
 import com.ntg.sms.Entities.Dtos.Request.PermissionRequest;
 import com.ntg.sms.Entities.Dtos.Response.PermissionResponse;
 import com.ntg.sms.Entities.Permission;
@@ -10,29 +9,53 @@ import com.ntg.sms.Repositories.PermissionRepository;
 import com.ntg.sms.Repositories.StudentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PermissionService {
 
     private final PermissionRepository permissionRepository;
-    private final StudentRepository studentRepository;
-    private final PermissionMapper permissionMapper;
+    private final StudentRepository    studentRepository;
+    private final PermissionMapper     permissionMapper;
 
-    // ─── READ ─────────────────────────────────────────────────────────────────
+    // ─── Private helpers ──────────────────────────────────────────────────────
+
+    private Student getAuthenticatedStudent() {
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+        return studentRepository.findByUser_Email(email)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+    }
+
+    private Permission findPermissionOrThrow(Long id) {
+        return permissionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Permission not found with id: " + id));
+    }
+
+    private void assertStudentExists(Long studentId) {
+        if (!studentRepository.existsById(studentId))
+            throw new EntityNotFoundException("Student not found with id: " + studentId);
+    }
+
+    private void validateDateRange(LocalDate from, LocalDate to) {
+        if (from.isAfter(to))
+            throw new IllegalArgumentException("'from' date must not be after 'to' date.");
+    }
+
+    // ─── Admin: read all ──────────────────────────────────────────────────────
 
     @Transactional(readOnly = true)
     public List<PermissionResponse> getAllPermissions() {
         return permissionRepository.findAll()
                 .stream()
                 .map(permissionMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -46,7 +69,7 @@ public class PermissionService {
         return permissionRepository.findByStudentId(studentId)
                 .stream()
                 .map(permissionMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -55,7 +78,7 @@ public class PermissionService {
         return permissionRepository.findByDateBetween(from, to)
                 .stream()
                 .map(permissionMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -66,25 +89,34 @@ public class PermissionService {
         return permissionRepository.findByStudentIdAndDateBetween(studentId, from, to)
                 .stream()
                 .map(permissionMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
+    // ─── Student-facing: resolved from JWT ───────────────────────────────────
 
-    // ─── HELPERS ─────────────────────────────────────────────────────────────
-
-    private Permission findPermissionOrThrow(Long id) {
-        return permissionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Permission not found with id: " + id));
+    /**
+     * Returns all permissions for the currently logged-in student.
+     * No studentId param — resolved from JWT token.
+     */
+    @Transactional(readOnly = true)
+    public List<PermissionResponse> getMyPermissions() {
+        Student student = getAuthenticatedStudent();
+        return permissionRepository.findByStudentId(student.getId())
+                .stream()
+                .map(permissionMapper::toResponse)
+                .toList();
     }
 
-    private void assertStudentExists(Long studentId) {
-        if (!studentRepository.existsById(studentId))
-            throw new EntityNotFoundException("Student not found with id: " + studentId);
-    }
-
-    private void validateDateRange(LocalDate from, LocalDate to) {
-        if (from.isAfter(to)) {
-            throw new IllegalArgumentException("'from' date must not be after 'to' date.");
-        }
+    /**
+     * Returns permissions for the logged-in student filtered by date range.
+     */
+    @Transactional(readOnly = true)
+    public List<PermissionResponse> getMyPermissionsByDateRange(LocalDate from, LocalDate to) {
+        validateDateRange(from, to);
+        Student student = getAuthenticatedStudent();
+        return permissionRepository.findByStudentIdAndDateBetween(student.getId(), from, to)
+                .stream()
+                .map(permissionMapper::toResponse)
+                .toList();
     }
 }

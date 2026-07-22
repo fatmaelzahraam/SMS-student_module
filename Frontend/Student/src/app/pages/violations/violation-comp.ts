@@ -1,18 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ViolationResponse } from '../../models/ViolationResponse';
 import { ViolationDetailsResponse } from '../../models/ViolationDetailsResponse';
 import { ViolationStatisticsResponse } from '../../models/ViolationStatisticsResponse';
 import { ViolationsService } from './service/violations.service';
 
-
-
 @Component({
   selector: 'app-violations',
   standalone: true,
   imports: [
-    CommonModule,
     RouterLink,
     RouterLinkActive
   ],
@@ -22,11 +18,8 @@ import { ViolationsService } from './service/violations.service';
 export class Violations implements OnInit {
 
   violations: ViolationResponse[] = [];
-
   selectedViolation?: ViolationDetailsResponse;
-
   statistics?: ViolationStatisticsResponse;
-
   loading = false;
 
   constructor(
@@ -34,10 +27,8 @@ export class Violations implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
     this.loadStatistics();
     this.loadViolations();
-
   }
 
   loadViolations(): void {
@@ -47,25 +38,18 @@ export class Violations implements OnInit {
     this.violationsService.getMyViolations().subscribe({
 
       next: (data) => {
-
         this.violations = data;
 
         if (this.violations.length > 0) {
-
           this.selectViolation(this.violations[0].violationId);
-
         }
 
         this.loading = false;
-
       },
 
       error: (err) => {
-
         console.error(err);
-
         this.loading = false;
-
       }
 
     });
@@ -77,15 +61,11 @@ export class Violations implements OnInit {
     this.violationsService.getStatistics().subscribe({
 
       next: (data) => {
-
         this.statistics = data;
-
       },
 
       error: (err) => {
-
         console.error(err);
-
       }
 
     });
@@ -97,15 +77,11 @@ export class Violations implements OnInit {
     this.violationsService.getViolationDetails(id).subscribe({
 
       next: (data) => {
-
         this.selectedViolation = data;
-
       },
 
       error: (err) => {
-
         console.error(err);
-
       }
 
     });

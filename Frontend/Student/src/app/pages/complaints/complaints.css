@@ -323,6 +323,7 @@
     display:flex;
     justify-content:center;
     align-items:center;
+    overflow: hidden;
     z-index:9999;
 }
 
@@ -389,7 +390,7 @@
     width:100%;
     border:none;
     outline:none;
-    background:#f1f1f1;
+    background:#eeeeee;
     border-radius:16px;
     padding:15px;
     font-size:14px;
@@ -398,7 +399,7 @@
 
 .modal-body textarea{
     resize:none;
-    height: 140px;
+    height: 130px;
 }
 
 .modal-footer{
@@ -433,6 +434,21 @@
     cursor:not-allowed;
 }
 
+.required {
+  color: red;
+  margin-left: 4px;
+}
+
+.input-error {
+  border: 1px solid red !important;
+}
+
+.error-msg {
+  color: red;
+  font-size: 10px;
+  margin-top: 2px;
+  display: block;
+}
 /* =========================
    Responsive
 ========================= */

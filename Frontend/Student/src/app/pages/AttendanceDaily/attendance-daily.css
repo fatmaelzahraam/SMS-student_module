@@ -1,9 +1,3 @@
-
-:host{
-    display:block;
-    background:#EEEEEE;
-    min-height:100vh;
-}
 .attendance-container{
     position: relative;
     width:90%;
@@ -14,28 +8,30 @@
 /* ================= Date ================= */
 
 .date-header{
-    width:100%;
     position: absolute;
-    background-color: #E6E6ED;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom: 1px;
+    top: -22px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 10px;
+    background: #E6E6ED;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    top: -25px;
     padding: 10px;
-    border: #8e8e93a8 solid 1px;
+    border: #8e8e938c solid 1px;
 }
 
 .nav-btn{
     width:30px;
     height:30px;
-    border:1px solid #cccccc;
+    border:none;
     border-radius:8px;
     background:#fff;
     cursor:pointer;
     transition:.25s;
+    border: #8E8E93 1px solid;
 }
 
 .nav-btn:hover{
@@ -45,38 +41,36 @@
 
 .date-box{
     background:#fff;
-    border:1px solid #d9d9d9;
-    padding:5px;
     border-radius:8px;
-    font-size:10px;
-    height:30px;
     font-weight:600;
+    color:#05172F;
+    min-width:100px;
+    height: 30px;
+    text-align:center;
+    border: #8E8E93 1px solid;
 }
 
 /* ================= Card ================= */
 
 .overview-card{
-    background:#fff;
-    border:1px solid #d9d9d9;
-    border-radius:16px;
+   background:#fff;
+    border-radius:18px;
     padding:25px;
-    box-shadow:0 3px 12px rgba(0,0,0,.05);
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+    border:1px solid #8e8e9370;
 }
 
 .overview-card h2{
-    font-size:18px;
+    font-size:16px;
     color:#05172F;
-    margin: 0;
-    padding: 0;
-    font-weight: 800;
+    margin-bottom:0px;
+    padding-top: 10px;
 }
 
 .overview-card p{
-    color:#05172F;
-    margin-bottom:7px;
-    font-size: 12px;
-    font-weight:200 ;
-
+    color:#05172fb9;
+    margin-bottom:10px;
+    font-size:14px;
 }
 
 /* ================= Stats ================= */
@@ -95,27 +89,25 @@
     transition:.3s;
     box-shadow:0 4px 10px rgba(0,0,0,.08);
 }
-
 .stat-card:hover{
     transform:translateY(-5px);
 }
 
 .stat-card h3{
-    font-size:15px;
-    margin-bottom:18px;
-    font-weight:100;
+   font-size:15px;
+    font-weight:500;
 }
 
 .stat-card h1{
-    font-size:20px;
-    font-weight:800;
+    font-size:18px;
+    font-weight:700;
 }
 
 /* Colors */
 
 .total{
-    background:#dcecff;
-    border-color:#7aa8e6;
+    background:rgba(233, 242, 255, 0.61);
+    border: #05172f69 solid 1px;
 }
 
 .total h3,
@@ -124,18 +116,18 @@
 }
 
 .present{
-    background:#e3fae9;
-    border-color:#6dd88d;
+   background:#c0f9d598;
+    border: 1px solid #1d8c48;
 }
 
 .present h3,
 .present h1{
-    color:#189144;
+    color:#1d8c48;
 }
 
 .absent{
-    background:#EFC6C5;
-    border-color:#620000b9;
+   background:#EFC6C5;
+    border: 1px solid #620000a6;
 }
 
 .absent h3,
@@ -144,8 +136,8 @@
 }
 
 .late{
-    background:#F9FFA8;
-    border-color:#675c077e;
+   background:#F9FFA8;
+    border: 1px solid #675c0780;
 }
 
 .late h3,
@@ -155,7 +147,7 @@
 
 .attendance{
     background:#F2EBFF;
-    border-color:#9B7FC9;
+    border:1px solid #9B7FC9;
 }
 
 .attendance h3,
@@ -221,10 +213,10 @@ tbody tr:hover{
     display:inline-block;
     min-width:90px;
     text-align:center;
-    padding:7px 15px;
-    border-radius:30px;
+    padding:3px;
+    border-radius:20px;
     font-size:13px;
-    font-weight:600;
+    font-weight: 600;
 }
 
 .present{

@@ -1,13 +1,14 @@
-:host{
+/* :host{
     display: block;
     min-height: 100vh;
-}
+} */
 
 /* ================= Main Container ================= */
 
 .attendance-container{
     position: relative;
-    margin: 40px 30px;
+    width:90%;
+    margin:40px;
 }
 
 /* ================= Date Header ================= */
@@ -47,7 +48,7 @@
 .date-box{
     background:#fff;
     border-radius:8px;
-    font-weight:700;
+    font-weight:600;
     color:#05172F;
     min-width:100px;
     height: 30px;
@@ -87,11 +88,12 @@
 }
 
 .stat-card{
-    border-radius:16px;
-    padding:10px;
-    height: 80px;
+    padding:10px 5px;
+    border-radius:14px;
     text-align:center;
+    border:1px solid;
     transition:.3s;
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
 }
 
 .stat-card:hover{

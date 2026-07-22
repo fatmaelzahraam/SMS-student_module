@@ -1,9 +1,5 @@
 export interface ViolationStatisticsResponse {
-
-  total: number;
-
-  meetings: number;
-
-  noMeetings: number;
-
+   total: number;
+  thisMonth: number;
+  guardianSummons: number;     
 }

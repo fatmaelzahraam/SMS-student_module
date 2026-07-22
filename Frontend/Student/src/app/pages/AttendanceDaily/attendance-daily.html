@@ -2,103 +2,122 @@
 
 <div class="attendance-container">
 
-    <!-- Date Navigation -->
-    <div class="date-header">
+  <!-- Date Navigation -->
+  <div class="date-header">
 
-        <button class="nav-btn">
-            <i class="fa-solid fa-chevron-left"></i>
-        </button>
+    <button class="nav-btn" (click)="previousDay()">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
 
-        <div class="date-box">
-          <p>  {{ dailyAttendance?.date }}</p>
-        </div>
+    <div class="date-box">
+      <p>{{ selectedDate }}</p>
+    </div>
 
-        <button class="nav-btn">
-            <i class="fa-solid fa-chevron-right"></i>
-        </button>
+    <button class="nav-btn" (click)="nextDay()">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+  </div>
+
+  <!-- Overview -->
+  <div class="overview-card">
+
+    <h2>Daily Overview</h2>
+    <p>{{ dailyAttendance?.date }}</p>
+
+    <div class="stats">
+
+       <div class="stat-card attendance">
+        <h3>Attendance</h3>
+        <h1>{{ dailyAttendance?.attendancePercentage | number:'1.0-2' }}%</h1>
+      </div>
+
+      <div class="stat-card present">
+        <h3>Present</h3>
+        <h1>{{ dailyAttendance?.present }}</h1>
+      </div>
+
+      <div class="stat-card absent">
+        <h3>Absent</h3>
+        <h1>{{ dailyAttendance?.absent }}</h1>
+      </div>
+
+      <div class="stat-card late">
+        <h3>Late</h3>
+        <h1>{{ dailyAttendance?.late }}</h1>
+      </div>
+
+       <div class="stat-card total">
+        <h3>Total Sessions</h3>
+        <h1>{{ dailyAttendance?.totalSessions }}</h1>
+      </div>
+     
 
     </div>
 
-    <!-- Overview -->
-    <div class="overview-card">
+  </div>
 
-        <h2>Daily Overview</h2>
-        <p>{{ dailyAttendance?.date }}</p>
+  <!-- Table -->
+  <div class="table-card">
 
-        <div class="stats">
+    <h2>Today's Classes</h2>
 
-            <div class="stat-card total">
-                <h3>Total Session</h3>
-                <h1>{{ dailyAttendance?.totalSessions }}</h1>
-            </div>
+    <table>
 
-            <div class="stat-card present">
-                <h3>Present</h3>
-                <h1>{{ dailyAttendance?.present }}</h1>
-            </div>
+      <thead>
+        <tr>
+          <th>Session</th>
+          <th>Time</th>
+          <th>Subject</th>
+          <th>Instructor</th>
+          <th>Status</th>
+        </tr>
+      </thead>
 
-            <div class="stat-card absent">
-                <h3>Absent</h3>
-                <h1>{{ dailyAttendance?.absent }}</h1>
-            </div>
+      <tbody>
 
-            <div class="stat-card late">
-                <h3>Late</h3>
-                <h1>{{ dailyAttendance?.late }}</h1>
-            </div>
+        @if (dailyAttendance?.attendanceList?.length) {
 
-            <div class="stat-card attendance">
-                <h3>Attendance</h3>
-                <h1>{{ dailyAttendance?.attendancePercentage }}%</h1>
-            </div>
+          @for (item of dailyAttendance!.attendanceList; track item.id) {
+            <tr>
 
-        </div>
+              <td>{{ item.sessionNumber }}</td>
 
-    </div>
+              <td>{{ item.dateTime | date:'HH:mm' }}</td>
 
-    <!-- Table -->
-    <div class="table-card">
+              <td>{{ item.courseName ?? '—' }}</td>
 
-        <h2>Today's Classes</h2>
+              <td>{{ item.teacherName ?? '—' }}</td>
 
-        <table>
+              <td>
+                <span class="badge"
+                      [ngClass]="{
+                        present: item.status === 'P',
+                        late:    item.status === 'L',
+                        absent:  item.status === 'A'
+                      }">
+                  {{ item.status === 'P' ? 'Present' :
+                     item.status === 'L' ? 'Late'    : 'Absent' }}
+                </span>
+              </td>
 
-            <thead>
-                <tr>
-                    <th>Session</th>
-                    <th>Time</th>
-                    <th>Subject</th>
-                    <th>Instructor</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
+            </tr>
+          }
 
-            <tbody>
+        } @else {
 
-                <tr *ngFor="let item of dailyAttendance?.attendanceList">
+          <tr>
+            <td colspan="5" class="empty-state">
+              No attendance records found for this date.
+            </td>
+          </tr>
 
-                    <td>{{ item.session }}</td>
-                    <td>{{ item.time }}</td>
-                    <td>{{ item.subject }}</td>
-                    <td>{{ item.instructor }}</td>
+        }
 
-                    <td>
-                        <span class="badge"
-                              [ngClass]="{
-                                present: item.status === 'PRESENT',
-                                late: item.status === 'LATE',
-                                absent: item.status === 'ABSENT'
-                              }">
-                            {{ item.status }}
-                        </span>
-                    </td>
+      </tbody>
 
-                </tr>
+    </table>
 
-            </tbody>
-
-        </table>
-
-    </div>
+  </div>
 
 </div>

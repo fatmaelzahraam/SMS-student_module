@@ -13,6 +13,25 @@ import {
   BREAK_SLOTS,
 } from '../../../models/session-inerface';
 
+/**
+ * Converts a 12-hour slot label start time to zero-padded 24-hour "HH:MM"
+ * so it can be compared directly against the backend's "HH:MM:SS" substring.
+ *
+ * School day runs 8 AM – 3:30 PM, so any hour < 8 is unambiguously PM:
+ *   "8:00"  → "08:00"
+ *   "9:40"  → "09:40"
+ *   "11:00" → "11:00"
+ *   "12:40" → "12:40"
+ *   "1:50"  → "13:50"   ← was the bug: 13:50 ≠ "1:50"
+ *   "2:40"  → "14:40"   ← same bug
+ */
+function to24Hour(time12: string): string {
+  const [hStr, mStr] = time12.split(':');
+  const h = parseInt(hStr, 10);
+  const hour24 = h < 8 ? h + 12 : h;
+  return `${hour24.toString().padStart(2, '0')}:${mStr}`;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ScheduleService {
   private readonly http    = inject(HttpClient);
@@ -52,7 +71,6 @@ export class ScheduleService {
         })),
 
     }).subscribe(({ classSessions, monthSessions, finalSessions }) => {
-      console.log('RAW classSessions:', classSessions); // ← remove after confirming
       this.classSchedule.set(this.buildWeeklySchedule(studentId, classSessions));
       this.monthExams.set(this.buildExamSchedule(studentId, monthSessions, 'MONTH_EXAM'));
       this.finalExams.set(this.buildExamSchedule(studentId, finalSessions, 'FINAL_EXAM'));
@@ -80,14 +98,14 @@ export class ScheduleService {
           return { timeSlot, session: null };
         }
 
-        const slotStart = timeSlot.split(' - ')[0].trim(); // "8:00"
+        // Convert the 12-hour slot label (e.g. "1:50") to 24-hour zero-padded
+        // "HH:MM" (e.g. "13:50") before comparing with backend's "HH:MM:SS".
+        const slotStart12 = timeSlot.split(' - ')[0].trim(); // "1:50"
+        const slotStart24 = to24Hour(slotStart12);            // "13:50"
 
         const match = daySessions.find(s => {
           if (!s.startAt) return false;
-  
-          const raw = s.startAt.substring(0, 5);           // "08:00"
-          const normalized = raw.replace(/^0/, '');        // "8:00"
-          return normalized === slotStart;
+          return s.startAt.substring(0, 5) === slotStart24;  // "13:50" === "13:50" ✓
         });
 
         const session: ClassSessionResponse | null = match
@@ -108,18 +126,22 @@ export class ScheduleService {
     return { studentId, weeklySchedule };
   }
 
-  private buildExamSchedule(studentId: number, sessions: SessionResponse[], type: 'MONTH_EXAM' | 'FINAL_EXAM'): ExamScheduleResponse {
-  const exams: ExamEntry[] = sessions.map(s => ({
-    id:        s.id,
-    subject:   s.courseName,
-    teacher:   s.teacherName,
-    startTime: s.startAt  ?? '',
-    endTime:   s.endAt    ?? '',
-    examDate:  s.examDate ?? '',   // ← from SessionResponse
-    type,
-  }));
-  return { studentId, exams };
-}
+  private buildExamSchedule(
+    studentId: number,
+    sessions: SessionResponse[],
+    type: 'MONTH_EXAM' | 'FINAL_EXAM'
+  ): ExamScheduleResponse {
+    const exams: ExamEntry[] = sessions.map(s => ({
+      id:        s.id,
+      subject:   s.courseName,
+      teacher:   s.teacherName,
+      startTime: s.startAt  ?? '',
+      endTime:   s.endAt    ?? '',
+      examDate:  s.examDate ?? '',
+      type,
+    }));
+    return { studentId, exams };
+  }
 
   clearError(): void {
     this.error.set(null);

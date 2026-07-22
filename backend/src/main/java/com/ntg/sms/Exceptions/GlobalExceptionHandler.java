@@ -22,6 +22,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -165,4 +166,10 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(body);
     }
+    // 2. Business-rule errors (wrong password, mismatch, reuse)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(Map.of("message", ex.getMessage()));
+    }
+
 }

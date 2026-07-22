@@ -50,8 +50,8 @@
         </div>
       </div>
 
-      <!-- Change Password -->
-      <div class="setting-item" (click)="goToChangePassword()">
+      <!-- Change Password → opens popup -->
+      <div class="setting-item" (click)="openPasswordPopup()">
         <div class="left">
           <i class="fa-solid fa-lock"></i>
           <span>{{ passwordLabel }}</span>
@@ -61,8 +61,8 @@
         </div>
       </div>
 
-      <!-- About -->
-      <div class="setting-item" (click)="about()">
+      <!-- About → opens popup -->
+      <div class="setting-item" (click)="openAboutPopup()">
         <div class="left">
           <i class="fa-solid fa-circle-info"></i>
           <span>{{ aboutLabel }}</span>
@@ -85,3 +85,166 @@
   </div>
 
 </div>
+
+
+<!-- ================================================ -->
+<!-- POPUP: Change Password                           -->
+<!-- ================================================ -->
+@if (showPasswordPopup) {
+  <div class="popup-overlay" (click)="closePasswordPopup()">
+    <div class="popup-card" (click)="$event.stopPropagation()">
+
+      <!-- Popup Header -->
+      <div class="popup-header">
+        <div class="popup-header-left">
+          <i class="fa-solid fa-lock"></i>
+          <span>{{ passwordLabel }}</span>
+        </div>
+        <button class="popup-close" (click)="closePasswordPopup()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <hr class="popup-divider" />
+
+      <!-- Fields -->
+      <div class="popup-body">
+
+        <!-- Current Password -->
+        <div class="field-group">
+          <label>{{ isArabic ? 'كلمة المرور الحالية' : 'Current password' }}</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-key field-icon"></i>
+            <input
+              [type]="showCurrentPwd ? 'text' : 'password'"
+              [(ngModel)]="currentPassword"
+              [placeholder]="isArabic ? 'أدخل كلمة المرور الحالية' : 'Enter Current Password'"
+            />
+            <button class="eye-btn" type="button" (click)="toggleVisibility('current')">
+              <i [class]="showCurrentPwd ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- New Password -->
+        <div class="field-group">
+          <label>{{ isArabic ? 'كلمة المرور الجديدة' : 'New password' }}</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock field-icon"></i>
+            <input
+              [type]="showNewPwd ? 'text' : 'password'"
+              [(ngModel)]="newPassword"
+              [placeholder]="isArabic ? 'أدخل كلمة المرور الجديدة' : 'Enter New Password'"
+            />
+            <button class="eye-btn" type="button" (click)="toggleVisibility('new')">
+              <i [class]="showNewPwd ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm New Password -->
+        <div class="field-group">
+          <label>{{ isArabic ? 'تأكيد كلمة المرور' : 'Confirm new password' }}</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock field-icon"></i>
+            <input
+              [type]="showConfirmPwd ? 'text' : 'password'"
+              [(ngModel)]="confirmPassword"
+              [placeholder]="isArabic ? 'تأكيد كلمة المرور الجديدة' : 'Confirm New Password'"
+            />
+            <button class="eye-btn" type="button" (click)="toggleVisibility('confirm')">
+              <i [class]="showConfirmPwd ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Error / Success messages -->
+        @if (passwordError) {
+          <p class="msg error">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            {{ passwordError }}
+          </p>
+        }
+        @if (passwordSuccess) {
+          <p class="msg success">
+            <i class="fa-solid fa-circle-check"></i>
+            {{ passwordSuccess }}
+          </p>
+        }
+
+        <!-- Submit -->
+       
+
+<button class="update-btn" (click)="updatePassword()" [disabled]="isLoading">
+  @if (isLoading) {
+    <span class="spinner"></span>
+    {{ isArabic ? 'جارٍ الحفظ...' : 'Saving...' }}
+  } @else {
+    {{ isArabic ? 'تحديث كلمة المرور' : 'Update Password' }}
+  }
+</button>
+
+      </div>
+    </div>
+  </div>
+}
+
+
+<!-- ================================================ -->
+<!-- POPUP: App Version / About                       -->
+<!-- ================================================ -->
+@if (showAboutPopup) {
+  <div class="popup-overlay" (click)="closeAboutPopup()">
+    <div class="popup-card popup-card--about" (click)="$event.stopPropagation()">
+
+      <!-- Popup Header -->
+      <div class="popup-header">
+        <div class="popup-header-left">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>{{ isArabic ? 'حول التطبيق' : 'About' }}</span>
+        </div>
+        <button class="popup-close" (click)="closeAboutPopup()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <hr class="popup-divider" />
+
+      <div class="popup-body">
+
+        <!-- App Version Card -->
+        <div class="about-card">
+          <div class="about-card-left">
+            <div class="about-icon-wrap">
+              <i class="fa-regular fa-comment-dots"></i>
+            </div>
+            <div class="about-text">
+              <span class="about-card-title">{{ isArabic ? 'إصدار التطبيق' : 'App Version' }}</span>
+              <span class="about-card-sub">{{ isArabic ? 'أنت تستخدم أحدث إصدار' : 'you are using the latest version' }}</span>
+            </div>
+          </div>
+          <span class="version-badge">v1.0</span>
+        </div>
+
+        <!-- Copyrights Card -->
+        <div class="about-card">
+          <div class="about-card-left">
+            <div class="about-icon-wrap">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="about-text">
+              <span class="about-card-title">{{ isArabic ? 'حقوق النشر' : 'Copyrights' }}</span>
+              <span class="about-card-sub">
+                {{ isArabic
+                  ? '© 2026 مدرسة NTG الشروق. جميع الحقوق محفوظة.'
+                  : '© 2026 NTG School el shorouk. All rights reserved.' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+}

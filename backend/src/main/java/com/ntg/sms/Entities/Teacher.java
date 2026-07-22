@@ -12,6 +12,7 @@ import lombok.Setter;
 @Table(name = "TEACHER")
 public class Teacher {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "TEACHER_ID", nullable = false)
     private Long id;
 

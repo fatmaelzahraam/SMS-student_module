@@ -4,7 +4,7 @@
   <div class="page-header">
     <div class="header-part">
       <div class="icon-wrapper">
-        <img src="../assets/images/date.png" style="width: 40px; height: 40px;" alt="">
+        <img src="../assets/images/date.png" style="width: 40px; height: 40px;" alt="date">
       </div>
       <div>
         <h2>Schedule</h2>
@@ -70,45 +70,45 @@
     }
   }
 
-  <!-- ── MONTH EXAM SCHEDULE ── -->
-  @if (activeTab() === 'month' && !isLoading()) {
-    @if (monthExams() && monthExams()!.exams.length > 0) {
-      <div class="exam-card">
-        <table class="exam-col-table">
-          <thead>
-            <tr>
-              <td class="row-label">Date</td>
-              @for (group of groupedMonthExams(); track group.date) {
-                <th class="date-cell">{{ group.date }}</th>
-              }
-            </tr>
-            <tr>
-              <td class="row-label">Day</td>
-              @for (group of groupedMonthExams(); track group.date) {
-                <td class="day-cell">{{ group.day }}</td>
-              }
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="row-label subject-label">Subject</td>
-              @for (group of groupedMonthExams(); track group.date) {
-                <td class="subject-cell">
-                  @for (exam of group.exams; track exam.id) {
-                    <div class="pill" [class]="getPillClass(exam.subject)">
-                      {{ exam.subject }}
-                    </div>
-                  }
+<!-- ── MONTH EXAM SCHEDULE ── -->
+@if (activeTab() === 'month' && !isLoading()) {
+  @if (monthExams() && monthExams()!.exams.length > 0) {
+    <div class="exam-card">
+      <table class="final-table">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Date</th>
+            <th>Subject</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (group of groupedMonthExams(); track group.date) {
+            @for (exam of group.exams; track exam.id; let mi = $index) {
+              <tr>
+                @if (mi === 0) {
+                  <td class="date-group-cell" [attr.rowspan]="group.exams.length">
+                    {{ group.day }}
+                  </td>
+                  <td class="date-group-cell" [attr.rowspan]="group.exams.length">
+                    {{ group.date }}
+                  </td>
+                }
+                <td>
+                  <div class="pill" [class]="getPillClass(exam.subject)">
+                    {{ exam.subject }}
+                  </div>
                 </td>
-              }
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    } @else {
-      <div class="state-box">No month exam schedule available.</div>
-    }
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="state-box">No month exam schedule available.</div>
   }
+}
 
   <!-- ── FINAL EXAM SCHEDULE ── -->
   @if (activeTab() === 'final' && !isLoading()) {

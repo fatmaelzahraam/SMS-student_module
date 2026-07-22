@@ -3,6 +3,8 @@ package com.ntg.sms.Repositories;
 import com.ntg.sms.Entities.Student;
 import com.ntg.sms.Entities.Violation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -26,6 +28,7 @@ public interface ViolationRepository extends JpaRepository<Violation, Long> {
             LocalDate end
     );
 
-    long countByStudentAndIsmeetingTrue(Student student);
+    @Query("SELECT COUNT(v) FROM Violation v WHERE v.student = :student AND v.ismeeting = 1")
+    long countByStudentAndIsmeeting(@Param("student") Student student);
 
 }

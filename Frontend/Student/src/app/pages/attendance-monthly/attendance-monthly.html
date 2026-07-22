@@ -1,35 +1,35 @@
 <app-attendance-nav></app-attendance-nav>
 
 <div class="attendance-container">
-   <div class="date-header">
 
-        <button class="nav-btn">
-            <i class="fa-solid fa-chevron-left"></i>
-        </button>
+  <!-- Month Navigation -->
+  <div class="date-header">
 
-        <div class="date-box">
-           <p> {{ monthlyAttendance?.month}}</p>
-        </div>
+    <button class="nav-btn" (click)="previousMonth()">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
 
-        <button class="nav-btn">
-            <i class="fa-solid fa-chevron-right"></i>
-        </button>
-
+    <div class="date-box">
+      <p>{{ monthLabel }}</p>
     </div>
 
+    <button class="nav-btn" (click)="nextMonth()">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+  </div>
+
+  <!-- Overview Cards -->
   <div class="overview-card">
 
     <h2>Monthly Overview</h2>
-
-    <p>
-      {{ monthlyAttendance?.month }}/{{ monthlyAttendance?.year }}
-    </p>
+    <p>{{ monthlyAttendance?.month }}-{{ monthlyAttendance?.year }}</p>
 
     <div class="stats">
 
       <div class="stat-card attendance">
-        <h3>Attendance</h3>
-        <h1>{{ monthlyAttendance?.attendancePercentage | number:'1.0-0' }}%</h1>
+        <h3>Overall attendance</h3>
+        <h1>{{ monthlyAttendance?.attendancePercentage | number:'1.0-2' }}%</h1>
       </div>
 
       <div class="stat-card present">
@@ -49,24 +49,29 @@
 
       <div class="stat-card permission">
         <h3>Permission</h3>
-        <h1>{{ monthlyAttendance?.permission ?? 0 }}</h1>
+        <h1>{{ permissions.length }}</h1>
       </div>
 
     </div>
 
   </div>
+
+  <!-- Chart -->
   <div class="cont">
-   <div class="charts">
-  <div class="chart-card">
-    <h5>Attendance Percentage</h5>
+    <div class="charts">
+      <div class="chart-card">
 
-    <apx-chart
-      [series]="radialChartOptions.series"
-      [chart]="radialChartOptions.chart"
-      [plotOptions]="radialChartOptions.plotOptions"
-      [labels]="radialChartOptions.labels">
-    </apx-chart>
+        <h5>Attendance distribution</h5>
 
+        <apx-chart
+          [series]="radialChartOptions.series"
+          [chart]="radialChartOptions.chart"
+          [plotOptions]="radialChartOptions.plotOptions"
+          [labels]="radialChartOptions.labels">
+        </apx-chart>
+
+      </div>
+    </div>
   </div>
-  </div>
+
 </div>

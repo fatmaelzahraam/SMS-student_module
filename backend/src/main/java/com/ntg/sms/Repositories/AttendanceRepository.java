@@ -14,89 +14,139 @@ import java.util.List;
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
+    // ── Basic finders ────────────────────────────────────────────────────────
+
     List<Attendance> findByStudentId(Long studentId);
-    long countByStudent(Student student);
-    long countByStudentAndStatus(Student student, Character status);
+
     List<Attendance> findBySessionId(Long sessionId);
+
     List<Attendance> findByStudent(Student student);
 
+    // ── Count helpers ────────────────────────────────────────────────────────
+
+    long countByStudent(Student student);
+
+    long countByStudentAndStatus(Student student, Character status);
+
+    // ── Date-range count (all students) — used by weekly chart ───────────────
 
     @Query("""
-                SELECT COUNT(a)
-                FROM Attendance a
-                WHERE a.dateTime >= :startOfDay
-                  AND a.dateTime < :startOfNextDay
+            SELECT COUNT(a)
+            FROM Attendance a
+            WHERE a.dateTime >= :startOfDay
+              AND a.dateTime < :startOfNextDay
             """)
     long countByWeek(
-
-            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("startOfDay")     LocalDateTime startOfDay,
             @Param("startOfNextDay") LocalDateTime startOfNextDay
     );
 
     default long countToday() {
         LocalDate today = LocalDate.now();
-
         return countByWeek(
                 today.atStartOfDay(),
                 today.plusDays(1).atStartOfDay()
         );
     }
-    // student in specfice day
+
+
     @Query("""
-       SELECT a
-       FROM Attendance a
-       WHERE a.student = :student
-       AND a.dateTime >= :startOfDay
-       AND a.dateTime < :endOfDay
-       ORDER BY a.dateTime
-       """)
+            SELECT a
+            FROM Attendance a
+            LEFT JOIN FETCH a.session s
+            LEFT JOIN FETCH s.course c
+            LEFT JOIN FETCH c.teacher t
+            LEFT JOIN FETCH t.user
+            WHERE a.student = :student
+              AND a.dateTime >= :startOfDay
+              AND a.dateTime < :endOfDay
+            ORDER BY a.dateTime
+            """)
     List<Attendance> findDailyAttendance(
-            @Param("student") Student student,
+            @Param("student")    Student       student,
             @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay
+            @Param("endOfDay")   LocalDateTime endOfDay
     );
-    // number of persent in  specfic day
+
+
     @Query("""
-       SELECT COUNT(a)
-       FROM Attendance a
-       WHERE a.student = :student
-       AND a.status = 'P'
-       AND a.dateTime >= :startOfDay
-       AND a.dateTime < :endOfDay
-       """)
+            SELECT COUNT(a)
+            FROM Attendance a
+            WHERE a.student = :student
+              AND a.status = 'P'
+              AND a.dateTime >= :startOfDay
+              AND a.dateTime < :endOfDay
+            """)
     long countPresentDaily(
-            @Param("student") Student student,
+            @Param("student")    Student       student,
             @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay
+            @Param("endOfDay")   LocalDateTime endOfDay
     );
-    //number of Apsent in specfic day
+
     @Query("""
-       SELECT COUNT(a)
-       FROM Attendance a
-       WHERE a.student = :student
-       AND a.status = 'A'
-       AND a.dateTime >= :startOfDay
-       AND a.dateTime < :endOfDay
-       """)
+            SELECT COUNT(a)
+            FROM Attendance a
+            WHERE a.student = :student
+              AND a.status = 'A'
+              AND a.dateTime >= :startOfDay
+              AND a.dateTime < :endOfDay
+            """)
     long countAbsentDaily(
-            @Param("student") Student student,
+            @Param("student")    Student       student,
             @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay
+            @Param("endOfDay")   LocalDateTime endOfDay
     );
-  // number opf late in day
+
     @Query("""
-       SELECT COUNT(a)
-       FROM Attendance a
-       WHERE a.student = :student
-       AND a.status = 'L'
-       AND a.dateTime >= :startOfDay
-       AND a.dateTime < :endOfDay
-       """)
+            SELECT COUNT(a)
+            FROM Attendance a
+            WHERE a.student = :student
+              AND a.status = 'L'
+              AND a.dateTime >= :startOfDay
+              AND a.dateTime < :endOfDay
+            """)
     long countLateDaily(
-            @Param("student") Student student,
+            @Param("student")    Student       student,
             @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay
+            @Param("endOfDay")   LocalDateTime endOfDay
     );
 
 
+
+    @Query("""
+            SELECT COUNT(a)
+            FROM Attendance a
+            WHERE a.student = :student
+              AND a.dateTime >= :start
+              AND a.dateTime < :end
+            """)
+    long countByStudentAndDateTimeBetween(
+            @Param("student") Student       student,
+            @Param("start")   LocalDateTime start,
+            @Param("end")     LocalDateTime end
+    );
+
+
+    @Query("""
+            SELECT a
+            FROM Attendance a
+            WHERE a.student = :student
+              AND a.dateTime >= :startOfMonth
+              AND a.dateTime < :startOfNextMonth
+            ORDER BY a.dateTime
+            """)
+    List<Attendance> findByStudentAndMonthAndYear(
+            @Param("student")          Student       student,
+            @Param("startOfMonth")     LocalDateTime startOfMonth,
+            @Param("startOfNextMonth") LocalDateTime startOfNextMonth
+    );
+
+
+    @Query("""
+            SELECT a
+            FROM Attendance a
+            WHERE a.student = :student
+            ORDER BY a.dateTime
+            """)
+    List<Attendance> findAllByStudentOrderByDateTime(@Param("student") Student student);
 }

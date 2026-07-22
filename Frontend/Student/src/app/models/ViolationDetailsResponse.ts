@@ -1,19 +1,10 @@
 export interface ViolationDetailsResponse {
-
-  violationId: number;
-
+   violationId: number;
   violation: string;
-
   nameOfViolator: string;
-
   applicableProcedure: string;
-
   referringAuthority: string;
-
-  isMeeting: boolean;
-
+  ismeeting: boolean;
   notes: string;
-
   date: string;
-
 }

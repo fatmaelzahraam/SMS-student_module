@@ -15,9 +15,9 @@ export class DashboardHeader {
   readonly profileService = inject(Profileservice);
   readonly profile        = this.profileService.profile;
 
-  ngOnInit(): void {
-    this.profileService.getProfile();
-  }
+  // ngOnInit(): void {
+  //   this.profileService.getProfile();
+  // }
 
   getInitials(): string {
     return this.profileService.getInitials();

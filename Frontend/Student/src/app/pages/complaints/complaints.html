@@ -10,8 +10,8 @@
                 <img src="../assets/images/supportsss.png" width="40px" height="40px" alt="logo">
             </div>
 
-                <h1>Support</h1>
-            
+            <h1>Support</h1>
+
 
         </div>
 
@@ -42,104 +42,52 @@
 
 
     <!-- ================= Statistics ================= -->
-<div class="main-cintainer">
-    <div class="statistics">
+    <div class="main-cintainer">
+        <div class="statistics">
 
-        <div class="stat-card">
+            <div class="stat-card">
 
-            <div class="stat-icon total">
-                <img src="../assets/images/complain.png" alt="icon" class="img1">
-            </div>
+                <div class="stat-icon total">
+                    <img src="../assets/images/complain.png" alt="icon" class="img1">
+                </div>
 
-            <div class="totalll">
+                <div class="totalll">
 
-                <h3>Total Complaints</h3>
+                    <h3>Total Complaints</h3>
 
-                <span>{{statistics?.total || 0}}</span>
+                    <span>{{statistics?.total || 0}}</span>
 
-            </div>
-
-        </div>
-
-        <div class="stat-card">
-
-            <div class="stat-icon replied">
-                <img src="../assets/images/auto-reply.png" alt="icon" class="img1">
-            </div>
-
-            <div class="repliedd">
-
-                <h3>Replied</h3>
-
-                <span>{{statistics?.replied || 0}}</span>
+                </div>
 
             </div>
 
-        </div>
+            <div class="stat-card">
 
-        <div class="stat-card">
+                <div class="stat-icon replied">
+                    <img src="../assets/images/auto-reply.png" alt="icon" class="img1">
+                </div>
 
-            <div class="stat-icon pending">
-                <img src="../assets/images/test.png" alt="icon" class="img1">
-            </div>
+                <div class="repliedd">
 
-            <div class="pendingg">
+                    <h3>Replied</h3>
 
-                <h3>Pending</h3>
+                    <span>{{statistics?.replied || 0}}</span>
 
-                <span>{{statistics?.pending || 0}}</span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- ================= Complaints ================= -->
-
-    <div class="section">
-
-        <div class="section-header">
-
-            <div class="header-line"></div>
-
-            <h2>My Complaints</h2>
-
-        </div>
-
-        <div class="complaint-item" *ngFor="let complaint of complaints"
-            (click)="selectComplaint(complaint.complaintId)"
-            [class.active]="selectedComplaint?.complaintId === complaint.complaintId">
-
-            <div class="left">
-
-                <h3>{{complaint.title}}</h3>
-
-                <small>
-
-                    Complaint #{{complaint.complaintId}}
-
-                </small>
+                </div>
 
             </div>
 
-            <div class="right">
+            <div class="stat-card">
 
-                <span class="status replied" *ngIf="complaint.status=='REPLIED'">
+                <div class="stat-icon pending">
+                    <img src="../assets/images/test.png" alt="icon" class="img1">
+                </div>
 
-                    Replied
+                <div class="pendingg">
 
-                </span>
+                    <h3>Pending</h3>
 
-                <span class="status pending" *ngIf="complaint.status!='REPLIED'">
-
-                    Pending
-
-                </span>
-
-                <div class="date">
-
-                    {{complaint.submittedAt}}
+                    <span>{{statistics?.pending || 0}}</span>
 
                 </div>
 
@@ -147,83 +95,39 @@
 
         </div>
 
-    </div>
+        <!-- ================= Complaints ================= -->
 
-    <!-- ================= Complaint Details ================= -->
+        <div class="section">
 
-    <div class="section">
+            <div class="section-header">
 
-        <div class="section-header">
+                <div class="header-line"></div>
 
-            <div class="header-line"></div>
-
-            <h2>Complaint Details</h2>
-
-        </div>
-
-        <div class="details" *ngIf="selectedComplaint; else emptyState">
-
-            <div class="row">
-
-                <div class="label">
-
-                    Title
-
-                </div>
-
-                <div class="value">
-
-                    {{selectedComplaint.title}}
-
-                </div>
+                <h2>My Complaints</h2>
 
             </div>
 
-            <div class="row">
+            <div class="complaint-item" *ngFor="let complaint of complaints"
+                (click)="selectComplaint(complaint.complaintId)"
+                [class.active]="selectedComplaint?.complaintId === complaint.complaintId">
 
-                <div class="label">
+                <div class="left">
 
-                    Description
+                    <h3>{{complaint.title}}</h3>
 
-                </div>
+                    <small>
 
-                <div class="value">
+                        Complaint #{{complaint.complaintId}}
 
-                    {{selectedComplaint.description}}
-
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="label">
-
-                    Submitted On
+                    </small>
 
                 </div>
 
-                <div class="value">
+                <div class="right">
 
-                    {{selectedComplaint.submittedAt}}
+                    <div class="date">
 
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="label">
-
-                    Complaint Reply
-
-                </div>
-
-                <div class="value">
-
-                    <div class="reply-box">
-
-                        {{selectedComplaint.response || 'No reply yet'}}
+                        {{complaint.submittedAt| date: 'dd MMM yyyy, hh:mm a'}}
 
                     </div>
 
@@ -233,75 +137,143 @@
 
         </div>
 
-        <ng-template #emptyState>
+        <!-- ================= Complaint Details ================= -->
 
-            <div class="empty-state">
+        <div class="section">
 
-                No Complaint Selected
+            <div class="section-header">
+
+                <div class="header-line"></div>
+
+                <h2>Complaint Details</h2>
 
             </div>
 
-        </ng-template>
+            <div class="details" *ngIf="selectedComplaint; else emptyState">
+
+                <div class="row">
+
+                    <div class="label">
+
+                        Title
+
+                    </div>
+
+                    <div class="value">
+
+                        {{selectedComplaint.title}}
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="label">
+
+                        Description
+
+                    </div>
+
+                    <div class="value">
+
+                        {{selectedComplaint.description}}
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="label">
+
+                        Submitted On
+
+                    </div>
+
+                    <div class="value">
+                        {{ selectedComplaint.submittedAt | date: 'dd MMM yyyy, hh:mm a' }}
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="label">
+
+                        Complaint Reply
+
+                    </div>
+
+                    <div class="value">
+
+                        <div class="reply-box">
+
+                            {{selectedComplaint.response || 'No reply yet'}}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <ng-template #emptyState>
+
+                <div class="empty-state">
+
+                    No Complaint Selected
+
+                </div>
+
+            </ng-template>
+
+        </div>
 
     </div>
-
-</div>
 </div>
 <!-- ================= New Complaint Modal ================= -->
 
-<div class="modal-backdrop" *ngIf="showNewComplaint" (click)="closeNewComplaint()">
-
+@if (showNewComplaint) {
+<div class="modal-backdrop" (click)="closeNewComplaint()">
     <div class="modal" (click)="$event.stopPropagation()">
 
         <div class="modal-header">
-
             <h2>New Complaint</h2>
-
-            <button class="close-btn" (click)="closeNewComplaint()">
-
-                ✕
-
-            </button>
-
+            <button class="close-btn" (click)="closeNewComplaint()">✕</button>
         </div>
 
         <div class="modal-body">
 
-            <label>
+            <label>Title <span class="required"></span></label>
+            <input type="text" [(ngModel)]="newComplaint.title" #titleField="ngModel"
+                placeholder="Enter your complaint title" maxlength="50" required
+                [class.input-error]="titleField.invalid && titleField.touched" />
+            @if (titleField.invalid && titleField.touched) {
+            <span class="error-msg">Title is required.</span>
+            }
 
-                Title
-
-            </label>
-
-            <input type="text" [(ngModel)]="newComplaint.title" placeholder="Enter your complaint title">
-
-            <label>
-
-                Description
-
-            </label>
-
-            <textarea rows="7" [(ngModel)]="newComplaint.description"
-                placeholder="Enter your complaint description"></textarea>
+            <label>Description <span class="required"></span></label>
+            <textarea rows="7" [(ngModel)]="newComplaint.description" #descField="ngModel"
+                placeholder="Enter your complaint description" maxlength="500" required
+                [class.input-error]="descField.invalid && descField.touched"></textarea>
+            @if (descField.invalid && descField.touched) {
+            <span class="error-msg">Description is required.</span>
+            }
 
         </div>
 
         <div class="modal-footer">
-
-            <button class="cancel-btn" (click)="closeNewComplaint()">
-
-                Cancel
-
+            @if (errorMessage) {
+            <span class="error-msg">{{ errorMessage }}</span>
+            }
+            <button class="cancel-btn" (click)="closeNewComplaint()">Cancel</button>
+            <button class="send-btn" (click)="submitComplaint(titleField, descField)" [disabled]="loading">
+                {{ loading ? 'Sending...' : 'Send' }}
             </button>
-
-            <button class="send-btn" (click)="submitComplaint()" [disabled]="loading">
-
-                {{loading ? 'Sending...' : 'Send'}}
-
-            </button>
-
         </div>
 
     </div>
-
 </div>
+}

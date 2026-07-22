@@ -1,9 +1,6 @@
 package com.ntg.sms.Entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -17,6 +14,7 @@ import lombok.*;
 @Table(name = "MARKS_TYPE")
 public class MarksType {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "TYPE_ID", nullable = false)
     private Long id;
 

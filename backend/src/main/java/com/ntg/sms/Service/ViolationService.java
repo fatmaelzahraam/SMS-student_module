@@ -83,9 +83,7 @@ public class ViolationService {
                 endOfMonth
         );
 
-        long guardianSummons =
-                violationRepository.countByStudentAndIsmeetingTrue(student);
-
+        long guardianSummons = violationRepository.countByStudentAndIsmeeting(student);
         return new ViolationStatisticsResponse(
                 total,
                 thisMonth,

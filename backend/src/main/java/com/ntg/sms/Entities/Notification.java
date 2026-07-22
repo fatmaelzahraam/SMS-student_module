@@ -1,9 +1,6 @@
 package com.ntg.sms.Entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -21,6 +18,7 @@ import java.time.LocalDate;
 public class Notification {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "NOTIFICATION_ID", nullable = false)
     private Long id;
 

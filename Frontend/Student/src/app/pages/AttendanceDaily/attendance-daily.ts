@@ -1,6 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+
 import { AttendanceNav } from '../../components/attendance-nav/attendance-nav';
 import { AttendanceDailyResponse } from '../../models/AttendanceDailyResponse';
 import { AttendanceService } from '../attendance/service/attendace-service';
@@ -9,25 +10,18 @@ import { AttendanceService } from '../attendance/service/attendace-service';
 @Component({
   selector: 'app-attendance-daily',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-   AttendanceNav
-  ],
+  imports: [CommonModule, RouterLink, RouterLinkActive, AttendanceNav],
   templateUrl: './attendance-daily.html',
-  styleUrl: './attendance-daily.css',
+  styleUrl: './attendance-daily.css'
 })
 export class AttendanceDaly implements OnInit {
 
   dailyAttendance?: AttendanceDailyResponse;
 
-  studentId = 1;
-selectedDate = '2026-07-06';
+  // Default to today — no hardcoded studentId
+  selectedDate: string = new Date().toISOString().split('T')[0];
 
-  constructor(
-    private attendanceService: AttendanceService
-  ) {}
+  constructor(private attendanceService: AttendanceService) {}
 
   ngOnInit(): void {
     this.loadDailyAttendance();
@@ -35,16 +29,28 @@ selectedDate = '2026-07-06';
 
   loadDailyAttendance(): void {
     this.attendanceService
-      .getDailyAttendance(this.studentId, this.selectedDate)
+      .getDailyAttendance(this.selectedDate)
       .subscribe({
         next: (response) => {
           this.dailyAttendance = response;
-          console.log(response);
         },
-        error: (error) => {
-          console.error(error);
-        }
+        error: (err) => console.error('Failed to load daily attendance:', err)
       });
   }
 
+  // Called by the left chevron button
+  previousDay(): void {
+    const date = new Date(this.selectedDate);
+    date.setDate(date.getDate() - 1);
+    this.selectedDate = date.toISOString().split('T')[0];
+    this.loadDailyAttendance();
+  }
+
+  // Called by the right chevron button
+  nextDay(): void {
+    const date = new Date(this.selectedDate);
+    date.setDate(date.getDate() + 1);
+    this.selectedDate = date.toISOString().split('T')[0];
+    this.loadDailyAttendance();
+  }
 }

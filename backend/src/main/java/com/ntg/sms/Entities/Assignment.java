@@ -18,7 +18,7 @@ import java.util.Set;
 @Table(name = "ASSIGNMENT")
 public class Assignment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "ASSIGNMENT_ID", nullable = false)
     private Long id;
 

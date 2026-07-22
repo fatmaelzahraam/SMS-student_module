@@ -1,6 +1,6 @@
 nav{
   width: 100%;
-  height: 90px;
+  height: 100px;
   background-color: white;
   position: relative;
   padding-top: 10px;
@@ -12,23 +12,23 @@ h2
 {
   font-size: 22px;
   font-weight: 700;
-  color: #05172F;
+  color: var(--color-navy);
 }
 .link{
   position: absolute;
   display: flex;
   gap: 20px;
   bottom: 0;
-  left: 30px;
+  left: 8.5%;
 }
 .link a{
   text-decoration: none;
-  color: #05172F;
+  color: var(--color-navy);
   position: relative;
   transition: ease 0.5s;
 }
 .link a:focus{
-  color: #620000;
+  color: var( --color-primary);
   border-bottom: 4px solid#620000;
 }
 .img1{
@@ -39,9 +39,9 @@ height: 40px;
 display: flex;
 margin-left: 33px;
 gap: 20px;
-color: #05172F;
+color: var(--color-navy);
 }
 .active
 {
-  color: #620000;
+  color: var( --color-primary);
 }

@@ -1,94 +1,42 @@
 import { Injectable, inject } from '@angular/core';
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpParams
-} from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AttendanceOverview } from '../../../models/AttendanceOverview';
 import { AttendanceDailyResponse } from '../../../models/AttendanceDailyResponse';
 import { AttendanceMonthlyResponse } from '../../../models/AttendaceMonthlyResponse';
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AttendanceService {
 
   private http = inject(HttpClient);
 
-  private readonly api =
-    'http://localhost:8080/api/v1/attendance';
+  private readonly api = 'http://localhost:8080/api/v1/attendance';
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
+  // ── Overview ─────────────────────────────────────────────────────────────
+  // Backend resolves the student from the JWT token — no studentId param.
 
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
+  getOverview(): Observable<AttendanceOverview> {
+    return this.http.get<AttendanceOverview>(`${this.api}/overview`);
   }
 
-  // ================= Overview =================
+  // ── Daily ─────────────────────────────────────────────────────────────────
+  // date format: 'YYYY-MM-DD'  e.g. '2026-07-06'
 
-  getOverview(
-    studentId: number
-  ): Observable<AttendanceOverview> {
-
-    const headers = this.getHeaders();
-
-    return this.http.get<AttendanceOverview>(
-      `${this.api}/overview`,
-      {
-        headers,
-        params: {
-          studentId: studentId
-        }
-      }
-    );
+  getDailyAttendance(date: string): Observable<AttendanceDailyResponse> {
+    const params = new HttpParams().set('date', date);
+    return this.http.get<AttendanceDailyResponse>(`${this.api}/daily`, { params });
   }
 
-  // ================= Daily =================
-
-  getDailyAttendance(
-    studentId: number,
-    date: string
-  ): Observable<AttendanceDailyResponse> {
-
-    const headers = this.getHeaders();
-
-    const params = new HttpParams()
-      .set('studentId', studentId)
-      .set('date', date);
-
-    return this.http.get<AttendanceDailyResponse>(
-      `${this.api}/daily`,
-      {
-        headers,
-        params
-      }
-    );
-  }
+  // ── Monthly ───────────────────────────────────────────────────────────────
 
   getMonthlyAttendance(
-  studentId: number,
-  month: number,
-  year: number
-): Observable<AttendanceMonthlyResponse> {
-
-  const headers = this.getHeaders();
-
-  const params = new HttpParams()
-    .set('studentId', studentId)
-    .set('month', month)
-    .set('year', year);
-
-  return this.http.get<AttendanceMonthlyResponse>(
-    `${this.api}/monthly`,
-    {
-      headers,
-      params
-    }
-  );
-}
-
+    month: number,
+    year: number
+  ): Observable<AttendanceMonthlyResponse> {
+    const params = new HttpParams()
+      .set('month', month)
+      .set('year', year);
+    return this.http.get<AttendanceMonthlyResponse>(`${this.api}/monthly`, { params });
+  }
 }
