@@ -23,6 +23,8 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -197,7 +199,6 @@ public class AttendanceService {
     public AttendanceMonthlyResponse getMonthlyAttendance(int month, int year) {
         Student student = getAuthenticatedStudent();
 
-        // Use date-range bounds — Oracle does not support MONTH()/YEAR() in JPQL
         LocalDateTime startOfMonth     = LocalDate.of(year, month, 1).atStartOfDay();
         LocalDateTime startOfNextMonth = startOfMonth.plusMonths(1);
 
@@ -212,6 +213,22 @@ public class AttendanceService {
                 ? 0
                 : ((double) present / monthly.size()) * 100;
 
+        // Group by calendar day
+        Map<LocalDate, List<Attendance>> byDay = monthly.stream()
+                .collect(Collectors.groupingBy(a -> a.getDateTime().toLocalDate()));
+
+        // A day is "present" if it has NO absent session
+        // Then validate the session count matches the expected count for that day
+        // Thursday (DayOfWeek.THURSDAY) = 7 sessions, all others = 8
+        long presentDays = byDay.entrySet().stream()
+                .filter(entry -> {
+                    List<Attendance> sessions = entry.getValue();
+                    boolean noAbsent = sessions.stream().noneMatch(a -> a.getStatus() == 'A');
+                    int expected = entry.getKey().getDayOfWeek() == DayOfWeek.THURSDAY ? 7 : 8;
+                    return noAbsent && sessions.size() == expected;
+                })
+                .count();
+
         return AttendanceMonthlyResponse.builder()
                 .month(month)
                 .year(year)
@@ -219,6 +236,7 @@ public class AttendanceService {
                 .absent(absent)
                 .late(late)
                 .attendancePercentage(percentage)
+                .presentDays(presentDays)
                 .build();
     }
 

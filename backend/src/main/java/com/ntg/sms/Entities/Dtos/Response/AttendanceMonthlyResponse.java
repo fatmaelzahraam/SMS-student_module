@@ -16,4 +16,5 @@ public class AttendanceMonthlyResponse {
     private long absent;
     private long late;
     private double attendancePercentage;
+    private long presentDays;
 }

@@ -4,12 +4,31 @@
   <div class="main">
 
     <!-- Header -->
-    <div class="title">
-      <h2>
-        <i class="fa-solid fa-gear"></i>
-        {{ title }}
-      </h2>
-      <p>{{ subtitle }}</p>
+    <div class="header">
+      <div class="header-left">
+        <div class="header-title-group">
+      <span class="header-icon" aria-hidden="true">
+         <i class="fa-solid fa-gear"></i>
+      </span>
+        </div>
+        <div class="header-title-group2">
+          <h1 class="header-title">Settings</h1>
+          <p class="header-sub">Customize your experience</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="notif-dot" aria-label="Notifications">
+          <span aria-hidden="true" routerLink="/notifications"><i class="fa-regular fa-bell"></i></span>
+          <span class="notif-badge"></span>
+        </div>
+
+        <div class="nav-user">
+          <a class="avatar" routerLink="/profile">
+            {{ getInitials() }}
+          </a>
+        </div>
+      </div>
     </div>
 
     <!-- Settings List -->
@@ -39,14 +58,14 @@
         </div>
       </div>
 
-      <!-- Support -->
-      <div class="setting-item" (click)="support()">
+      <!-- Support → opens popup -->
+      <div class="setting-item" (click)="openSupportPopup()">
         <div class="left">
           <i class="fa-regular fa-life-ring"></i>
           <span>{{ supportLabel }}</span>
         </div>
         <div class="right">
-          <span>{{ supportText }}</span>
+          <i class="fa-solid fa-chevron-right"></i>
         </div>
       </div>
 
@@ -71,16 +90,17 @@
           <i class="fa-solid fa-chevron-right"></i>
         </div>
       </div>
+      <!-- Log Out -->
+      <!-- Log Out -->
+<div class="setting-item logout-setting-item">
+  <button class="logout-btn" (click)="openLogoutPopup()">
+    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+    Log Out
+  </button>
+</div>
 
     </div>
 
-    <!-- Log Out -->
-    <div class="logout-wrapper">
-      <button class="logout-btn" (click)="logout()">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-        Log Out
-      </button>
-    </div>
 
   </div>
 
@@ -174,16 +194,16 @@
         }
 
         <!-- Submit -->
-       
 
-<button class="update-btn" (click)="updatePassword()" [disabled]="isLoading">
-  @if (isLoading) {
-    <span class="spinner"></span>
-    {{ isArabic ? 'جارٍ الحفظ...' : 'Saving...' }}
-  } @else {
-    {{ isArabic ? 'تحديث كلمة المرور' : 'Update Password' }}
-  }
-</button>
+
+        <button class="update-btn" (click)="updatePassword()" [disabled]="isLoading">
+          @if (isLoading) {
+            <span class="spinner"></span>
+            {{ isArabic ? 'جارٍ الحفظ...' : 'Saving...' }}
+          } @else {
+            {{ isArabic ? 'تحديث كلمة المرور' : 'Update Password' }}
+          }
+        </button>
 
       </div>
     </div>
@@ -221,7 +241,8 @@
             </div>
             <div class="about-text">
               <span class="about-card-title">{{ isArabic ? 'إصدار التطبيق' : 'App Version' }}</span>
-              <span class="about-card-sub">{{ isArabic ? 'أنت تستخدم أحدث إصدار' : 'you are using the latest version' }}</span>
+              <span
+                class="about-card-sub">{{ isArabic ? 'أنت تستخدم أحدث إصدار' : 'you are using the latest version' }}</span>
             </div>
           </div>
           <span class="version-badge">v1.0</span>
@@ -236,12 +257,121 @@
             <div class="about-text">
               <span class="about-card-title">{{ isArabic ? 'حقوق النشر' : 'Copyrights' }}</span>
               <span class="about-card-sub">
-                {{ isArabic
-                  ? '© 2026 مدرسة NTG الشروق. جميع الحقوق محفوظة.'
-                  : '© 2026 NTG School el shorouk. All rights reserved.' }}
+                {{
+                  isArabic
+                    ? '© 2026 مدرسة NTG الشروق. جميع الحقوق محفوظة.'
+                    : '© 2026 NTG School el shorouk. All rights reserved.'
+                }}
               </span>
             </div>
           </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+}
+
+
+<!-- ================================================ -->
+<!-- POPUP: Support                                    -->
+<!-- ================================================ -->
+@if (showSupportPopup) {
+  <div class="popup-overlay" (click)="closeSupportPopup()">
+    <div class="popup-card popup-card--about" (click)="$event.stopPropagation()">
+
+      <!-- Popup Header -->
+      <div class="popup-header">
+        <div class="popup-header-left">
+          <i class="fa-regular fa-life-ring"></i>
+          <span>{{ isArabic ? 'الدعم' : 'Support' }}</span>
+        </div>
+        <button class="popup-close" (click)="closeSupportPopup()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <hr class="popup-divider" />
+
+      <div class="popup-body">
+
+        <!-- Email Card -->
+        <div class="about-card">
+          <div class="about-card-left">
+            <div class="about-icon-wrap">
+              <i class="fa-regular fa-envelope"></i>
+            </div>
+            <div class="about-text">
+              <span class="about-card-title">{{ isArabic ? 'البريد الإلكتروني' : 'Email' }}</span>
+              <span class="about-card-sub">support&#64;student.com</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Need Help Card -->
+        <div class="about-card">
+          <div class="about-card-left">
+            <div class="about-icon-wrap">
+              <i class="fa-regular fa-circle-question"></i>
+            </div>
+            <div class="about-text">
+              <span class="about-card-title">{{ isArabic ? 'تحتاج مساعدة؟' : 'Need Help?' }}</span>
+              <span class="about-card-sub">
+                {{ isArabic ? 'راسلنا في أي وقت وسنقوم بالرد' : 'Reach out anytime and we will respond' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ================================================ -->
+<!-- POPUP: Logout Confirmation                        -->
+<!-- ================================================ -->
+@if (showLogoutPopup) {
+  <div class="popup-overlay" (click)="closeLogoutPopup()">
+    <div class="popup-card popup-card--logout" (click)="$event.stopPropagation()">
+
+      <!-- Popup Header -->
+      <div class="popup-header">
+        <div class="popup-header-left">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>{{ isArabic ? 'تسجيل الخروج' : 'Log Out' }}</span>
+        </div>
+        <button class="popup-close" (click)="closeLogoutPopup()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <hr class="popup-divider" />
+
+      <div class="popup-body">
+
+        <!-- Icon + Message -->
+        <div class="logout-confirm-body">
+          <div class="logout-icon-wrap">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </div>
+          <p class="logout-confirm-title">
+            {{ isArabic ? 'هل تريد تسجيل الخروج؟' : 'Are you sure you want to log out?' }}
+          </p>
+          <p class="logout-confirm-sub">
+            {{ isArabic ? 'ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى حسابك.' : 'You will need to sign in again to access your account.' }}
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="logout-actions">
+          <button class="logout-cancel-btn" (click)="closeLogoutPopup()">
+            {{ isArabic ? 'إلغاء' : 'Cancel' }}
+          </button>
+          <button class="logout-confirm-btn" (click)="confirmLogout()">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            {{ isArabic ? 'تسجيل الخروج' : 'Log Out' }}
+          </button>
         </div>
 
       </div>

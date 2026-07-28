@@ -1,8 +1,12 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CoursesService } from './service/courses-service';
-import { CourseResponse } from '../../models/courses-model';
-import { RouterLink } from "@angular/router";
+import {Component, computed, inject, OnInit, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {CoursesService} from './service/courses-service';
+import {CourseResponse} from '../../models/courses-model';
+import {RouterLink} from "@angular/router";
+import {Profileservice} from '../profile/service/profileservice';
+import {catchError, Observable, of, tap, throwError} from 'rxjs';
+import {StudentProfileResponse} from '../../models/student-profile-response';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-courses',
@@ -12,15 +16,28 @@ import { RouterLink } from "@angular/router";
   styleUrl: './courses.css',
 })
 export class Courses implements OnInit {
+
+  readonly profileService = inject(Profileservice);
+  readonly profile = this.profileService.profile;
+
+
+  // ngOnInit(): void {
+  //   this.profileService.getProfile();
+  // }
+
+  getInitials(): string {
+    return this.profileService.getInitials();
+  }
+
   protected readonly courseService = inject(CoursesService);
 
   // Proxy the service signals directly
-  protected readonly isLoading  = computed(() => this.courseService.isLoading());
-  protected readonly error      = computed(() => this.courseService.error());
+  protected readonly isLoading = computed(() => this.courseService.isLoading());
+  protected readonly error = computed(() => this.courseService.error());
 
   // Local UI signals
-  protected readonly searchQuery    = signal('');
-  protected readonly showPrevious   = signal(false);
+  protected readonly searchQuery = signal('');
+  protected readonly showPrevious = signal(false);
   protected readonly selectedCourse = signal<CourseResponse | null>(null);
 
   // Split current vs previous terms
@@ -89,9 +106,9 @@ export class Courses implements OnInit {
   protected iconFor(courseType: string): string {
     const t = courseType.toLowerCase();
     if (t.includes('mobile') || t.includes('flutter')) return 'assets/icons/flutter.svg';
-    if (t.includes('java'))                              return 'assets/icons/java.svg';
-    if (t.includes('database') || t.includes('sql'))    return 'assets/icons/sql.svg';
-    if (t.includes('web'))                               return 'assets/icons/web.svg';
+    if (t.includes('java')) return 'assets/icons/java.svg';
+    if (t.includes('database') || t.includes('sql')) return 'assets/icons/sql.svg';
+    if (t.includes('web')) return 'assets/icons/web.svg';
     return 'assets/icons/book.svg';
   }
 
@@ -106,4 +123,6 @@ export class Courses implements OnInit {
   protected trackById(_: number, c: CourseResponse): number {
     return c.id;
   }
+
 }
+//sdfsd

@@ -1,8 +1,17 @@
 <!--  Header  -->
 <div class="header">
   <div class="header-left">
-    <span class="header-icon" aria-hidden="true"><img src="../assets/images/coursesss.png" width="40px" height="40px" alt="logo" ></span>
-    <h1 class="header-title">My Courses</h1>
+    <div class="header-title-group">
+      <span class="header-icon" aria-hidden="true">
+        <img src="../assets/images/coursesss.png" width="40px"
+             height="40px"
+             alt="logo">
+      </span>
+    </div>
+    <div class="header-title-group2">
+      <h1 class="header-title">My Courses</h1>
+      <p class="header-sub">Explore all of your Courses</p>
+    </div>
   </div>
 
   <div class="header-right">
@@ -17,10 +26,22 @@
         aria-label="Search courses"
       />
     </div>
-    <button class="bell-btn" aria-label="Notifications" routerLink="/notifications">
-      <span aria-hidden="true"><i class="fa-solid fa-bell"></i></span>
-    </button>
+    <!--     <button class="bell-btn" aria-label="Notifications" routerLink="/notifications"> -->
+    <!--       <span aria-hidden="true"><i class="fa-solid fa-bell"></i></span> -->
+    <!--     </button> -->
+
+    <div class="notif-dot" aria-label="Notifications">
+      <span aria-hidden="true" routerLink="/notifications"><i class="fa-regular fa-bell"></i></span>
+      <span class="notif-badge"></span>
+    </div>
+
+    <div class="nav-user">
+      <a class="avatar" routerLink="/profile">
+        {{ getInitials() }}
+      </a>
+    </div>
   </div>
+
 </div>
 
 <!-- Body -->
@@ -32,27 +53,24 @@
       <div class="spinner"></div>
       <p class="state-label">Loading your courses…</p>
     </div>
-  }
+  } @else if (error()) {
+    <!-- Error -->
 
-  <!-- Error -->
-  @else if (error()) {
     <div class="state-center" role="alert">
       <p class="error-msg">Could not load courses. Please try again.</p>
       <button class="btn-retry" (click)="retry()">Retry</button>
     </div>
-  }
+  } @else if (hasCourses() && visibleCourses().length === 0) {
 
-  <!-- Empty state -->
-  @else if (hasCourses() && visibleCourses().length === 0) {
+    <!-- Empty state -->
     <div class="state-center">
       <p class="state-label">
         {{ showPrevious() ? 'No previous courses found.' : 'No courses match your search.' }}
       </p>
     </div>
-  }
+  } @else if (hasCourses()) {
 
-  <!-- Course grid -->
-  @else if (hasCourses()) {
+    <!-- Course grid -->
     <div class="course-grid" role="list">
       @for (course of visibleCourses(); track trackById($index, course)) {
         <article
@@ -93,7 +111,7 @@
               (click)="$event.stopPropagation(); openDetail(course)"
               [attr.aria-label]="'Get materials for ' + course.courseName"
             >
-              Get Materials
+              Course Details
             </button>
           </div>
         </article>
@@ -153,9 +171,17 @@
         <dt class="detail-label">Term</dt>
         <dd class="detail-value">Term {{ course.termNumber }} · {{ course.termYear }}</dd>
       </div>
-      <div class="detail-cell">
+      <div class="detail-cell">s
         <dt class="detail-label">Lessons</dt>
         <dd class="detail-value">{{ lessonCount(course) }}</dd>
+      </div>
+      <div class="detail-cell">
+        <dt class="detail-label">Material</dt>
+        <dd class="detail-value">
+          <a href="https://drive.google.com/drive/folders/1EEYI36ev_4ezz3gKT32sg2OtJv-jb_V7?usp=drive_link"
+             target="_blank">View
+                             Material</a>
+        </dd>
       </div>
       <div class="detail-cell">
         <dt class="detail-label">Type</dt>
@@ -177,7 +203,9 @@
 
     <!-- Assignments -->
     @if (course.assignments?.length) {
-      <h3 class="detail-section-title">Assignments</h3>
+      <h3 class="detail-section-title">
+        <a routerLink='/assignments'>Assignments</a>
+      </h3>
       <ul class="assignment-list">
         @for (a of course.assignments; track a.id) {
           <li class="assignment-item">

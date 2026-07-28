@@ -1,33 +1,34 @@
-<nav class="navbar">
-
-     <!-- Welcome Header -->
-    <div class="welcome-header">
-      <h1>👋 Welcome Back!</h1>
-      <p class="subtitle">Are you ready to continue your academic journey?</p>
+<div class="header">
+  <div class="header-left">
+    <div class="header-title-group">
     </div>
-
-  <!-- Left: Avatar + Name -->
-  <div class="nav-user">
-
-     <div class="notif-dot" aria-label="Notifications">
-      <span aria-hidden="true" routerLink="/notifications"><i class="fa-regular fa-bell"></i></span>
-      <span class="notif-badge"></span>
+    <div class="header-title-group2">
+      <h1 class="header-title">Welcome Back!</h1>
+      <p class="header-sub">Continue your academic journey</p>
     </div>
-
-    <div class="avatar">
-      {{ getInitials() }}
-    </div>
-
-    <div class="user-info">
-      @if (profile()) {
-        <span class="user-name">{{ profile()!.fullName }}</span>
-        <span class="user-role">{{ profile()!.role | titlecase }}</span>
-      } @else {
-        <span class="user-name skeleton-text"></span>
-        <span class="user-role skeleton-text small"></span>
-      }
-    </div>
-
-    
   </div>
-</nav>
+
+  <div class="header-right">
+
+    <div class="nav-user">
+      <div class="notif-dot" aria-label="Notifications">
+        <span aria-hidden="true" routerLink="/notifications"><i class="fa-regular fa-bell"></i></span>
+<!--         <span class="notif-badge"></span> -->
+      </div>
+
+      <div class="user-info">
+        @if (profile()) {
+          <span class="user-name">{{ profile()!.fullName }}</span>
+          <span class="user-role">{{ profile()!.role | titlecase }}</span>
+        } @else {
+          <span class="user-name skeleton-text"></span>
+          <span class="user-role skeleton-text small"></span>
+        }
+      </div>
+      <a class="avatar" routerLink="/profile">
+        {{ getInitials() }}
+      </a>
+    </div>
+  </div>
+</div>
+

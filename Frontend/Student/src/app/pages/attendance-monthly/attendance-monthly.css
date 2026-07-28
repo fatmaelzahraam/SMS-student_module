@@ -93,7 +93,9 @@
     text-align:center;
     border:1px solid;
     transition:.3s;
-    box-shadow:0 4px 10px rgba(0,0,0,.08);
+    box-shadow:0 10px 10px rgba(0,0,0,.08);
+    background-color: var(--color-card);
+    border: #0c305f69 solid 1px;
 }
 
 .stat-card:hover{
@@ -103,14 +105,16 @@
 .stat-card h3{
     font-size:15px;
     font-weight:500;
+    color:#05172F;
 }
 
 .stat-card h1{
     font-size:18px;
     font-weight:700;
+    color:#05172F;
 }
 
-/* Colors */
+/* Colors
 .total{
     background:#e9f2ff;
 }
@@ -167,7 +171,7 @@
 .permission h3,
 .permission h1{
 color: #343342;
-}
+} */
 
 /* ================= Chart Card ================= */
 

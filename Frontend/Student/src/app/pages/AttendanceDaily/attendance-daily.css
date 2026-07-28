@@ -72,7 +72,31 @@
     margin-bottom:10px;
     font-size:14px;
 }
+/* attendance status  */
+.badge{
+    display:inline-block;
+    min-width:90px;
+    text-align:center;
+    padding:3px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight: 600;
+}
 
+.present{
+    background:#c9f0d6;
+    color:#148943;
+}
+
+.late{
+    background:#fff5a8;
+    color:#9d7b00;
+}
+
+.absent{
+    background:#f7c2c2;
+    color:#620000;
+}
 /* ================= Stats ================= */
 
 .stats{
@@ -87,25 +111,28 @@
     text-align:center;
     border:1px solid;
     transition:.3s;
-    box-shadow:0 4px 10px rgba(0,0,0,.08);
+    box-shadow:0 10px 10px rgba(0,0,0,.08);
+    background-color: var(--color-card);
+    border: #0c305f69 solid 1px;
 }
 .stat-card:hover{
     transform:translateY(-5px);
 }
-
 .stat-card h3{
    font-size:15px;
     font-weight:500;
+    color:#05172F;
 }
 
 .stat-card h1{
     font-size:18px;
     font-weight:700;
+    color:#05172F;
 }
 
 /* Colors */
 
-.total{
+/* .total{
     background:rgba(233, 242, 255, 0.61);
     border: #05172f69 solid 1px;
 }
@@ -116,7 +143,6 @@
 }
 
 .present{
-   background:#c0f9d598;
     border: 1px solid #1d8c48;
 }
 
@@ -126,7 +152,7 @@
 }
 
 .absent{
-   background:#EFC6C5;
+
     border: 1px solid #620000a6;
 }
 
@@ -136,7 +162,7 @@
 }
 
 .late{
-   background:#F9FFA8;
+ 
     border: 1px solid #675c0780;
 }
 
@@ -146,14 +172,13 @@
 }
 
 .attendance{
-    background:#F2EBFF;
     border:1px solid #9B7FC9;
 }
 
 .attendance h3,
 .attendance h1{
     color:#2B0A4D;
-}
+} */
 
 
 .table-card{
@@ -207,31 +232,6 @@ tbody tr{
 
 tbody tr:hover{
     background:#fafbfd;
-}
-
-.badge{
-    display:inline-block;
-    min-width:90px;
-    text-align:center;
-    padding:3px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight: 600;
-}
-
-.present{
-    background:#c9f0d6;
-    color:#148943;
-}
-
-.late{
-    background:#fff5a8;
-    color:#9d7b00;
-}
-
-.absent{
-    background:#f7c2c2;
-    color:#620000;
 }
 /* ================= Responsive ================= */
 

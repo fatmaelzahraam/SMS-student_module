@@ -1,47 +1,77 @@
 <section class="marks-page">
-  <header class="marks-header">
-    <span class="marks-header-icon" aria-hidden="true">
-     <img src="../assets/images/score.png" width="40px" height="40px" alt="logo" alt="">
-    </span>
-    <h2>Marks</h2>
-  </header>
-
-  @if (loading() && !dashboard()) {
-    <p class="state-message">Loading marks…</p>
-  } @else if (error()) {
-    <p class="state-message state-error">{{ error() }}</p>
-  }
-<div class="content">
-  @if (dashboard(); as data) {
-    <div class="subject-filter">
-      <label for="subject-select">Select Subject</label>
-      <select id="subject-select" (change)="onSubjectChange($event)">
-        <option value="all">All Subjects</option>
-        @for (s of data.subjectAverages; track s.subject) {
-          <option [value]="s.courseId ?? s.subject">{{ s.subject }}</option>
-        }
-      </select>
+  <div class="header">
+    <div class="header-left">
+      <div class="header-title-group">
+        <span class="header-icon" aria-hidden="true">
+          <img src="../assets/images/score.png" width="40px" height="40px" alt="logo">
+        </span>
+      </div>
+      <div class="header-title-group2">
+        <h1 class="header-title">Marks</h1>
+        <p class="header-sub">View your marks and performance</p>
+      </div>
     </div>
 
+    <div class="header-right">
+      <div class="notif-dot" aria-label="Notifications">
+        <span aria-hidden="true" routerLink="/notifications"><i class="fa-regular fa-bell"></i></span>
+        <span class="notif-badge"></span>
+      </div>
+      <div class="nav-user">
+        <a class="avatar" routerLink="/profile">
+          {{ getInitials() }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  @if (loading() && !dashboard()) {
+  <p class="state-message">Loading marks…</p>
+  } @else if (error()) {
+  <p class="state-message state-error">{{ error() }}</p>
+  }
+
+  <div class="content">
+    @if (dashboard(); as data) {
+    <div class="filters">
+      <div class="subject-filter">
+        <label for="subject-select">Select Subject</label>
+        <select id="subject-select" (change)="onSubjectChange($event)">
+          <option value="all">All Subjects</option>
+          @for (s of data.subjectAverages; track s.subject) {
+          <option [value]="s.courseId ?? s.subject">{{ s.subject }}</option>
+          }
+        </select>
+      </div>
+      <div class="subject-filter">
+        <label for="type-select">Select Type</label>
+        <select id="type-select" (change)="onTypeChange($event)">
+          <option value="all">All Types</option>
+          @for (t of data.markTypes; track t) {
+          <option [value]="t">{{ t }}</option>
+          }
+        </select>
+      </div>
+    </div>
     <div class="stat-grid">
       <article class="stat-card theme-navy">
-        <span class="stat-chip" aria-hidden="true"></span>
         <span class="stat-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <polyline points="3 17 9 11 13 15 21 6" />
             <polyline points="15 6 21 6 21 12" />
           </svg>
         </span>
         <span class="stat-body">
           <span class="stat-label">Average percentage</span>
-          <span class="stat-value">{{ data.averagePercentage }}%</span>
+          <span class="stat-value">{{ data.averagePercentage | number:'1.2-2' }}%</span>
         </span>
       </article>
 
       <article class="stat-card theme-green">
-        <span class="stat-chip" aria-hidden="true"></span>
         <span class="stat-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <path d="M8 21h8" />
             <path d="M12 17v4" />
             <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
@@ -56,9 +86,9 @@
       </article>
 
       <article class="stat-card theme-maroon">
-        <span class="stat-chip" aria-hidden="true"></span>
         <span class="stat-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <polyline points="3 7 9 13 13 9 21 18" />
             <polyline points="15 18 21 18 21 12" />
           </svg>
@@ -70,7 +100,6 @@
       </article>
 
       <article class="stat-card theme-olive">
-        <span class="stat-chip" aria-hidden="true"></span>
         <span class="stat-icon" aria-hidden="true">
           <img src="../assets/images/assignmentdash.png" alt="icon" style="width:30px;height:30px;">
         </span>
@@ -83,29 +112,28 @@
 
     <div class="content-grid">
       <section class="table-card">
-        <h3 class="table-title">Monthly Exam Marks</h3>
+        <h3 class="table-title">Marks Summary</h3>
         <div class="table-scroll">
           <table>
             <thead>
               <tr>
-                <th class="month-col">Month</th>
-                @for (col of columns(); track col) {
-                  <th>{{ col }}</th>
+                <th class="month-col">Month</th> @for (col of columns(); track col) {
+                <th>{{ col }}</th>
                 }
               </tr>
             </thead>
             <tbody>
               @for (row of rows(); track row.month) {
-                <tr>
-                  <td class="month-col month-cell">{{ row.month }}</td>
-                  @for (val of row.values; track $index) {
-                    <td>{{ val !== null ? val : '—' }}</td>
-                  }
-                </tr>
+              <tr>
+                <td class="month-col month-cell">{{ row.month }}</td>
+                @for (val of row.values; track $index) {
+                <td>{{ val !== null ? val : '—' }}</td>
+                }
+              </tr>
               } @empty {
-                <tr>
-                  <td [attr.colspan]="columns().length + 1" class="empty-cell">No marks recorded yet.</td>
-                </tr>
+              <tr>
+                <td [attr.colspan]="columns().length + 1" class="empty-cell">No marks recorded yet.</td>
+              </tr>
               }
             </tbody>
           </table>
@@ -118,23 +146,22 @@
           <div class="donut-canvas-wrap">
             <canvas #donutCanvas></canvas>
             <div class="donut-center">
-              <span class="donut-center-value">{{ data.averagePercentage }}%</span>
+              <span class="donut-center-value">{{ data.averagePercentage | number:'1.2-2' }}%</span>
               <span class="donut-center-label">Overall Average</span>
             </div>
           </div>
           <ul class="donut-legend">
             @for (item of data.subjectAverages; track item.subject; let i = $index) {
-              <li>
-                <span class="legend-dot" [style.background]="colorFor(i)"></span>
-                <span class="legend-name">{{ item.subject }}</span>
-                <span class="legend-value">{{ item.percentage }}%</span>
-              </li>
+            <li>
+              <span class="legend-dot" [style.background]="colorFor(i)"></span>
+              <span class="legend-name">{{ item.subject }}</span>
+              <span class="legend-value">{{ item.percentage | number:'1.2-2'}}%</span>
+            </li>
             }
           </ul>
         </div>
       </section>
     </div>
-    
-  }
+    }
   </div>
 </section>

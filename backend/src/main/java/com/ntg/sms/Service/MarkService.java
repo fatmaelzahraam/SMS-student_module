@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,6 @@ public class MarkService {
 
     @Transactional(readOnly = true)
     public List<MarkResponse> getMarksByStudent(Long studentId) {
-
         return markRepository.findByStudentId(studentId)
                 .stream()
                 .map(markMapper::toResponse)
@@ -28,9 +28,7 @@ public class MarkService {
     }
 
     @Transactional(readOnly = true)
-    public List<MarkResponse> getMarksByStudentAndCourse(Long studentId,
-                                                         Long courseId) {
-
+    public List<MarkResponse> getMarksByStudentAndCourse(Long studentId, Long courseId) {
         return markRepository.findByStudentIdAndCourseId(studentId, courseId)
                 .stream()
                 .map(markMapper::toResponse)
@@ -39,54 +37,44 @@ public class MarkService {
 
     public int getPerformanceScore(Long studentId) {
         List<Mark> marks = markRepository.findByStudentId(studentId);
-
         if (marks.isEmpty()) return 0;
-
-        double totalMaxScore = marks.stream()
-                .mapToDouble(mark -> mark.getMaxScore().doubleValue())
-                .sum();
-
-        double totalStudentScore = marks.stream()
-                .mapToDouble(mark -> mark.getScore().doubleValue())
-                .sum();
-
+        double totalMaxScore = marks.stream().mapToDouble(m -> m.getMaxScore().doubleValue()).sum();
+        double totalStudentScore = marks.stream().mapToDouble(m -> m.getScore().doubleValue()).sum();
         if (totalMaxScore == 0) return 0;
-
         return (int) ((totalStudentScore / totalMaxScore) * 100);
     }
 
-     // Dashboard API
+    // ── Dashboard ─────────────────────────────────────────────────────────────
 
     @Transactional(readOnly = true)
-    public StudentMarksDashboardResponse getDashboard(Long studentId) {
+    public StudentMarksDashboardResponse getDashboard(Long studentId, String typeName) {
 
-        Double average = Optional.ofNullable(
-                        markRepository.calculatePerformance(studentId))
-                .orElse(0.0);
+        Double average = Optional.ofNullable(markRepository.calculatePerformance(studentId)).orElse(0.0);
+        Double highest = Optional.ofNullable(markRepository.highestPercentage(studentId)).orElse(0.0);
+        Double lowest  = Optional.ofNullable(markRepository.lowestPercentage(studentId)).orElse(0.0);
+        Integer totalSubjects = Optional.ofNullable(markRepository.totalSubjects(studentId)).orElse(0);
+        Integer rank = Optional.ofNullable(markRepository.getStudentRank(studentId)).orElse(0);
 
-        Double highest = Optional.ofNullable(
-                        markRepository.highestPercentage(studentId))
-                .orElse(0.0);
+        List<SubjectAverageResponse> chart = markRepository.getSubjectAverages(studentId);
 
-        Double lowest = Optional.ofNullable(
-                        markRepository.lowestPercentage(studentId))
-                .orElse(0.0);
+        // All marks — used for type list and monthly table
+        List<Mark> allMarks = markRepository.findByStudentId(studentId);
 
-        Integer totalSubjects = Optional.ofNullable(
-                        markRepository.totalSubjects(studentId))
-                .orElse(0);
+        // Distinct type names for the frontend dropdown
+        List<String> markTypes = allMarks.stream()
+                .map(m -> m.getType().getTypeName())
+                .distinct()
+                .sorted()
+                .toList();
 
-        Integer rank = Optional.ofNullable(
-                        markRepository.getStudentRank(studentId))
-                .orElse(0);
+        // Filter by type if provided
+        List<Mark> filtered = (typeName != null && !typeName.isBlank())
+                ? allMarks.stream()
+                .filter(m -> m.getType().getTypeName().equalsIgnoreCase(typeName))
+                .toList()
+                : allMarks;
 
-        List<SubjectAverageResponse> chart =
-                markRepository.getSubjectAverages(studentId);
-
-        List<Mark> marks = markRepository.findByStudentId(studentId);
-
-        List<MonthlyMarksResponse> monthlyMarks =
-                buildMonthlyTable(marks);
+        List<MonthlyMarksResponse> monthlyMarks = buildMonthlyTable(filtered);
 
         return StudentMarksDashboardResponse.builder()
                 .averagePercentage(round(average))
@@ -96,56 +84,55 @@ public class MarkService {
                 .academicRank(rank)
                 .subjectAverages(chart)
                 .monthlyMarks(monthlyMarks)
+                .markTypes(markTypes)
                 .build();
     }
 
-    //Creates the Monthly Exam Marks table.
+    // ── Monthly table: rows = months, columns = subjects ──────────────────────
 
     private List<MonthlyMarksResponse> buildMonthlyTable(List<Mark> marks) {
 
-        Map<String, List<Mark>> groupedByMonth =
-                marks.stream()
-                        .collect(Collectors.groupingBy(
-                                mark -> mark.getType().getTypeName(),
-                                LinkedHashMap::new,
-                                Collectors.toList()));
+        // Group by "Month Year" e.g. "September 2024", preserve insertion order
+        Map<String, List<Mark>> groupedByMonth = marks.stream()
+                .collect(Collectors.groupingBy(
+                        m -> m.getFeedbackDate()
+                                .getMonth()
+                                .getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+                                + " " + m.getFeedbackDate().getYear(),
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
 
         List<MonthlyMarksResponse> response = new ArrayList<>();
 
         for (Map.Entry<String, List<Mark>> entry : groupedByMonth.entrySet()) {
 
-            List<SubjectMarkResponse> subjects = new ArrayList<>();
+            // Average percentage per subject within this month
+            Map<String, Double> subjectPercentages = entry.getValue().stream()
+                    .collect(Collectors.groupingBy(
+                            m -> m.getCourse().getCourseName(),
+                            Collectors.averagingDouble(
+                                    m -> (m.getScore() * 100.0) / m.getMaxScore()
+                            )
+                    ));
 
-            for (Mark mark : entry.getValue()) {
+            List<SubjectMarkResponse> subjects = subjectPercentages.entrySet().stream()
+                    .map(e -> SubjectMarkResponse.builder()
+                            .subject(e.getKey())
+                            .percentage(round(e.getValue()))
+                            .build())
+                    .toList();
 
-                double percentage =
-                        (mark.getScore() * 100.0) / mark.getMaxScore();
-
-                subjects.add(
-                        SubjectMarkResponse.builder()
-                                .subject(mark.getCourse().getCourseName())
-                                .percentage(round(percentage))
-                                .build()
-                );
-            }
-
-            response.add(
-                    MonthlyMarksResponse.builder()
-                            .month(entry.getKey())
-                            .subjects(subjects)
-                            .build()
-            );
+            response.add(MonthlyMarksResponse.builder()
+                    .month(entry.getKey())
+                    .subjects(subjects)
+                    .build());
         }
 
         return response;
     }
 
-    //Round to 2 decimal places.
-
     private Double round(Double value) {
-
         return Math.round(value * 100.0) / 100.0;
-
     }
-
 }

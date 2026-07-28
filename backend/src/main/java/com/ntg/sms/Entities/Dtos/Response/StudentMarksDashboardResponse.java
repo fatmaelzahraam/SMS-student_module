@@ -12,18 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 public class StudentMarksDashboardResponse {
     private Double averagePercentage;
-
     private Double highestMark;
-
     private Double lowestMark;
-
     private Integer totalSubjects;
-
     private Integer academicRank;
-    // Monthly table
     private List<MonthlyMarksResponse> monthlyMarks;
-
-    //  Doughnut chart
-
     private List<SubjectAverageResponse> subjectAverages;
+    private List<String> markTypes;
 }

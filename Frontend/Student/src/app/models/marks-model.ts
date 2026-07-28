@@ -1,5 +1,4 @@
 export interface SubjectAverage {
-
   courseId?: number;
   subject: string;
   percentage: number;
@@ -23,6 +22,7 @@ export interface StudentMarksDashboard {
   academicRank: number;
   monthlyMarks: MonthlyMarks[];
   subjectAverages: SubjectAverage[];
+  markTypes: string[];   
 }
 
 export interface Mark {
@@ -33,7 +33,7 @@ export interface Mark {
   studentName: string;
   typeId: number;
   typeName: string;
-  feedbackDate: string; 
+  feedbackDate: string;
   feedback: string | null;
   notes: string | null;
   isApproved: boolean;

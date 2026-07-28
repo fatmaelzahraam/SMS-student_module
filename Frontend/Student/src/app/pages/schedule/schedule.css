@@ -4,17 +4,21 @@
 }
 
 /* ── Header ── */
-.page-header {
-  display: flex;
-  align-items: start;
-  flex-direction: column;
-  gap: 0;
-  margin-bottom: 20px;
-  background-color: var(--color-card);
-  height: 114px;
-  border-bottom-left-radius: 15px;
-  box-shadow: 0 1px 3px #aaa;
-  padding: 15px 0 0 20px;
+/*.page-header {*/
+/*  display: flex;*/
+/*  align-items: start;*/
+/*  flex-direction: column;*/
+/*  gap: 0;*/
+/*  margin-bottom: 20px;*/
+/*  background-color: var(--color-card);*/
+/*  height: 114px;*/
+/*  border-bottom-left-radius: 15px;*/
+/*  box-shadow: 0 1px 3px #aaa;*/
+/*  padding: 15px 0 0 20px;*/
+/*}*/
+
+.header {
+  background-color: white;
 }
 
 .page-header h2 {
@@ -35,11 +39,19 @@
   align-items: center;
 }
 
+.header-left {
+  gap: 10px;
+}
+
+.header-left img {
+  margin-top: 10px;
+}
 /* ── Tabs ── */
 .tabs {
   display: flex;
-  gap: 0;
-  margin-left: 40px;
+  padding-left: 50px;
+  background-color: white;
+  color: white;
 }
 
 .tabs button {
@@ -249,7 +261,7 @@
   text-align: center;
   vertical-align: top;
   border-right: 1px solid #eee;
-  
+
 }
 
 /* ── FINAL EXAM: vertical grouped table ── */

@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import {
   NgApexchartsModule,
@@ -27,16 +30,17 @@ export type RadialChartOptions = {
 @Component({
   selector: 'app-attendance-monthly',
   standalone: true,
-  imports: [CommonModule, AttendanceNav, NgApexchartsModule],
+  imports: [CommonModule,NgApexchartsModule],
   templateUrl: './attendance-monthly.html',
   styleUrl: './attendance-monthly.css'
 })
-export class AttendanceMonthly implements OnInit {
+export class AttendanceMonthly implements OnInit, OnDestroy {
 
   monthlyAttendance?: AttendanceMonthlyResponse;
   permissions: PermissionResponse[] = [];
+  private routerSub?: Subscription;
 
-  month = new Date().getMonth() + 1;
+  month = new Date().getMonth();
   year  = new Date().getFullYear();
 
   radialChartOptions: RadialChartOptions = {
@@ -57,11 +61,17 @@ export class AttendanceMonthly implements OnInit {
 
   constructor(
     private attendanceService: AttendanceService,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private router: Router,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadMonthlyData();
+  }
+
+  ngOnDestroy(): void {
+    this.routerSub?.unsubscribe();
   }
 
   loadMonthlyData(): void {
@@ -94,6 +104,7 @@ export class AttendanceMonthly implements OnInit {
       }
 
       this.permissions = permissions ?? [];
+      this.cd.markForCheck(); 
     });
   }
 

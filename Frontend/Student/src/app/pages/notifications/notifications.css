@@ -1,9 +1,22 @@
 .header-section {
   background: #fff;
   padding: 0px 20px;
-  box-shadow: 0 3px 10px rgba(0,0,0,.08);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
   border-bottom-left-radius: 15px;
   border: 1px solid #8e8e93b6;
+}
+
+.header {
+  background-color: white;
+}
+
+.header-left {
+  gap: 10px;
+}
+
+.header i {
+  font-size: 35px;
+  color: var(--color-navy);
 }
 
 .title-with-icon {
@@ -28,7 +41,7 @@
   background: var(--color-card);
   border-radius: 15px;
   padding: 10px 0;
-  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
   margin: 30px;
 }
 
@@ -58,8 +71,10 @@
   align-items: center;
   flex-shrink: 0;
 }
-.icon-container i{
+
+.icon-container i {
   font-size: 30px;
+  /*color: var(--color-primary);*/
 }
 
 .content-container {
@@ -88,10 +103,11 @@
   color: gray;
   font-size: 12px;
 }
-.priority-badge
-{
+
+.priority-badge {
   font-size: 12px;
 }
+
 .status-dot {
   width: 12px;
   height: 12px;
@@ -146,7 +162,7 @@
 .empty-icon {
   font-size: 60px;
   margin-bottom: 15px;
- 
+
 }
 
 .empty-state h3 {

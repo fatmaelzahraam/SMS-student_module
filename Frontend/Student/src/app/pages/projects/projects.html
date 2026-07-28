@@ -1,12 +1,36 @@
 <!-- ── Page header ──────────────────────────────────────── -->
-<div class="page-header">
-  <div class="page-header-icon" aria-hidden="true">
-    <img src="../assets/images/team.png" width="40px" height="40px" alt="logo">
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-title-group">
+      <span class="header-icon" aria-hidden="true">
+        <img src="../assets/images/team.png" width="40px"
+             height="40px"
+             alt="logo">
+      </span>
+    </div>
+    <div class="header-title-group2">
+      <h1 class="header-title">Projects</h1>
+      <p class="header-sub">View details of all your projects</p>
+    </div>
   </div>
-  <div class="head-content">
-    <h1 class="page-title">Projects</h1>
+
+  <div class="header-right">
+
+    <div class="notif-dot" aria-label="Notifications">
+      <span aria-hidden="true" routerLink="/notifications"><i class="fa-regular fa-bell"></i></span>
+      <span class="notif-badge"></span>
+    </div>
+
+    <div class="nav-user">
+      <a class="avatar" routerLink="/profile">
+        {{ getInitials() }}
+      </a>
+    </div>
   </div>
+
 </div>
+
 
 <!-- ── Main content area ────────────────────────────────── -->
 <div class="content">
@@ -39,16 +63,14 @@
     <div class="table-card">
       <table class="projects-table" aria-label="Projects list">
         <thead>
-          <tr>
-            <th class="col-name">Name</th>
-            <th class="col-deadline">
-              <span class="th-icon" aria-hidden="true"><i class="fa-solid fa-stopwatch"></i></span> Deadline
-            </th>
-            <th class="col-subject">
-              <span class="th-icon" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span> Subject
-            </th>
-            <th class="col-actions">Actions</th>
-          </tr>
+        <tr>
+          <th class="col-name thead-title">Name</th>
+          <th class="col-deadline">Deadline
+          </th>
+          <th class="col-subject">Subject
+          </th>
+          <th class="col-actions">Actions</th>
+        </tr>
         </thead>
         <tbody>
           @for (project of projects(); track trackById($index, project)) {
@@ -57,7 +79,7 @@
               [class.row--active]="teamProject()?.id === project.id || detailProject()?.id === project.id"
             >
               <!-- Name -->
-              <td class="col-name">{{ project.name }}</td>
+              <td class="col-name td-title">{{ project.name }}</td>
 
               <!-- Deadline -->
               <td class="col-deadline">{{ formatDate(project.deadline) }}</td>
@@ -103,11 +125,18 @@
 
 <!-- Team popup  -->
 @if (teamProject(); as project) {
-  <div class="overlay" (click)="closeAll()" aria-label="Close panel"></div>
+  <div class="overlay" (click)="closeAll()" aria-label="Close panel">✕</div>
+
   <div class="popup popup--team" role="dialog" [attr.aria-label]="project.name + ' team'">
+    <button class="popup-close" type="button" (click)="closeAll()" aria-label="Close">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
     <table class="popup-table" aria-label="Team members">
       <thead>
-        <tr><th>Name</th><th></th></tr>
+      <tr>
+        <th>Name</th>
+        <th></th>
+      </tr>
       </thead>
       <tbody>
         @for (member of teamFor(project); track $index) {
@@ -127,8 +156,11 @@
 
 <!--  Details popup  -->
 @if (detailProject(); as project) {
-  <div class="overlay" (click)="closeAll()" aria-label="Close panel"></div>
+  <div class="overlay" (click)="closeAll()" aria-label="Close panel">✕</div>
   <div class="popup popup--details" role="dialog" [attr.aria-label]="project.name + ' details'">
+    <button class="popup-close" type="button" (click)="closeAll()" aria-label="Close">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
     <h3 class="popup-title">Description</h3>
     <div class="popup-divider"></div>
     <p class="detail-text">

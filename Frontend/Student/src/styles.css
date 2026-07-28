@@ -1,18 +1,106 @@
 /* You can add global styles to this file, and also import other style files */
-*{
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    font-family: 'Cairo';
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  font-family: 'Cairo';
+  box-sizing: border-box;
 }
+
 :root {
-  --color-primary:    #620000;
+  --color-primary: #620000;
   --color-background: #EEEEEE;
-  --color-card:       #FFFFFF;
-  --color-baby-blue:  #87A7C8;
-  --color-navy:       #05172F;
+  --color-card: #FFFFFF;
+  --color-baby-blue: #87A7C8;
+  --color-navy: #05172F;
 }
-body{
-    background-color: #EEEEEE;
+
+body {
+  background-color: #EEEEEE;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 20px;
+  background-color: var(--white);
+  height: 92px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.header-title-group {
+  display: flex;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+}
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  right: 20px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-card);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notif-dot {
+  cursor: pointer;
+}
+.notif-dot i {
+  font-size: 20px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.user-role {
+  font-size: 11px;
+  color: #888;
+}
+
+.bell-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
 }

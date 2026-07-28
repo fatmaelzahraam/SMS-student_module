@@ -1,29 +1,40 @@
 <div class="support-page">
 
-  <!-- Header -->
-  <div class="page-header">
-    <div class="title-section">
-      <div class="support-icon">
-        <img src="../assets/images/supportsss.png" width="40px" height="40px" alt="logo">
+  <div class="header">
+    <div class="header-left">
+      <div class="header-title-group">
+      <span class="header-icon" aria-hidden="true">
+        <img src="../assets/images/supportsss.png" width="40px"
+             height="40px"
+             alt="logo">
+      </span>
       </div>
-      <div>
-        <h1>Support</h1>
+      <div class="header-title-group2">
+        <h1 class="header-title">Support</h1>
+        <p class="header-sub">View your complaints or submit a suggestion and see your academic violations</p>
       </div>
     </div>
 
-    <!-- Tabs -->
-    <div class="tabs">
-      <button
-        class="tab"
-        routerLink="/support"
-        routerLinkActive="active">
+    <div class="header-right">
+      <div class="notif-dot" aria-label="Notifications">
+        <span aria-hidden="true" routerLink="/notifications"><i class="fa-regular fa-bell"></i></span>
+        <span class="notif-badge"></span>
+      </div>
+
+      <div class="nav-user">
+        <a class="avatar" routerLink="/profile">
+          {{ getInitials() }}
+        </a>
+      </div>
+    </div>
+  </div>
+  <!--  Tabs -->
+  <div class="tabs">
+    <div class="support-tabs">
+      <button class="tab" routerLink="/support/complaints" routerLinkActive="active">
         Complaints
       </button>
-
-      <button
-        class="tab"
-        routerLink="/violations"
-        routerLinkActive="active">
+      <button class="tab" routerLink="/support/violations" routerLinkActive="active">
         Violations
       </button>
     </div>

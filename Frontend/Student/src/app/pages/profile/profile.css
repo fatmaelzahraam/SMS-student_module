@@ -1,134 +1,159 @@
-
 .page-body {
-    flex-direction: column;
+  flex-direction: column;
 }
-.loading-full-page
-{
-    width: 100px;
-    height: 100px;
+
+.header {
+  background-color: white;
 }
+
 .page-header {
-    background-color:var(--color-card);
-    height: 90px;
-    padding: 10px 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    border-bottom-left-radius:15px;
-    border: 1px solid #8e8e93b6;
+  background-color: var(--color-card);
+  height: 90px;
+  padding: 10px 20px;
+  place-content: center;
 }
 
 .profile-header-info {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
+
 .profile-header-info i {
-    color: var(--color-navy);
-    font-size: 40px;
+  color: var(--color-navy);
+  font-size: 40px;
 }
+
 .profile-icon {
-    font-size: 2.5rem;
-    color: var(--primary-color);
-    margin-right: 15px;
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-right: 15px;
 }
 
 .profile-header-info h1 {
-    margin: 0;
-    font-size: 22px;
-    color: var(--color-navy);
-    font-weight: 700;
+  margin: 0;
+  font-size: 22px;
+  color: var(--color-navy);
+  font-weight: 700;
 }
 
 .profile-header-info p {
-    margin: 0;
-    font-size: 14px;
-    color: var(--color-navy);
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-navy);
 }
 
 .header-actions {
-    display: flex;
-    align-items: center;
-}
-.page-content {
-    padding: 30px;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center; 
-}
-.content-box {
-    background-color:var(--color-card);
-    padding: 30px;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 940px; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-.content-box h2 {
-    margin-top: 0;
-    font-size: 1.4rem;
-    font-weight: 600;
-}
-.profile-card-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 30px;
-}
-.avatar-group {
-    position: relative;
-    /* margin-bottom: 15px; */
-    padding: 3px;
-    width: 200px;
-    height: 200px;
-    border-radius: 100%;
-    border: #620000 2px solid;
-}
-.avatar-group img {
-    width: 190px;
-    height: 190px;
+  display: flex;
+  align-items: center;
 }
 
+.page-content {
+  padding: 30px;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.content-box {
+  background-color: var(--color-card);
+  padding: 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 940px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.content-box h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+/* ── Avatar section ───────────────────────────────────────────────── */
+.profile-card-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.avatar-group {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 2px solid #620000;
+  padding: 3px;
+  margin-bottom: 12px;
+  /* so the overlay clips to the circle */
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Camera overlay — sits over the whole circle on hover */
 .change-avatar-btn {
-    position: absolute;
-    bottom: -10px;
-    right: -10px;
-    background-color: var(--white);
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
+  position: absolute;
+  inset: 0;                          /* covers the full circle */
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border: none;
 }
+
+.change-avatar-btn i {
+  color: transparent;
+  font-size: 1.6rem;
+  transition: color 0.2s ease;
+  pointer-events: none;
+}
+
+.avatar-group:hover .change-avatar-btn {
+  background: rgba(0, 0, 0, 0.40);
+}
+
+.avatar-group:hover .change-avatar-btn i {
+  color: #ffffff;
+}
+
+/* Remove photo link */
+.remove-photo-btn {
+  background: none;
+  border: none;
+  color: #e53e3e;
+  font-size: 0.78rem;
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.15s;
+}
+
+.remove-photo-btn:hover {
+  opacity: 0.7;
+}
+
+/* ── Name / badge ─────────────────────────────────────────────────── */
 .student-name {
-    margin: 0;
-    font-size: 30px;
-    font-weight:600;
-    color: var(--color-navy);
+  margin: 0;
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--color-navy);
 }
-.status-badge {
-    margin-top: 5px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-.active-student {
-    background-color: var(--active-green);
-    color: var(--active-green-text);
-}
-.profile-details {
-    margin-top: 20px;
-    color: var(--color-navy);
-}
-.details-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.status-badge-active-student{
+
+.status-badge-active-student {
   background-color: #A2E4BA;
   margin-top: 20px;
   font-size: 12px;
@@ -139,42 +164,62 @@
   align-items: center;
   justify-content: center;
 }
+
+/* ── Details table ────────────────────────────────────────────────── */
+.profile-details {
+  margin-top: 20px;
+  color: var(--color-navy);
+}
+
+.details-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
 .details-table tr {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
+
 .details-table tr:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
+
 .details-table td {
-    padding: 12px 10px;
+  padding: 12px 10px;
 }
+
 .details-table td:first-child {
-    width: 40%;
-    color: var(--text-color);
-    font-weight: 500;
+  width: 40%;
+  color: var(--text-color);
+  font-weight: 500;
 }
+
 .details-table td:first-child i {
-    width: 25px;
-    font-size: 1.1rem;
-    color: var(--light-text);
-    margin-right: 10px;
+  width: 25px;
+  font-size: 1.1rem;
+  color: var(--light-text);
+  margin-right: 10px;
 }
+
 .details-table td:last-child {
-    text-align: right;
-    color: var(--text-color);
+  text-align: right;
+  color: var(--text-color);
 }
+
+/* ── Error / loading overlay ──────────────────────────────────────── */
 .loading-full-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
-    z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  z-index: 9999;
 }
+
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -184,9 +229,11 @@
   border-radius: 12px;
   margin-bottom: 20px;
 }
+
 .topbar h2 {
   margin: 0;
 }
+
 .topbar p {
   margin: 0;
   font-size: 12px;

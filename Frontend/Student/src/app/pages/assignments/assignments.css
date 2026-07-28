@@ -1,33 +1,11 @@
 .content {
   width: 100%;
 }
-
-/* ─── Header ─── */
-.header {
-  background: #fff;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 24px;
-  border-bottom-left-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.header
+{
+  background-color: white;
   margin-bottom: 30px;
-  border: 1px solid #8e8e93b6;
 }
-
-.header h2 {
-  color: #05172F;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.header-sub {
-  color: #87A7C8;
-  font-size: 12px;
-  margin-top: 2px;
-}
-
 /* ─── Assignment card / table wrapper ─── */
 .assignment-card {
   background: #fff;
@@ -44,17 +22,16 @@ table {
 }
 
 thead {
-  background: #05172F;   /* SMS dark navy */
+  background: var(--color-navy);   
 }
 
 th {
-  color: #fff;
+  color: var(--color-card);
   padding: 16px 20px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
-}
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  }
 
 .th-icon {
   margin-right: 4px;
@@ -62,16 +39,24 @@ th {
   opacity: 0.75;
 }
 
+.thead-title{
+  text-align: left;
+}
+
+
 td {
   padding: 16px 20px;
   border-bottom: 1px solid #EEEEEE;
   font-size: 14px;
-  color: #05172F;
+  color: var(--color-navy);
   vertical-align: middle;
+  text-align: center;
 }
 
 .td-title {
   font-weight: 500;
+  text-align: left;
+  width: 300px;
 }
 
 tbody tr:last-child td {
@@ -89,16 +74,18 @@ tbody tr:hover {
   border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  margin-right: 4px;
+  /* margin-right: 4px; */
   background-color: #F5E6E6;
-  color: #620000;
+  color: var(--color-primary);
+  text-align: center;
+  min-width: 140px;
 }
 
 /* ─── View button ─── */
 .view-btn {
   padding: 5px 22px;
   border-radius: 25px;
-  background: #fff;
+  background: var(--color-card);
   border: 1px solid #bbb;
   cursor: pointer;
   font-size: 13px;
@@ -106,16 +93,16 @@ tbody tr:hover {
 }
 
 .view-btn:hover {
-  background: #05172F;
+  background: var(--color-navy);
   color: #fff;
-  border-color: #05172F;
+  border-color: var(--color-navy);
 }
 
 /* Urgent deadline → burgundy (matches image's third row) */
 .view-btn--urgent {
-  background: #620000;
+  background: var(--color-primary);
   color: #fff;
-  border-color: #620000;
+  border-color: var(--color-primary);
 }
 
 .view-btn--urgent:hover {
@@ -132,7 +119,133 @@ tbody tr:hover {
 }
 
 .state-msg.error {
+  color: var(--color-primary);
+}
+/* ─── Pagination ─────────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px 0 30px;
+}
+
+.page-btn,
+.page-nav {
+  min-width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+  color: var(--color-navy);
+  padding: 0 10px;
+}
+
+.page-btn:hover,
+.page-nav:hover {
+  background: #d0d0d0;
+}
+
+/* Active page → burgundy pill (matches your screenshot) */
+.page-btn--active {
+  background: var(--color-primary);
+  color: var(--color-card);
+}
+
+.page-btn--active:hover {
+  background: #7a0000;
+}
+
+/* Prev / Next chevrons */
+.page-nav {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--color-navy);
+  background: transparent;
+}
+
+.page-nav:hover:not(:disabled) {
+  color: var(--color-navy);
+}
+
+.page-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ─── Clear filter link inside empty row ─────────────────────── */
+.clear-filter {
+  background: none;
+  border: none;
   color: #620000;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 4px;
+  padding: 0;
+}
+
+.clear-filter:hover {
+  color: #8a0000;
+}
+
+/* ─── Pagination ─────────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px 0 30px;
+}
+
+.page-btn,
+.page-nav {
+  min-width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+  background: #EEEEEE;
+  color: #05172F;
+  padding: 0 10px;
+}
+
+.page-btn:hover,
+.page-nav:hover {
+  background: #d0d0d0;
+}
+
+.page-btn--active {
+  background: #620000;
+  color: #fff;
+}
+
+.page-btn--active:hover {
+  background: #7a0000;
+}
+
+.page-nav {
+  font-size: 20px;
+  line-height: 1;
+  color: #87A7C8;
+  background: transparent;
+}
+
+.page-nav:hover:not(:disabled) {
+  background: #EEEEEE;
+  color: #05172F;
+}
+
+.page-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 /* ─── Responsive ─── */

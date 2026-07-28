@@ -1,26 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Profileservice } from '../../pages/profile/service/profileservice';
 import { RouterLink } from '@angular/router';
 
-
-
 @Component({
   selector: 'app-dashboard-header',
-  imports: [CommonModule,RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './dashboard-header.html',
   styleUrl: './dashboard-header.css',
 })
-export class DashboardHeader {
+export class DashboardHeader implements OnInit {
   readonly profileService = inject(Profileservice);
   readonly profile        = this.profileService.profile;
 
-  // ngOnInit(): void {
-  //   this.profileService.getProfile();
-  // }
+  ngOnInit(): void {
+    this.profileService.getProfile().subscribe();
+  }
 
   getInitials(): string {
     return this.profileService.getInitials();
   }
-
 }

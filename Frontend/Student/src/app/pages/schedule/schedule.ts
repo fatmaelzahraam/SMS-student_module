@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { BREAK_SLOTS, ExamEntry, TIME_SLOTS } from '../../models/session-inerface';
 import { ScheduleService } from './service/schedule-service';
 import { AuthService } from '../login/service/auth-service';
+import {Profileservice} from '../profile/service/profileservice';
+import {RouterLink} from '@angular/router';
 
 // pill color assignment per subject keyword
 const PILL_COLORS = [
@@ -19,21 +21,26 @@ interface EnrichedExam extends ExamEntry {
 interface ExamGroup {
   date:  string;
   day:   string;
-  exams: EnrichedExam[];   
+  exams: EnrichedExam[];
 }
 
 @Component({
   selector: 'app-schedule',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './schedule.html',
   styleUrl: './schedule.css',
 })
 export class Schedule implements OnInit {
-
   private readonly scheduleService = inject(ScheduleService);
   private readonly authService     = inject(AuthService);
 
+  readonly profileService = inject(Profileservice);
+  readonly profile = this.profileService.profile;
+
+  getInitials(): string {
+    return this.profileService.getInitials();
+  }
   readonly classSchedule = this.scheduleService.classSchedule;
   readonly monthExams    = this.scheduleService.monthExams;
   readonly finalExams    = this.scheduleService.finalExams;

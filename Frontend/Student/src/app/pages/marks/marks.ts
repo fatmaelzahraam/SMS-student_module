@@ -1,16 +1,10 @@
-import {
-  Component,
-  ElementRef,
-  computed,
-  effect,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { ArcElement, Chart, DoughnutController, Legend, Tooltip } from 'chart.js';
 import { StudentMarksDashboard } from '../../models/marks-model';
 import { MarksService } from './service/marks-service';
 import { AuthService } from '../login/service/auth-service';
+import { Profileservice } from '../profile/service/profileservice';
+import { DecimalPipe } from '@angular/common';
 
 Chart.register(ArcElement, DoughnutController, Tooltip, Legend);
 
@@ -20,42 +14,77 @@ interface TableRow {
 }
 
 const SUBJECT_COLORS = [
-  '#2f6fed', // blue
-  '#17a2a2', // teal
-  '#f2a33c', // orange
-  '#8a3fd1', // purple
-  '#d63447', // red
-  '#21c3a6', // mint
-  '#8a8f98', // gray
-  '#4c6ef5', // indigo (overflow)
+  '#2f6fed',
+  '#17a2a2',
+  '#f2a33c',
+  '#8a3fd1',
+  '#d63447',
+  '#21c3a6',
+  '#8a8f98',
+  '#4c6ef5',
 ];
-
 
 @Component({
   selector: 'app-marks',
+  imports:[DecimalPipe],
   templateUrl: './marks.html',
   styleUrl: './marks.css',
 })
 export class Marks {
   private marksService = inject(MarksService);
-  private authService  = inject(AuthService);
+  private authService = inject(AuthService);
   private studentId: number;
+
+  readonly profileService = inject(Profileservice);
+  readonly profile = this.profileService.profile;
+
+  getInitials(): string {
+    return this.profileService.getInitials();
+  }
 
   dashboard = signal<StudentMarksDashboard | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
-  selectedCourseId = signal<number | null>(null);
 
-  columns = computed(() => this.dashboard()?.subjectAverages.map((s) => s.subject) ?? []);
+  // Filter by subject (client-side)
+  selectedSubject = signal<{ courseId: number | null; subject: string | null }>({
+    courseId: null,
+    subject: null,
+  });
+
+  // Filter by mark type (server-side re-fetch)
+  selectedType = signal<string | null>(null);
+
+  columns = computed(() => {
+    const data = this.dashboard();
+    if (!data) return [];
+
+    const { courseId, subject } = this.selectedSubject();
+
+    return courseId
+      ? data.subjectAverages.filter((s) => s.courseId === courseId).map((s) => s.subject)
+      : subject
+        ? data.subjectAverages.filter((s) => s.subject === subject).map((s) => s.subject)
+        : data.subjectAverages.map((s) => s.subject);
+  });
 
   rows = computed<TableRow[]>(() => {
     const data = this.dashboard();
     if (!data) return [];
-    return data.monthlyMarks.map((row) => {
-      const lookup = new Map(row.subjects.map((s) => [s.subject, s.percentage]));
+
+    const { courseId, subject } = this.selectedSubject();
+
+    const cols = courseId
+      ? data.subjectAverages.filter((s) => s.courseId === courseId).map((s) => s.subject)
+      : subject
+        ? data.subjectAverages.filter((s) => s.subject === subject).map((s) => s.subject)
+        : data.subjectAverages.map((s) => s.subject);
+
+    return data.monthlyMarks.map((m) => {
+      const lookup = new Map(m.subjects.map((s) => [s.subject, s.percentage]));
       return {
-        month: row.month,
-        values: this.columns().map((col) => lookup.get(col) ?? null),
+        month: m.month,
+        values: cols.map((col) => lookup.get(col) ?? null),
       };
     });
   });
@@ -66,10 +95,13 @@ export class Marks {
   constructor() {
     this.studentId = this.authService.getCurrentUserId();
 
+    // Re-fetch from backend when type filter changes
     effect(() => {
-      this.fetchDashboard(this.studentId, this.selectedCourseId());
+      const type = this.selectedType();
+      this.fetchDashboard(this.studentId, type ?? undefined);
     });
 
+    // Rebuild chart when dashboard or subject filter changes
     effect(() => {
       const data = this.dashboard();
       const canvasEl = this.donutCanvasRef()?.nativeElement;
@@ -80,15 +112,23 @@ export class Marks {
         return;
       }
 
+      const { courseId, subject } = this.selectedSubject();
+
+      const filtered = courseId
+        ? data.subjectAverages.filter((s) => s.courseId === courseId)
+        : subject
+          ? data.subjectAverages.filter((s) => s.subject === subject)
+          : data.subjectAverages;
+
       this.chart?.destroy();
       this.chart = new Chart(canvasEl, {
         type: 'doughnut',
         data: {
-          labels: data.subjectAverages.map((d) => d.subject),
+          labels: filtered.map((d) => d.subject),
           datasets: [
             {
-              data: data.subjectAverages.map((d) => d.percentage),
-              backgroundColor: data.subjectAverages.map((_, i) => this.colorFor(i)),
+              data: filtered.map((d) => d.percentage),
+              backgroundColor: filtered.map((_, i) => this.colorFor(i)),
               borderWidth: 0,
               hoverOffset: 6,
             },
@@ -113,18 +153,27 @@ export class Marks {
   onSubjectChange(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;
     if (value === 'all') {
-      this.selectedCourseId.set(null);
+      this.selectedSubject.set({ courseId: null, subject: null });
       return;
     }
     const parsed = Number(value);
-    this.selectedCourseId.set(Number.isNaN(parsed) ? null : parsed);
+    if (!Number.isNaN(parsed)) {
+      this.selectedSubject.set({ courseId: parsed, subject: null });
+    } else {
+      this.selectedSubject.set({ courseId: null, subject: value });
+    }
   }
 
-  private fetchDashboard(studentId: number, courseId: number | null): void {
+  onTypeChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.selectedType.set(value === 'all' ? null : value);
+  }
+
+  private fetchDashboard(studentId: number, typeName?: string): void {
     this.loading.set(true);
     this.error.set(null);
 
-    this.marksService.getDashboard(studentId).subscribe({
+    this.marksService.getDashboard(studentId, typeName).subscribe({
       next: (data) => {
         this.dashboard.set(data);
         this.loading.set(false);

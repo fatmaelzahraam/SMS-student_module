@@ -1,13 +1,20 @@
 import {
-  Component, OnInit, OnDestroy,
-  ViewChild, ElementRef, signal, computed, effect, ChangeDetectorRef
+  ChangeDetectorRef,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  signal,
+  ViewChild
 } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
-import { Chart, registerables } from 'chart.js';
-import { Dashboardservice } from './service/dashboardservice';
-import { DashboardHeader } from '../../components/dashboard-header/dashboard-header';
-import { AuthService } from '../login/service/auth-service';
-import { DashboardResponse } from '../../models/dashboard-interface';
+import {CommonModule, DecimalPipe} from '@angular/common';
+import {Chart, registerables} from 'chart.js';
+import {Dashboardservice} from './service/dashboardservice';
+import {DashboardHeader} from '../../components/dashboard-header/dashboard-header';
+import {AuthService} from '../login/service/auth-service';
+import {DashboardResponse} from '../../models/dashboard-interface';
 
 Chart.register(...registerables);
 
@@ -21,23 +28,23 @@ Chart.register(...registerables);
 export class Dashboard implements OnInit, OnDestroy {
 
   // ── Chart canvas refs ────────────────────────────────────────────────────────
-  @ViewChild('lineChartRef')  lineChartRef!:  ElementRef<HTMLCanvasElement>;
+  @ViewChild('lineChartRef') lineChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('donutChartRef') donutChartRef!: ElementRef<HTMLCanvasElement>;
 
-  private lineChartInst:  Chart | null = null;
+  private lineChartInst: Chart | null = null;
   private donutChartInst: Chart | null = null;
 
   // ── Signals ──────────────────────────────────────────────────────────────────
   dashboard = signal<DashboardResponse | null>(null);
-  loading   = signal(true);
-  error     = signal<string | null>(null);
+  loading = signal(true);
+  error = signal<string | null>(null);
 
   performanceLabel = computed(() => {
     const score = this.dashboard()?.performanceScore ?? 0;
-    if (score >= 90) return { text: 'Excellent',         color: '#2ecc71' };
-    if (score >= 75) return { text: 'Good',              color: '#87A7C8' };
-    if (score >= 60) return { text: 'Average',           color: '#f39c12' };
-    return               { text: 'Needs Improvement', color: '#e74c3c' };
+    if (score >= 90) return {text: 'Excellent', color: '#2ecc71'};
+    if (score >= 75) return {text: 'Good', color: '#87A7C8'};
+    if (score >= 60) return {text: 'Average', color: '#f39c12'};
+    return {text: 'Needs Improvement', color: '#e74c3c'};
   });
 
   attendanceCircumference = 2 * Math.PI * 45;
@@ -73,9 +80,9 @@ export class Dashboard implements OnInit, OnDestroy {
 
   // ── Effects ───────────────────────────────────────────────────────────────────
   private readonly dataEffect = effect(() => {
-    const loading   = this.svc.isLoading();
+    const loading = this.svc.isLoading();
     const dashboard = this.svc.dashboard();
-    const err       = this.svc.error();
+    const err = this.svc.error();
 
     queueMicrotask(() => {
       if (!loading) {
@@ -89,9 +96,9 @@ export class Dashboard implements OnInit, OnDestroy {
 
   private readonly chartEffect = effect(() => {
     // Track every signal that feeds the charts
-    const marks       = this.svc.recentMarks();
+    const marks = this.svc.recentMarks();
     const assignments = this.svc.assignments();
-    const loading     = this.svc.isLoading();
+    const loading = this.svc.isLoading();
 
     // Wait until the backend has responded before touching the canvas
     if (loading) return;
@@ -106,7 +113,8 @@ export class Dashboard implements OnInit, OnDestroy {
     readonly svc: Dashboardservice,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) {
+  }
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────────
   ngOnInit(): void {
@@ -140,7 +148,9 @@ export class Dashboard implements OnInit, OnDestroy {
     return 'Needs work';
   }
 
-  clearError(): void { this.svc.clearError(); }
+  clearError(): void {
+    this.svc.clearError();
+  }
 
   // ── Chart builders ────────────────────────────────────────────────────────────
   private buildLineChart(): void {
@@ -185,13 +195,13 @@ export class Dashboard implements OnInit, OnDestroy {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
+          legend: {display: false},
           ...(marks.length === 0 && {
             title: {
               display: true,
               text: 'No marks data available yet',
               color: '#aaa',
-              font: { size: 13 },
+              font: {size: 13},
             },
           }),
         },
@@ -199,19 +209,20 @@ export class Dashboard implements OnInit, OnDestroy {
           y: {
             min: 0,
             max: 100,
-            ticks: { callback: v => v + '%', font: { size: 10 }, color: '#888' },
-            grid:   { color: '#f0f0f0' },
-            border: { display: false },
+            ticks: {callback: v => v + '%', font: {size: 10}, color: '#888'},
+            grid: {color: '#f0f0f0'},
+            border: {display: false},
           },
           x: {
-            ticks: { font: { size: 10 }, color: '#888', maxRotation: 0 },
-            grid:   { display: false },
-            border: { display: false },
+            ticks: {font: {size: 10}, color: '#888', maxRotation: 0},
+            grid: {display: false},
+            border: {display: false},
           },
         },
       },
     });
   }
+
   private buildDonutChart(): void {
     if (!this.donutChartRef?.nativeElement) return;
     if (this.donutChartInst) {
@@ -221,7 +232,7 @@ export class Dashboard implements OnInit, OnDestroy {
 
     const completed = this.completedAssignments();
     const remaining = this.remainingCount();
-    const hasData   = this.totalAssignments() > 0;
+    const hasData = this.totalAssignments() > 0;
 
     this.donutChartInst = new Chart(this.donutChartRef.nativeElement, {
       type: 'doughnut',
@@ -231,7 +242,7 @@ export class Dashboard implements OnInit, OnDestroy {
           data: hasData ? [completed, remaining] : [1, 0],
           backgroundColor: hasData
             ? ['#620000', '#e0e0e0']
-            : ['#e0e0e0', '#e0e0e0'], 
+            : ['#e0e0e0', '#e0e0e0'],
           borderWidth: 0,
           hoverOffset: 4,
         }],
@@ -241,14 +252,14 @@ export class Dashboard implements OnInit, OnDestroy {
         maintainAspectRatio: false,
         cutout: '75%',
         plugins: {
-          legend:  { display: false },
-          tooltip: { enabled: hasData },   // disable tooltip on empty state
+          legend: {display: false},
+          tooltip: {enabled: hasData},   // disable tooltip on empty state
           ...((!hasData) && {
             title: {
               display: true,
               text: 'No assignments yet',
               color: '#aaa',
-              font: { size: 13 },
+              font: {size: 13},
             },
           }),
         },

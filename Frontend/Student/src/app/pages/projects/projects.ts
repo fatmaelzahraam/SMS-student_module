@@ -2,16 +2,25 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ProjectMember, ProjectResponse } from '../../models/project-model';
 import { ProjectsService } from './service/projects-service';
+import {RouterLink} from '@angular/router';
+import {Profileservice} from '../profile/service/profileservice';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './projects.html',
   styleUrl: './projects.css',
 })
 export class Projects implements OnInit {
   protected readonly projectService = inject(ProjectsService);
+
+  readonly profileService = inject(Profileservice);
+  readonly profile = this.profileService.profile;
+
+  getInitials(): string {
+    return this.profileService.getInitials();
+  }
 
   // Proxy service signals
   protected readonly isLoading = computed(() => this.projectService.isLoading());

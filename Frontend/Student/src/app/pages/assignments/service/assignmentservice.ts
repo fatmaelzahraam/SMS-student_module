@@ -11,7 +11,7 @@ export class AssignmentService {
  
   constructor(private http: HttpClient) {}
  
-  /** GET /api/v1/assignments  →  all assignments */
+  /** all assignments */
   getAssignments(): Observable<AssignmentResponse[]> {
     return this.http.get<AssignmentResponse[]>(this.baseUrl);
   }

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import {Profileservice} from '../../pages/profile/service/profileservice';
 
 @Component({
   selector: 'app-attendance-nav',
@@ -8,4 +9,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './attendance-nav.html',
   styleUrl: './attendance-nav.css',
 })
-export class AttendanceNav {}
+export class AttendanceNav {
+  readonly profileService = inject(Profileservice);
+  readonly profile = this.profileService.profile;
+
+  getInitials(): string {
+    return this.profileService.getInitials();
+  }
+}

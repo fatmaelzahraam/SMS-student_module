@@ -16,8 +16,13 @@
   margin: 0;
   font-size: 22px;
   font-weight: 700;
-  color: #05172F;
+  color: var(--color-navy);
 }
+
+.header {
+  background-color: white;
+}
+
 .state-message {
   color: #4a5364;
   font-size: 14px;
@@ -39,13 +44,18 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-width: 260px;
+  /* max-width: 260px; */
 }
-
+.filters
+{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
 .subject-filter label {
-  font-size: 12.5px;
+  font-size: 16px;
   font-weight: 700;
-  color: #05172F;
+  color: var(--color-navy);
 }
 
 .subject-filter select {
@@ -54,17 +64,20 @@
   border: 1px solid #d9dee6;
   border-radius: 10px;
   padding: 10px 14px;
-  font-size: 13.5px;
+  font-size: 14px;
   color: #2a3242;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5364' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
+  cursor: pointer;
 }
 
 .subject-filter select:focus-visible {
   outline: 2px solid #2f7dd1;
   outline-offset: 1px;
+  cursor: pointer;
+
 }
 
 .stat-grid {
@@ -134,10 +147,10 @@
 
 .theme-navy .stat-icon,
 .theme-navy .stat-chip {
-  background: #05172F;
+  background: var(--color-navy);
 }
 .theme-navy .stat-label {
-  color: #05172F;
+  color: var(--color-navy);
 }
 .theme-green .stat-value
 {
@@ -154,14 +167,14 @@
 
 .theme-maroon .stat-value
 {
-  color: #620000;
+  color: var(--color-primary);
 }
 .theme-maroon .stat-icon,
 .theme-maroon .stat-chip {
-  background: #620000;
+  background: var(--color-primary);
 }
 .theme-maroon .stat-label {
-  color: #620000;
+  color: var(--color-primary);
 }
 
 .theme-olive  .stat-value
@@ -196,7 +209,7 @@
   margin: 0 0 14px;
   font-size: 15px;
   font-weight: 700;
-  color: #05172F;
+  color: var(--color-navy);
 }
 
 .table-scroll {
@@ -212,7 +225,7 @@ table {
 thead th {
   text-align: left;
   font-weight: 700;
-  color: #05172F;
+  color: var(--color-navy);
   padding: 8px 10px;
   white-space: nowrap;
 }
@@ -224,13 +237,13 @@ thead th {
 tbody td {
   padding: 12px 10px;
   border-top: 1px solid #eef0f3;
-  color: #05172F;
+  color: var(--color-navy);
   white-space: nowrap;
 }
 
 .month-cell {
   font-weight: 700;
-  color: #05172F;
+  color: var(--color-navy);
 }
 
 .empty-cell {
@@ -251,7 +264,7 @@ tbody td {
   margin: 0 0 14px;
   font-size: 15px;
   font-weight: 700;
-  color: #05172F;
+  color: var(--color-navy);
 }
 
 .donut-body {
@@ -287,7 +300,7 @@ tbody td {
 .donut-center-value {
   font-size: 18px;
   font-weight: 800;
-  color: #05172F;
+  color: var(--color-navy);
 }
 
 .donut-center-label {
@@ -332,7 +345,7 @@ tbody td {
 
 .legend-value {
   font-weight: 700;
-  color: #16233f;
+  color: var(--color-navy);
 }
 
 @media (max-width: 900px) {

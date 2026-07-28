@@ -10,20 +10,22 @@ import { Profileservice } from '../../profile/service/profileservice';
   providedIn: 'root',
 })
 export class AuthService {
-  private http           = inject(HttpClient);
-  private profileService = inject(Profileservice);  // ✅ added
+  private http = inject(HttpClient);
+  private profileService = inject(Profileservice);
 
-  private readonly url      = 'http://localhost:8080/api/v1/auth/login';
+  private readonly url = 'http://localhost:8080/api/v1/auth/login';
 
   authenticate(request: AuthRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.url, request).pipe(
       tap(res => {
+        this.profileService.clearStorage();
+        this.profileService.profile.set(null);
         // save token & role first so the JWT interceptor is ready
         this.saveToken(res.token);
         this.saveRole(res.role);
         localStorage.setItem('studentId', String(res.studentId));
 
-        // ✅ pre-fetch profile immediately after login
+        // pre-fetch profile immediately after login
         this.profileService.getProfile().subscribe();
       })
     );

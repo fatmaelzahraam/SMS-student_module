@@ -1,22 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import {
-  ApexChart,
-  ApexAxisChartSeries,
-  ApexNonAxisChartSeries,
-  ApexXAxis,
-  ApexYAxis,
-  ApexTitleSubtitle,
-  ApexDataLabels,
-  ApexStroke,
-  ApexPlotOptions,
-  ApexTooltip,
-  ChartComponent
+  ApexChart, ApexAxisChartSeries, ApexNonAxisChartSeries,
+  ApexXAxis, ApexYAxis, ApexTitleSubtitle, ApexDataLabels,
+  ApexStroke, ApexPlotOptions, ApexTooltip, ChartComponent
 } from 'ng-apexcharts';
 
 import { forkJoin } from 'rxjs';
-
 import { AttendanceNav } from '../../components/attendance-nav/attendance-nav';
 import { AttendanceOverview } from '../../models/AttendanceOverview';
 import { PermissionResponse } from '../../models/PermissionResponse';
@@ -44,14 +38,15 @@ export type LineChartOptions = {
 @Component({
   selector: 'app-attendance',
   standalone: true,
-  imports: [CommonModule, AttendanceNav, ChartComponent],
+  imports: [CommonModule, ChartComponent],
   templateUrl: './attendance.html',
   styleUrl: './attendance.css'
 })
-export class Attendance implements OnInit {
+export class Attendance implements OnInit, OnDestroy {
 
   attendance?: AttendanceOverview;
   permissions: PermissionResponse[] = [];
+  private routerSub?: Subscription;
 
   radialChartOptions: RadialChartOptions = {
     series: [0],
@@ -60,9 +55,7 @@ export class Attendance implements OnInit {
       radialBar: {
         hollow: { size: '70%' },
         dataLabels: {
-          value: {
-            formatter: (val: number) => val.toFixed(2) + '%'
-          }
+          value: { formatter: (val: number) => val.toFixed(2) + '%' }
         }
       }
     },
@@ -77,29 +70,34 @@ export class Attendance implements OnInit {
     title: { text: 'Attendance Trend' },
     xaxis: { categories: ['Present', 'Absent', 'Late'] },
     yaxis: {
-      labels: {
-        formatter: (val: number) => val.toFixed(2) + '%'
-      }
+      labels: { formatter: (val: number) => val.toFixed(2) + '%' }
     },
     tooltip: {
-      y: {
-        formatter: (val: number) => val.toFixed(2) + '%'
-      }
+      y: { formatter: (val: number) => val.toFixed(2) + '%' }
     }
   };
 
   constructor(
-    private attendanceService: AttendanceService ,
-    private permissionService: PermissionService
+    private attendanceService: AttendanceService,
+    private permissionService: PermissionService,
+    private router: Router,
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
+    this.loadData();
+  }
+
+  ngOnDestroy(): void {
+    this.routerSub?.unsubscribe();
+  }
+
+  private loadData(): void {
     forkJoin({
       overview:    this.attendanceService.getOverview(),
       permissions: this.permissionService.getMyPermissions()
     }).subscribe({
       next: ({ overview, permissions }) => {
-
         this.attendance = overview;
 
         this.radialChartOptions = {
@@ -116,6 +114,7 @@ export class Attendance implements OnInit {
         };
 
         this.permissions = permissions;
+        this.cd.markForCheck();
       },
       error: (err) => console.error('Failed to load attendance data:', err)
     });

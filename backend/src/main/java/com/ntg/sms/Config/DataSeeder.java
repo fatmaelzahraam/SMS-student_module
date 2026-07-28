@@ -35,6 +35,7 @@ public class DataSeeder implements CommandLineRunner {
     private final SessionRepository sessionRepository;
     private final AttendanceRepository attendanceRepository;
     private final UserNotificationRepository userNotificationRepository;
+    private final UserPhoneNumberRepository userPhoneNumberRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -500,16 +501,32 @@ public class DataSeeder implements CommandLineRunner {
             grade10.getTerms().add(secondTerm);
             gradeRepository.save(grade10);
 
+            // ====================== PREVIOUS TERMS (2025 — Grade 11 year) ======================
+            Term prevTerm1 = new Term();
+            prevTerm1.setTerm(1L);
+            prevTerm1.setYear(2025L);
+            termRepository.save(prevTerm1);
+
+            Term prevTerm2 = new Term();
+            prevTerm2.setTerm(2L);
+            prevTerm2.setYear(2025L);
+            termRepository.save(prevTerm2);
+
+            // Attach previous terms to Grade 11 (students were in Grade 11 in 2025)
+            grade11.getTerms().add(prevTerm1);
+            grade11.getTerms().add(prevTerm2);
+            gradeRepository.save(grade11);
+
             // ====================== CLASS ======================
             Class classEntity = Class.builder()
-                    .grade(grade11)
+                    .grade(grade12)
                     .name("12-A")
                     .capacity(30L)
                     .build();
             classRepository.save(classEntity);
 
             Class classEntity2 = Class.builder()
-                    .grade(grade11)
+                    .grade(grade12)
                     .name("12-B")
                     .capacity(28L)
                     .build();
@@ -525,6 +542,130 @@ public class DataSeeder implements CommandLineRunner {
             studentRepository.save(student3);
             studentRepository.save(student4);
             studentRepository.save(student5);
+
+            // ====================== PREVIOUS COURSES (2025 — when students were in Grade 11) ======================
+            // These will show up when the student clicks "View Previous Courses"
+            // because their termYear (2025) < latestYear (2026).
+
+            // --- Intro to Java (teacher3 / Nouran Yasser) — prevTerm1 2025 ---
+            Course prevCourse1 = new Course();
+            prevCourse1.setTeacher(teacher3);
+            prevCourse1.setTerm(prevTerm1);
+            prevCourse1.setCourseName("Intro to Java");
+            prevCourse1.setCourseType("IT");
+            prevCourse1.setDescription("Fundamentals of Java programming: variables, loops, arrays, and basic OOP.");
+            prevCourse1.setStudyPlan("Week 1-10");
+
+            Assignment prevA1 = new Assignment();
+            prevA1.setName("Java Basics Quiz");
+            prevA1.setAssignDate(LocalDate.of(2025, 2, 10));
+            prevA1.setDeadline(LocalDate.of(2025, 2, 17));
+            prevA1.setDescription("Answer 20 questions on Java syntax, data types, and control flow.");
+            prevA1.setFileLink("https://drive.google.com/");
+            prevA1.setStudentSubmission("SUBMITTED");
+
+            Assignment prevA2 = new Assignment();
+            prevA2.setName("Console Calculator");
+            prevA2.setAssignDate(LocalDate.of(2025, 3, 1));
+            prevA2.setDeadline(LocalDate.of(2025, 3, 10));
+            prevA2.setDescription("Build a command-line calculator in Java supporting +, -, *, / with input validation.");
+            prevA2.setFileLink("https://drive.google.com/");
+            prevA2.setStudentSubmission("SUBMITTED");
+
+            prevCourse1.getAssignments().add(prevA1);
+            prevCourse1.getAssignments().add(prevA2);
+            courseRepository.save(prevCourse1);
+
+            // --- HTML & CSS Basics (teacher2 / Hala Mohamed) — prevTerm1 2025 ---
+            Course prevCourse2 = new Course();
+            prevCourse2.setTeacher(teacher2);
+            prevCourse2.setTerm(prevTerm1);
+            prevCourse2.setCourseName("HTML & CSS Basics");
+            prevCourse2.setCourseType("IT");
+            prevCourse2.setDescription("Introduction to web markup and styling: HTML5 semantic elements, CSS box model, Flexbox.");
+            prevCourse2.setStudyPlan("Week 1-8");
+
+            Assignment prevA3 = new Assignment();
+            prevA3.setName("Personal Portfolio Page");
+            prevA3.setAssignDate(LocalDate.of(2025, 2, 15));
+            prevA3.setDeadline(LocalDate.of(2025, 2, 28));
+            prevA3.setDescription("Build a personal portfolio page using HTML5 and CSS only. Must include a header, about section, skills list, and contact form.");
+            prevA3.setFileLink("https://drive.google.com/");
+            prevA3.setStudentSubmission("SUBMITTED");
+
+            prevCourse2.getAssignments().add(prevA3);
+            courseRepository.save(prevCourse2);
+
+            // --- Arabic Language (teacher6 / Khaled Mohammed) — prevTerm1 2025 ---
+            Course prevCourse3 = new Course();
+            prevCourse3.setTeacher(teacher6);
+            prevCourse3.setTerm(prevTerm1);
+            prevCourse3.setCourseName("Arabic Language");
+            prevCourse3.setCourseType("Theory");
+            prevCourse3.setDescription("Arabic grammar, reading comprehension, and essay writing.");
+            prevCourse3.setStudyPlan("Week 1-12");
+
+            Assignment prevA4 = new Assignment();
+            prevA4.setName("Short Story Analysis");
+            prevA4.setAssignDate(LocalDate.of(2025, 3, 5));
+            prevA4.setDeadline(LocalDate.of(2025, 3, 12));
+            prevA4.setDescription("اكتب تحليلاً أدبياً لقصة قصيرة من المقرر الدراسي، مع توضيح الشخصيات والحبكة والرسالة.");
+            prevA4.setFileLink("https://drive.google.com/");
+            prevA4.setStudentSubmission("SUBMITTED");
+
+            prevCourse3.getAssignments().add(prevA4);
+            courseRepository.save(prevCourse3);
+
+            // --- English Skills (teacher7 / Wael Mohammed) — prevTerm2 2025 ---
+            Course prevCourse4 = new Course();
+            prevCourse4.setTeacher(teacher7);
+            prevCourse4.setTerm(prevTerm2);
+            prevCourse4.setCourseName("English Skills");
+            prevCourse4.setCourseType("Theory");
+            prevCourse4.setDescription("Intermediate English: reading, writing, grammar, and vocabulary expansion.");
+            prevCourse4.setStudyPlan("Week 1-10");
+
+            Assignment prevA5 = new Assignment();
+            prevA5.setName("Paragraph Writing");
+            prevA5.setAssignDate(LocalDate.of(2025, 9, 20));
+            prevA5.setDeadline(LocalDate.of(2025, 9, 27));
+            prevA5.setDescription("Write a 250-word paragraph about your favourite technology trend and its impact on daily life.");
+            prevA5.setFileLink("https://drive.google.com/");
+            prevA5.setStudentSubmission("SUBMITTED");
+
+            prevCourse4.getAssignments().add(prevA5);
+            courseRepository.save(prevCourse4);
+
+            // --- Mathematics 11 (teacher5 / Rasha Mohammed) — prevTerm2 2025 ---
+            Course prevCourse5 = new Course();
+            prevCourse5.setTeacher(teacher5);
+            prevCourse5.setTerm(prevTerm2);
+            prevCourse5.setCourseName("Mathematics 11");
+            prevCourse5.setCourseType("Theory");
+            prevCourse5.setDescription("Algebra, trigonometry, and an introduction to limits.");
+            prevCourse5.setStudyPlan("Week 1-12");
+
+            Assignment prevA6 = new Assignment();
+            prevA6.setName("Trigonometry Problem Set");
+            prevA6.setAssignDate(LocalDate.of(2025, 10, 1));
+            prevA6.setDeadline(LocalDate.of(2025, 10, 8));
+            prevA6.setDescription("Solve 18 trigonometry problems covering sine/cosine rules, identities, and angle applications.");
+            prevA6.setFileLink("https://drive.google.com/");
+            prevA6.setStudentSubmission("SUBMITTED");
+
+            Assignment prevA7 = new Assignment();
+            prevA7.setName("Limits Introduction Worksheet");
+            prevA7.setAssignDate(LocalDate.of(2025, 11, 5));
+            prevA7.setDeadline(LocalDate.of(2025, 11, 12));
+            prevA7.setDescription("Complete the 12-problem worksheet on evaluating limits algebraically and from graphs.");
+            prevA7.setFileLink("https://drive.google.com/");
+            prevA7.setStudentSubmission("SUBMITTED");
+
+            prevCourse5.getAssignments().add(prevA6);
+            prevCourse5.getAssignments().add(prevA7);
+            courseRepository.save(prevCourse5);
+
+            System.out.println("=== Previous (2025) courses seeded ===");
 
             // ====================== COURSE + ASSIGNMENTS ======================
             // Assignments are NOT saved separately — CascadeType.PERSIST on Course.assignments
@@ -822,17 +963,17 @@ public class DataSeeder implements CommandLineRunner {
 
             // ====================== MARKS TYPE ======================
             MarksType examType = MarksType.builder()
-                    .typeName("EXAM")
+                    .typeName("Month Exam")
                     .build();
             marksTypeRepository.save(examType);
 
             MarksType quizType = MarksType.builder()
-                    .typeName("HOME_WORK")
+                    .typeName("Homework")
                     .build();
             marksTypeRepository.save(quizType);
 
             MarksType assignmentType = MarksType.builder()
-                    .typeName("ASSIGNMENT")
+                    .typeName("Assignment")
                     .build();
             marksTypeRepository.save(assignmentType);
 
@@ -858,7 +999,7 @@ public class DataSeeder implements CommandLineRunner {
             Mark mark9 = new Mark(); mark9.setCourse(course9); mark9.setStudent(student); mark9.setType(examType);       mark9.setScore(89L);  mark9.setMaxScore(100L); mark9.setIsApproved(true);  mark9.setFeedback("Good understanding."); mark9.setNotes("Review wave equations."); mark9.setFeedbackDate(LocalDate.now().minusDays(15)); markRepository.save(mark9);
             Mark mark10 = new Mark(); mark10.setCourse(course10); mark10.setStudent(student); mark10.setType(examType);  mark10.setScore(94L); mark10.setMaxScore(100L); mark10.setIsApproved(true); mark10.setFeedback("Strong calculus."); mark10.setNotes(""); mark10.setFeedbackDate(LocalDate.now().minusDays(13)); markRepository.save(mark10);
 
-            // ── student2 (Omar Hassan) — Consistent average ──
+            // ── student2  — Consistent average ──
             Mark mark11 = new Mark(); mark11.setCourse(course);  mark11.setStudent(student2); mark11.setType(examType);       mark11.setScore(74L);  mark11.setMaxScore(100L); mark11.setIsApproved(true);  mark11.setFeedback("Satisfactory."); mark11.setNotes("Work on edge cases."); mark11.setFeedbackDate(LocalDate.now().minusDays(20)); markRepository.save(mark11);
             Mark mark12 = new Mark(); mark12.setCourse(course);  mark12.setStudent(student2); mark12.setType(quizType);       mark12.setScore(14L);  mark12.setMaxScore(20L);  mark12.setIsApproved(true);  mark12.setFeedback("Average."); mark12.setNotes("Review polymorphism."); mark12.setFeedbackDate(LocalDate.now().minusDays(14)); markRepository.save(mark12);
             Mark mark13 = new Mark(); mark13.setCourse(course);  mark13.setStudent(student2); mark13.setType(assignmentType); mark13.setScore(36L);  mark13.setMaxScore(50L);  mark13.setIsApproved(true);  mark13.setFeedback("Adequate."); mark13.setNotes("Missing some requirements."); mark13.setFeedbackDate(LocalDate.now().minusDays(7)); markRepository.save(mark13);
@@ -870,7 +1011,7 @@ public class DataSeeder implements CommandLineRunner {
             Mark mark18 = new Mark(); mark18.setCourse(course10); mark18.setStudent(student2); mark18.setType(examType);      mark18.setScore(68L);  mark18.setMaxScore(100L); mark18.setIsApproved(true);  mark18.setFeedback("Fair."); mark18.setNotes("Integration needs work."); mark18.setFeedbackDate(LocalDate.now().minusDays(13)); markRepository.save(mark18);
             Mark mark19 = new Mark(); mark19.setCourse(course10); mark19.setStudent(student2); mark19.setType(assignmentType); mark19.setScore(32L); mark19.setMaxScore(50L);  mark19.setIsApproved(true);  mark19.setFeedback("Incomplete steps shown."); mark19.setNotes(""); mark19.setFeedbackDate(LocalDate.now().minusDays(8)); markRepository.save(mark19);
 
-            // ── student3 (Nour Ali) — Struggling, improving ──
+            // ── student3  Struggling, improving ──
             Mark mark20 = new Mark(); mark20.setCourse(course);  mark20.setStudent(student3); mark20.setType(examType);       mark20.setScore(55L);  mark20.setMaxScore(100L); mark20.setIsApproved(true);  mark20.setFeedback("Needs significant improvement."); mark20.setNotes("Revisit OOP basics."); mark20.setFeedbackDate(LocalDate.now().minusDays(20)); markRepository.save(mark20);
             Mark mark21 = new Mark(); mark21.setCourse(course);  mark21.setStudent(student3); mark21.setType(quizType);       mark21.setScore(10L);  mark21.setMaxScore(20L);  mark21.setIsApproved(true);  mark21.setFeedback("Below average."); mark21.setNotes("Practice more exercises."); mark21.setFeedbackDate(LocalDate.now().minusDays(14)); markRepository.save(mark21);
             Mark mark22 = new Mark(); mark22.setCourse(course);  mark22.setStudent(student3); mark22.setType(assignmentType); mark22.setScore(28L);  mark22.setMaxScore(50L);  mark22.setIsApproved(false); mark22.setFeedback("Resubmission required."); mark22.setNotes("Missing core features."); mark22.setFeedbackDate(LocalDate.now().minusDays(7)); markRepository.save(mark22);
@@ -882,7 +1023,7 @@ public class DataSeeder implements CommandLineRunner {
             Mark mark27 = new Mark(); mark27.setCourse(course10); mark27.setStudent(student3); mark27.setType(examType);      mark27.setScore(50L);  mark27.setMaxScore(100L); mark27.setIsApproved(true);  mark27.setFeedback("Borderline pass."); mark27.setNotes("Seek extra help."); mark27.setFeedbackDate(LocalDate.now().minusDays(13)); markRepository.save(mark27);
             Mark mark28 = new Mark(); mark28.setCourse(course10); mark28.setStudent(student3); mark28.setType(assignmentType); mark28.setScore(22L); mark28.setMaxScore(50L);  mark28.setIsApproved(false); mark28.setFeedback("Resubmit with full steps."); mark28.setNotes(""); mark28.setFeedbackDate(LocalDate.now().minusDays(8)); markRepository.save(mark28);
 
-            // ── student4 (Youssef Kamal) — Strong in IT, weak in theory ──
+            // ── student4  Strong in IT, weak in theory ──
             Mark mark29 = new Mark(); mark29.setCourse(course);  mark29.setStudent(student4); mark29.setType(examType);       mark29.setScore(91L);  mark29.setMaxScore(100L); mark29.setIsApproved(true);  mark29.setFeedback("Very good."); mark29.setNotes("Minor logic errors."); mark29.setFeedbackDate(LocalDate.now().minusDays(20)); markRepository.save(mark29);
             Mark mark30 = new Mark(); mark30.setCourse(course);  mark30.setStudent(student4); mark30.setType(quizType);       mark30.setScore(17L);  mark30.setMaxScore(20L);  mark30.setIsApproved(true);  mark30.setFeedback("Strong."); mark30.setNotes(""); mark30.setFeedbackDate(LocalDate.now().minusDays(14)); markRepository.save(mark30);
             Mark mark31 = new Mark(); mark31.setCourse(course);  mark31.setStudent(student4); mark31.setType(assignmentType); mark31.setScore(45L);  mark31.setMaxScore(50L);  mark31.setIsApproved(true);  mark31.setFeedback("Well coded."); mark31.setNotes("Add more comments."); mark31.setFeedbackDate(LocalDate.now().minusDays(7)); markRepository.save(mark31);
@@ -893,7 +1034,7 @@ public class DataSeeder implements CommandLineRunner {
             Mark mark35 = new Mark(); mark35.setCourse(course9); mark35.setStudent(student4); mark35.setType(examType);       mark35.setScore(64L);  mark35.setMaxScore(100L); mark35.setIsApproved(true);  mark35.setFeedback("Needs more effort."); mark35.setNotes("Physics concepts unclear."); mark35.setFeedbackDate(LocalDate.now().minusDays(15)); markRepository.save(mark35);
             Mark mark36 = new Mark(); mark36.setCourse(course10); mark36.setStudent(student4); mark36.setType(examType);      mark36.setScore(60L);  mark36.setMaxScore(100L); mark36.setIsApproved(true);  mark36.setFeedback("Average."); mark36.setNotes("Practice integration."); mark36.setFeedbackDate(LocalDate.now().minusDays(13)); markRepository.save(mark36);
 
-            // ── student5 (Mariam Samir) — Strong in theory, weaker in IT ──
+            // ── student5  Strong in theory, weaker in IT ──
             Mark mark37 = new Mark(); mark37.setCourse(course);  mark37.setStudent(student5); mark37.setType(examType);       mark37.setScore(66L);  mark37.setMaxScore(100L); mark37.setIsApproved(true);  mark37.setFeedback("Fair."); mark37.setNotes("OOP concepts need revision."); mark37.setFeedbackDate(LocalDate.now().minusDays(20)); markRepository.save(mark37);
             Mark mark38 = new Mark(); mark38.setCourse(course);  mark38.setStudent(student5); mark38.setType(quizType);       mark38.setScore(12L);  mark38.setMaxScore(20L);  mark38.setIsApproved(true);  mark38.setFeedback("Below average."); mark38.setNotes("Study design patterns."); mark38.setFeedbackDate(LocalDate.now().minusDays(14)); markRepository.save(mark38);
             Mark mark39 = new Mark(); mark39.setCourse(course);  mark39.setStudent(student5); mark39.setType(assignmentType); mark39.setScore(30L);  mark39.setMaxScore(50L);  mark39.setIsApproved(true);  mark39.setFeedback("Partial implementation."); mark39.setNotes("Missing unit tests."); mark39.setFeedbackDate(LocalDate.now().minusDays(7)); markRepository.save(mark39);
@@ -1534,12 +1675,43 @@ public class DataSeeder implements CommandLineRunner {
             }
 
             System.out.println("=== Attendance saved: " + attendanceRepository.count() + " ===");
+// ====================== STUDENT PHONE NUMBERS ======================
+            if (userPhoneNumberRepository.count() == 0) {
 
+                // Fatma — 2 numbers
+                savePhone(userPhoneNumberRepository, studentUser, 1008617188L);
+                savePhone(userPhoneNumberRepository, studentUser, 1091128806L);
+
+                // Bassmala
+                savePhone(userPhoneNumberRepository, studentUser2, 1225557116L);
+
+                // Salma
+                savePhone(userPhoneNumberRepository, studentUser3, 1207718642L);
+
+                // Loaa
+                savePhone(userPhoneNumberRepository, studentUser4, 1278543900L);
+
+                // Jana
+                savePhone(userPhoneNumberRepository, studentUser5, 1067725608L);
+
+                System.out.println("Student phone numbers seeded.");
+            }
 
 
 
         } else {
             System.out.println("=== Data already exists, skipping ===");
         }
+    }
+    private void savePhone(UserPhoneNumberRepository repo, User user, long phone) {
+        UserPhoneNumberId id = new UserPhoneNumberId();
+        id.setUserId(user.getId());
+        id.setPhoneNumber(phone);
+
+        UserPhoneNumber upn = new UserPhoneNumber();
+        upn.setId(id);
+        upn.setUser(user);
+
+        repo.save(upn);
     }
 }

@@ -9,6 +9,11 @@
   z-index: 100;
 }
 
+.header {
+  background-color: white;
+  color: var(--navy);
+}
+
 .nav-user {
   display: flex;
   align-items: center;
@@ -36,11 +41,13 @@
   flex-direction: column;
   gap: 1px;
 }
+
 .user-name {
   font-size: 13px;
   font-weight: 700;
   color: #05172F;
 }
+
 .user-role {
   font-size: 11px;
   color: #888;
@@ -60,9 +67,14 @@
   height: 10px;
   margin-top: 2px;
 }
+
 @keyframes shimmer {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.5; }
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .notif-dot {
@@ -76,6 +88,7 @@
   color: black;
   cursor: pointer;
 }
+
 .notif-badge {
   position: absolute;
   top: 12px;
@@ -83,8 +96,10 @@
   width: 7px;
   height: 7px;
   background: #620000;
-  border-radius: 50%; 
+  border-radius: 50%;
+  cursor: pointer;
 }
+
 /* ── Welcome ───────────────────────────────────────── */
 .welcome-header {
   margin-top: 24px;

@@ -1,22 +1,29 @@
 <main class="page-body">
 
   <!-- Page Header -->
-  <header class="page-header">
-    <div class="profile-header-info">
-      <i class="fas fa-user-alt profile-icon"></i>
-      <div>
-        <h1>Profile</h1>
-        <p>View and manage your personal information</p>
+  <div class="header">
+    <div class="header-left">
+      <div class="header-title-group">
+        <span class="header-icon" aria-hidden="true">
+          <i class="fas fa-user-alt profile-icon"></i>
+        </span>
+      </div>
+      <div class="header-title-group2">
+        <h1 class="header-title">Profile</h1>
+        <p class="header-sub">View your personal and academic information</p>
       </div>
     </div>
-  </header>
 
-  <!-- Loading -->
-  <!-- @if (loading) {
-    <div class="loading-full-page">
-      <p>Loading...</p>
+    <div class="header-right">
+      <div class="notif-dot" aria-label="Notifications">
+        <span aria-hidden="true" routerLink="/notifications">
+          <i class="fa-regular fa-bell"></i>
+        </span>
+        <span class="notif-badge"></span>
+      </div>
     </div>
-  } -->
+  </div>
+
   <!-- Error -->
   @if (error && !loading) {
     <div class="loading-full-page">
@@ -31,12 +38,45 @@
 
         <!-- Avatar + Name -->
         <div class="profile-card-display">
+
+          <!-- Avatar -->
           <div class="avatar-group">
-            <img src="../assets/images/woman.png" width="50px" height="50px" alt="logo">
-            <button class="change-avatar-btn">
+
+            <!-- Show uploaded image OR default fallback -->
+            @if (profileImage()) {
+              <img
+                [src]="profileImage()"
+                class="avatar-img"
+                alt="Profile photo"
+              />
+            } @else {
+              <img
+                src="../assets/images/woman.png"
+                class="avatar-img"
+                alt="Default avatar"
+              />
+            }
+
+            <!-- Camera overlay button -->
+            <label class="change-avatar-btn" title="Change photo">
               <i class="fas fa-camera"></i>
-            </button>
+              <input
+                type="file"
+                accept="image/*"
+                style="display:none"
+                (change)="onImageSelected($event)"
+              />
+            </label>
+
           </div>
+
+          <!-- Remove photo link — only visible when a custom image is set -->
+          @if (profileImage()) {
+            <button class="remove-photo-btn" (click)="removeImage()">
+              Remove photo
+            </button>
+          }
+
           <h3 class="student-name">{{ studentData.fullName }}</h3>
           <span class="status-badge-active-student">Active Student</span>
         </div>
@@ -66,7 +106,15 @@
             </tr>
             <tr>
               <td><i class="fa-solid fa-phone"></i> Phone Number</td>
-              <td>{{ studentData.phoneNumber ?? '—' }}</td>
+              <td>
+                @if (studentData.phoneNumbers && studentData.phoneNumbers.length > 0) {
+                  @for (phone of studentData.phoneNumbers; track phone) {
+                    <div>{{ phone }}</div>
+                  }
+                } @else {
+                  —
+                }
+              </td>
             </tr>
             <tr>
               <td><i class="fas fa-calendar-alt"></i> Date of Birth</td>

@@ -54,7 +54,7 @@
 /* ── Layout ────────────────────────────────────────── */
 .dashboard-container {
   padding: 40px 32px;
-  margin-top: 40px;
+  /*margin-top: 40px;*/
   min-height: 160px;
 }
 
@@ -81,9 +81,9 @@
   height: 145px;
 }
 
-.card:hover {
-  transform: translateY(-3px);
-}
+/*.card:hover {*/
+/*  transform: translateY(-3px);*/
+/*}*/
 
 /* ── Card Icon ─────────────────────────────────────── */
 .card__icon {

@@ -8,6 +8,6 @@ export interface Studentresponse {
     nationalNumber: string;
     status: string;
     phoneNumber: number;
-    name: string;   // class name — from enrollment
+    name: string;   
     grade: string;
 }

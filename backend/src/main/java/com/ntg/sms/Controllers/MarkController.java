@@ -24,13 +24,9 @@ public class MarkController{
     @GetMapping("/student/{studentId}/dashboard")
     @PreAuthorize("hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<StudentMarksDashboardResponse> getDashboard(
-            @PathVariable Long studentId
-    ) {
-
-        return ResponseEntity.ok(
-                markService.getDashboard(studentId)
-        );
-
+            @PathVariable Long studentId,
+            @RequestParam(required = false) String typeName) {
+        return ResponseEntity.ok(markService.getDashboard(studentId, typeName));
     }
      // All marks
     @GetMapping("/student/{studentId}")

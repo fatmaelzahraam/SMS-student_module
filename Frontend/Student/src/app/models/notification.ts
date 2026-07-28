@@ -1,9 +1,9 @@
 export interface NotificationItem {
   id?: number;
   title: string;
-  body: string;        
+  body: string;
   type: string;
   priority: string;
-  sentAt: string;      
+  sentAt: string;
   isRead?: boolean;
 }

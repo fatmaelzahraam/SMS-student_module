@@ -1,9 +1,22 @@
 <div class="notifications-container">
 
-  <div class="header-section">
-    <div class="title-with-icon">
-      <span class="header-icon"><i class="fa-solid fa-bell"></i></span>
-      <h2>Notifications</h2>
+  <div class="header">
+    <div class="header-left">
+      <div class="header-title-group">
+        <span class="header-icon"><i class="fa-solid fa-bell"></i></span>
+      </div>
+      <div class="header-title-group2">
+        <h1 class="header-title">Notifications</h1>
+        <p class="header-sub">Stay updated with the latest announcements</p>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="nav-user">
+        <a class="avatar" routerLink="/profile">
+          {{ getInitials() }}
+        </a>
+      </div>
     </div>
   </div>
 

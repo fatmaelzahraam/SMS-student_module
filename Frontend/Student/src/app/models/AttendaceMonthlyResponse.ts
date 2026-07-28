@@ -6,4 +6,5 @@ export interface AttendanceMonthlyResponse {
   absent: number;
   late: number;
   attendancePercentage: number;
+  presentDays: number;
 }

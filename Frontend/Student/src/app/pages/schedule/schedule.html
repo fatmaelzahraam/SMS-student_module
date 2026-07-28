@@ -1,21 +1,68 @@
 <div class="schedule-page">
 
   <!-- Header -->
-  <div class="page-header">
-    <div class="header-part">
-      <div class="icon-wrapper">
-        <img src="../assets/images/date.png" style="width: 40px; height: 40px;" alt="date">
+<!--   <div class="page-header"> -->
+<!--     <div class="header-part"> -->
+<!--       <div class="icon-wrapper"> -->
+<!--         <img src="../assets/images/date.png" style="width: 40px; height: 40px;" alt="date"> -->
+<!--       </div> -->
+<!--       <div> -->
+<!--         <h2>Schedule</h2> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--     <div class="tabs"> -->
+<!--       <button [class.active]="activeTab() === 'class'"  (click)="setTab('class')">Class Schedule</button> -->
+<!--       <button [class.active]="activeTab() === 'month'"  (click)="setTab('month')">Month Exam Schedule</button> -->
+<!--       <button [class.active]="activeTab() === 'final'"  (click)="setTab('final')">Final Exam Schedule</button> -->
+<!--     </div> -->
+<!--   </div> -->
+
+  <div class="header">
+    <div class="header-left">
+      <div class="header-title-group">
+      <span class="header-icon" aria-hidden="true">
+        <img src="../assets/images/date.png" width="40px"
+             height="40px"
+             alt="logo">
+      </span>
       </div>
-      <div>
-        <h2>Schedule</h2>
+      <div class="header-title-group2">
+        <h1 class="header-title">Schedules</h1>
+        <p class="header-sub">Explore your timetables and important dates</p>
       </div>
+
     </div>
-    <div class="tabs">
-      <button [class.active]="activeTab() === 'class'"  (click)="setTab('class')">Class Schedule</button>
-      <button [class.active]="activeTab() === 'month'"  (click)="setTab('month')">Month Exam Schedule</button>
-      <button [class.active]="activeTab() === 'final'"  (click)="setTab('final')">Final Exam Schedule</button>
+
+    <div class="header-right">
+      <div class="notif-dot" aria-label="Notifications">
+        <span aria-hidden="true" routerLink="/notifications"><i class="fa-regular fa-bell"></i></span>
+        <span class="notif-badge"></span>
+      </div>
+
+      <div class="nav-user">
+        <a class="avatar" routerLink="/profile">
+          {{ getInitials() }}
+        </a>
+      </div>
     </div>
   </div>
+
+  <div class="tabs">
+    <button [class.active]="activeTab() === 'class'"  (click)="setTab('class')">Class Schedule</button>
+    <button [class.active]="activeTab() === 'month'"  (click)="setTab('month')">Month Exam Schedule</button>
+    <button [class.active]="activeTab() === 'final'"  (click)="setTab('final')">Final Exam Schedule</button>
+  </div>
+
+
+  <!--     <div class="tabs"> -->
+<!--       <button [class.active]="activeTab() === 'class'"  (click)="setTab('class')">Class Schedule</button> -->
+<!--       <button [class.active]="activeTab() === 'month'"  (click)="setTab('month')">Month Exam Schedule</button> -->
+<!--       <button [class.active]="activeTab() === 'final'"  (click)="setTab('final')">Final Exam Schedule</button> -->
+<!--     </div> -->
+
+
+
+
 
   @if (isLoading()) {
     <div class="state-box">Loading...</div>

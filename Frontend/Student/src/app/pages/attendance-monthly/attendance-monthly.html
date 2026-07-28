@@ -1,4 +1,4 @@
-<app-attendance-nav></app-attendance-nav>
+<!-- <app-attendance-nav></app-attendance-nav> -->
 
 <div class="attendance-container">
 
@@ -23,7 +23,7 @@
   <div class="overview-card">
 
     <h2>Monthly Overview</h2>
-    <p>{{ monthlyAttendance?.month }}-{{ monthlyAttendance?.year }}</p>
+    <!-- <p>{{ monthlyAttendance?.month }}-{{ monthlyAttendance?.year }}</p> -->
 
     <div class="stats">
 
@@ -33,8 +33,8 @@
       </div>
 
       <div class="stat-card present">
-        <h3>Present</h3>
-        <h1>{{ monthlyAttendance?.present ?? 0 }}</h1>
+        <h3>Present Days</h3>
+        <h1>{{ monthlyAttendance?.presentDays ?? 0 }}</h1>
       </div>
 
       <div class="stat-card absent">
@@ -63,11 +63,8 @@
 
         <h5>Attendance distribution</h5>
 
-        <apx-chart
-          [series]="radialChartOptions.series"
-          [chart]="radialChartOptions.chart"
-          [plotOptions]="radialChartOptions.plotOptions"
-          [labels]="radialChartOptions.labels">
+        <apx-chart [series]="radialChartOptions.series" [chart]="radialChartOptions.chart"
+          [plotOptions]="radialChartOptions.plotOptions" [labels]="radialChartOptions.labels">
         </apx-chart>
 
       </div>

@@ -1,55 +1,97 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AssignmentService } from './service/assignmentservice';
 import { AssignmentResponse } from '../../models/assignment-response';
 import { CoursesService } from '../courses/service/courses-service';
 import { catchError, forkJoin, of, switchMap } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { Profileservice } from '../profile/service/profileservice';
 
+const PAGE_SIZE = 5;
 
 @Component({
   selector: 'app-assignments',
   standalone: true,
-  imports: [CommonModule ],
+  imports: [CommonModule, RouterLink],
   templateUrl: './assignments.html',
   styleUrls: ['./assignments.css']
 })
 export class assignments implements OnInit {
- assignments = signal<AssignmentResponse[]>([]);
-  // map of courseId → courseName resolved after load
+
+  readonly profileService = inject(Profileservice);
+  readonly profile = this.profileService.profile;
+
+  getInitials(): string {
+    return this.profileService.getInitials();
+  }
+
+  assignments = signal<AssignmentResponse[]>([]);
   courseNames = signal<Record<number, string>>({});
   isLoading   = signal(true);
   error       = signal<string | null>(null);
- 
+
+  currentYearAssignments = computed(() => {
+  const currentYear = new Date().getFullYear();
+  return this.assignments().filter(a => {
+    if (!a.deadline) return false;
+    return new Date(a.deadline).getFullYear() === currentYear;
+  });
+});
+
+// ── Sort by deadline ascending ──────────────────────────────
+sortedAssignments = computed(() =>
+  [...this.currentYearAssignments()].sort((a, b) => {
+    if (!a.deadline) return 1;
+    if (!b.deadline) return -1;
+    return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+  })
+);
+
+  // ── Pagination ──────────────────────────────────────────────
+  currentPage = signal(1);
+  readonly pageSize = PAGE_SIZE;
+
+  totalPages = computed(() =>
+    Math.max(1, Math.ceil(this.sortedAssignments().length / PAGE_SIZE))
+  );
+
+  pagedAssignments = computed(() => {
+    const page  = this.currentPage();
+    const start = (page - 1) * PAGE_SIZE;
+    return this.sortedAssignments().slice(start, start + PAGE_SIZE);
+  });
+
+  pageNumbers = computed(() =>
+    Array.from({ length: this.totalPages() }, (_, i) => i + 1)
+  );
+
   constructor(
     private assignmentService: AssignmentService,
     private courseService: CoursesService
   ) {}
- 
+
   ngOnInit(): void {
     this.assignmentService.getAssignments().pipe(
       switchMap((assignments) => {
         this.assignments.set(assignments);
- 
-        // Collect every unique courseId across all assignments
+
         const uniqueIds = [
           ...new Set(assignments.flatMap(a => a.courseIds ?? []))
         ];
- 
+
         if (uniqueIds.length === 0) return of({});
- 
-        // Fetch each course by id in parallel
+
         const requests = uniqueIds.reduce((acc, id) => {
           acc[id] = this.courseService.getCourseById(id).pipe(
-            catchError(() => of(null))   // don't break if one course 404s
+            catchError(() => of(null))
           );
           return acc;
         }, {} as Record<number, any>);
- 
+
         return forkJoin(requests);
       })
     ).subscribe({
       next: (results: any) => {
-        // Build courseId → courseName lookup
         const names: Record<number, string> = {};
         for (const [id, course] of Object.entries(results)) {
           if (course) names[+id] = (course as any).courseName;
@@ -64,13 +106,11 @@ export class assignments implements OnInit {
       }
     });
   }
- 
-  /** Resolve a courseId to its name, fallback to the id if not loaded yet */
+
   getCourseName(courseId: number): string {
     return this.courseNames()[courseId] ?? `Course ${courseId}`;
   }
- 
-  /** Open the assignment's file link in a new tab */
+
   viewAssignment(item: AssignmentResponse): void {
     if (item.fileLink) {
       window.open(item.fileLink, '_blank');
@@ -78,11 +118,20 @@ export class assignments implements OnInit {
       console.warn('No file link found for assignment:', item.id);
     }
   }
- 
-  /** Returns true if the deadline is within 3 days — turns the View button burgundy */
+
   isUrgent(deadline: string): boolean {
     if (!deadline) return false;
     const diff = new Date(deadline).getTime() - Date.now();
     return diff >= 0 && diff <= 3 * 24 * 60 * 60 * 1000;
   }
+
+  // ── Pagination helpers ──────────────────────────────────────
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
+    }
+  }
+
+  prevPage(): void { this.goToPage(this.currentPage() - 1); }
+  nextPage(): void { this.goToPage(this.currentPage() + 1); }
 }
