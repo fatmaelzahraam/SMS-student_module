@@ -27,29 +27,63 @@
 
     <div class="stats">
 
-      <div class="stat-card attendance">
-        <h3>Overall attendance</h3>
+      <div class="stat-card ">
+          <div class="card-icon attendance">
+        <img src="../assets/images/totally.png">
+        </div>
+
+        <div class="card-data">
+        <h3>Overall</h3>
         <h1>{{ monthlyAttendance?.attendancePercentage | number:'1.0-2' }}%</h1>
+        </div>
+
       </div>
 
-      <div class="stat-card present">
+      <div class="stat-card">
+
+        <div class="card-icon present-i">
+        <img src="../assets/images/checked.png">
+        </div>
+
+        <div class="card-data">
         <h3>Present Days</h3>
         <h1>{{ monthlyAttendance?.presentDays ?? 0 }}</h1>
+        </div>
       </div>
 
-      <div class="stat-card absent">
+      <div class="stat-card ">
+
+        <div class="card-icon absent-i">
+        <img src="../assets/images/cancel.png">
+        </div>
+<div class="card-data">
         <h3>Absent</h3>
         <h1>{{ monthlyAttendance?.absent ?? 0 }}</h1>
+</div>
       </div>
 
       <div class="stat-card late">
+
+        <div class="card-icon late-i">
+        <img src="../assets/images/late.png">
+        </div>
+
+        <div class="card-data">
         <h3>Late</h3>
         <h1>{{ monthlyAttendance?.late ?? 0 }}</h1>
+        </div>
       </div>
 
-      <div class="stat-card permission">
+      <div class="stat-card">
+
+        <div class="card-icon permission-i">
+        <img src="../assets/images/shield.png">
+        </div>
+
+<div class="card-data">
         <h3>Permission</h3>
         <h1>{{ permissions.length }}</h1>
+        </div>
       </div>
 
     </div>

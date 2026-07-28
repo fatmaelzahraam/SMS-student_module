@@ -30,24 +30,43 @@ export class assignments implements OnInit {
   isLoading   = signal(true);
   error       = signal<string | null>(null);
 
+  // ── Details modal ────────────────────────────────────────────
+  selectedAssignment = signal<AssignmentResponse | null>(null);
+
+  openDetails(item: AssignmentResponse): void {
+    this.selectedAssignment.set(item);
+  }
+
+  closeDetails(): void {
+    this.selectedAssignment.set(null);
+  }
+
+  /** Close modal when the backdrop is clicked */
+  onBackdropClick(event: MouseEvent): void {
+    if ((event.target as HTMLElement).classList.contains('modal-backdrop')) {
+      this.closeDetails();
+    }
+  }
+
+  // ── Filtering: current year only ────────────────────────────
   currentYearAssignments = computed(() => {
-  const currentYear = new Date().getFullYear();
-  return this.assignments().filter(a => {
-    if (!a.deadline) return false;
-    return new Date(a.deadline).getFullYear() === currentYear;
+    const currentYear = new Date().getFullYear();
+    return this.assignments().filter(a => {
+      if (!a.deadline) return false;
+      return new Date(a.deadline).getFullYear() === currentYear;
+    });
   });
-});
 
-// ── Sort by deadline ascending ──────────────────────────────
-sortedAssignments = computed(() =>
-  [...this.currentYearAssignments()].sort((a, b) => {
-    if (!a.deadline) return 1;
-    if (!b.deadline) return -1;
-    return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
-  })
-);
+  // ── Sort by deadline ascending ───────────────────────────────
+  sortedAssignments = computed(() =>
+    [...this.currentYearAssignments()].sort((a, b) => {
+      if (!a.deadline) return 1;
+      if (!b.deadline) return -1;
+      return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+    })
+  );
 
-  // ── Pagination ──────────────────────────────────────────────
+  // ── Pagination ───────────────────────────────────────────────
   currentPage = signal(1);
   readonly pageSize = PAGE_SIZE;
 
@@ -111,6 +130,7 @@ sortedAssignments = computed(() =>
     return this.courseNames()[courseId] ?? `Course ${courseId}`;
   }
 
+  /** Open the file link in a new tab */
   viewAssignment(item: AssignmentResponse): void {
     if (item.fileLink) {
       window.open(item.fileLink, '_blank');
@@ -125,7 +145,7 @@ sortedAssignments = computed(() =>
     return diff >= 0 && diff <= 3 * 24 * 60 * 60 * 1000;
   }
 
-  // ── Pagination helpers ──────────────────────────────────────
+  // ── Pagination helpers ────────────────────────────────────────
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages()) {
       this.currentPage.set(page);

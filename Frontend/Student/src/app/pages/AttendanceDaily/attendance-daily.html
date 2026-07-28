@@ -27,31 +27,65 @@
 
     <div class="stats">
 
-       <div class="stat-card attendance">
+       <div class="stat-card ">
+
+        <div class="card-icon attendance">
+        <img src="../assets/images/discount.png">
+        </div>
+        <div class="card-data">
         <h3>Attendance</h3>
         <h1>{{ dailyAttendance?.attendancePercentage | number:'1.0-2' }}%</h1>
+        </div>
+
       </div>
 
-      <div class="stat-card present">
+      <div class="stat-card ">
+
+        <div class="card-icon present-i">
+        <img src="../assets/images/checked.png">
+        </div>
+        <div class="card-data">
         <h3>Present</h3>
         <h1>{{ dailyAttendance?.present }}</h1>
       </div>
 
-      <div class="stat-card absent">
+      </div>
+
+
+      <div class="stat-card ">
+
+        <div class="card-icon absent-i">
+        <img src="../assets/images/cancel.png">
+        </div>
+
+        <div class="card-data">
         <h3>Absent</h3>
         <h1>{{ dailyAttendance?.absent }}</h1>
       </div>
+      </div>
 
-      <div class="stat-card late">
+
+      <div class="stat-card ">
+
+        <div class="card-icon late-i">
+        <img src="../assets/images/late.png">
+        </div>
+        <div class="card-data">
         <h3>Late</h3>
         <h1>{{ dailyAttendance?.late }}</h1>
       </div>
+    </div>
 
-       <div class="stat-card total">
+       <div class="stat-card ">
+
+        <div class="card-icon total">
+        <img src="../assets/images/totally.png">
+        </div>
+        <div class="card-data">
         <h3>Total Sessions</h3>
         <h1>{{ dailyAttendance?.totalSessions }}</h1>
       </div>
-     
+    </div>
 
     </div>
 

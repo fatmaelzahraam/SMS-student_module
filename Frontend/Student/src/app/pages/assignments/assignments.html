@@ -45,7 +45,7 @@
               <th class="thead-title">Title</th>
               <th>Deadline</th>
               <th>Subject</th>
-              <th>Action</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
@@ -59,12 +59,23 @@
                     <span class="subject">{{ getCourseName(cId) }}</span>
                   }
                 </td>
-                <td>
+                <td class="action-cell">
+                  <!-- Details button → opens modal -->
+                  <button
+                    class="details-btn"
+                    (click)="openDetails(item)"
+                    aria-label="View details for {{ item.name }}">
+                    Details
+                  </button>
+
+                  <!-- View button → opens file link -->
                   <button
                     class="view-btn"
                     [class.view-btn--urgent]="isUrgent(item.deadline)"
+                    [disabled]="!item.fileLink"
+                    [title]="item.fileLink ? 'Open file' : 'No file attached'"
                     (click)="viewAssignment(item)">
-                    View
+                    <i class="fa-regular fa-file"></i> View
                   </button>
                 </td>
               </tr>
@@ -111,3 +122,104 @@
 
   </main>
 </div>
+
+<!-- ── Assignment Details Modal ─────────────────────────────────── -->
+@if (selectedAssignment()) {
+  <div
+    class="modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'Details for ' + selectedAssignment()!.name"
+    (click)="onBackdropClick($event)">
+
+    <div class="modal">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h2 class="modal-title">{{ selectedAssignment()!.name }}</h2>
+        <button
+          class="modal-close"
+          (click)="closeDetails()"
+          aria-label="Close details">
+          &#x2715;
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+
+        <!-- Dates row -->
+        <div class="modal-row">
+          <div class="modal-field">
+            <span class="modal-label">Assigned</span>
+            <span class="modal-value">{{ selectedAssignment()!.assignDate | date: 'd MMM yyyy' }}</span>
+          </div>
+          <div class="modal-field">
+            <span class="modal-label">Deadline</span>
+            <span
+              class="modal-value"
+              [class.urgent-text]="isUrgent(selectedAssignment()!.deadline)">
+              {{ selectedAssignment()!.deadline | date: 'd MMM yyyy' }}
+              @if (isUrgent(selectedAssignment()!.deadline)) {
+                <span class="urgent-badge">Due soon</span>
+              }
+            </span>
+          </div>
+        </div>
+
+        <!-- Subjects -->
+        <div class="modal-field">
+          <span class="modal-label">Subject(s)</span>
+          <div class="modal-subjects">
+            @for (cId of $any(selectedAssignment()!.courseIds); track cId) {
+              <span class="subject">{{ getCourseName(cId) }}</span>
+            }
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="modal-field">
+          <span class="modal-label">Description</span>
+          <p class="modal-description">{{ selectedAssignment()!.description }}</p>
+        </div>
+
+        <!-- Student submission instructions -->
+        <div class="modal-field">
+          <span class="modal-label">Submission details</span>
+          <p class="modal-description">{{ selectedAssignment()!.studentSubmission }}</p>
+        </div>
+
+        <!-- File link -->
+        <div class="modal-field">
+          <span class="modal-label">Attached file</span>
+          @if (selectedAssignment()!.fileLink) {
+            <a
+              class="modal-file-link"
+              [href]="selectedAssignment()!.fileLink"
+              target="_blank"
+              rel="noopener noreferrer">
+              <i class="fa-regular fa-file-lines"></i>
+              Open file
+            </a>
+          } @else {
+            <span class="modal-value muted">No file attached</span>
+          }
+        </div>
+
+      </div><!-- /modal-body -->
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button class="modal-close-btn" (click)="closeDetails()">Close</button>
+        @if (selectedAssignment()!.fileLink) {
+          <button
+            class="view-btn"
+            (click)="viewAssignment(selectedAssignment()!)">
+            <i class="fa-regular fa-file"></i> Open file
+          </button>
+        }
+      </div>
+
+    </div><!-- /modal -->
+  </div><!-- /modal-backdrop -->
+}
